@@ -1,15 +1,15 @@
 {
-  "name": "@google/gemini-cli",
+  "name": "@alcub3/alcub3-cli",
   "version": "0.1.9",
-  "description": "Gemini CLI",
+  "description": "ALCUB3 CLI - Defense-grade AI integration platform",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/google-gemini/gemini-cli.git"
+    "url": "git+https://github.com/aaronkiyaani-mcclary/alcub3-cli.git"
   },
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "gemini": "dist/index.js"
+    "alcub3": "dist/index.js"
   },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
@@ -25,10 +25,10 @@
     "dist"
   ],
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.9"
+    "sandboxImageUri": "us-docker.pkg.dev/alcub3-dev/alcub3-cli/sandbox:0.1.9"
   },
   "dependencies": {
-    "@google/gemini-cli-core": "file:../core",
+    "@alcub3/alcub3-cli-core": "file:../core",
     "@types/update-notifier": "^6.0.8",
     "command-exists": "^1.2.9",
     "diff": "^7.0.0",

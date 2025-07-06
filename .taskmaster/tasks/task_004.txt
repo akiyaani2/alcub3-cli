@@ -1,0 +1,11 @@
+# Task ID: 4
+# Title: Update core package.json for ALCUB3 rebranding
+# Status: pending
+# Dependencies: 2
+# Priority: medium
+# Description: Change package name from @google/gemini-cli-core to @alcub3/alcub3-cli-core and update all related metadata in the core package.json file.
+# Details:
+This task involves updating the core package.json file located at /packages/core/package.json to complete the ALCUB3 rebranding for the core component. Key changes include: 1) Update the 'name' field from '@google/gemini-cli-core' to '@alcub3/alcub3-cli-core' to match the new branding, 2) Modify the 'description' field to reflect ALCUB3's defense-grade AI integration platform core functionality, 3) Update any 'repository' URLs to point to ALCUB3 repositories instead of Google's, 4) Change 'homepage' and 'bugs' URLs to ALCUB3 project pages, 5) Update any Docker registry references from Google's to ALCUB3's registry, 6) Verify all internal package references and peer dependencies are correctly updated, 7) Update any author/maintainer fields to reflect ALCUB3 team, 8) Ensure license compatibility with ALCUB3's Apache 2.0 license, 9) Update keywords to include ALCUB3-specific terms like 'defense-grade', 'air-gapped', 'MCP', and 'robotics'.
+
+# Test Strategy:
+Validate the core package.json changes by: 1) Running 'npm run build' from the core package directory to ensure it builds successfully with the new package name, 2) Execute 'npm run preflight' from the root to verify all build processes work with the updated core package, 3) Check that all inter-package dependencies resolve correctly by running 'npm install' in both root and packages/cli directories, 4) Verify that the CLI package can still import and use core functionality after the name change, 5) Test that any TypeScript imports referencing the old package name are updated or still resolve correctly, 6) Confirm that all repository URLs are accessible and point to correct ALCUB3 resources, 7) Run unit tests with 'npm test' to ensure no functionality is broken by the rebranding.

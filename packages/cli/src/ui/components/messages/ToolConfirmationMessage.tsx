@@ -14,7 +14,7 @@ import {
   ToolExecuteConfirmationDetails,
   ToolMcpConfirmationDetails,
   Config,
-} from '@google/gemini-cli-core';
+} from '@alcub3/alcub3-cli-core';
 import {
   RadioButtonSelect,
   RadioSelectItem,

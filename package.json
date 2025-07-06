@@ -1,5 +1,5 @@
 {
-  "name": "@google/gemini-cli",
+  "name": "@alcub3/alcub3-cli",
   "version": "0.1.9",
   "engines": {
     "node": ">=18.0.0"
@@ -11,10 +11,10 @@
   "private": "true",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/google-gemini/gemini-cli.git"
+    "url": "git+https://github.com/aaronkiyaani-mcclary/alcub3-cli.git"
   },
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.9"
+    "sandboxImageUri": "us-docker.pkg.dev/alcub3-dev/alcub3-cli/sandbox:0.1.9"
   },
   "scripts": {
     "generate": "node scripts/generate-git-commit-info.js",
@@ -27,9 +27,9 @@
     "test:ci": "npm run test:ci --workspaces --if-present",
     "test:e2e": "npm run test:integration:sandbox:none -- --verbose --keep-output",
     "test:integration:all": "npm run test:integration:sandbox:none && npm run test:integration:sandbox:docker && npm run test:integration:sandbox:podman",
-    "test:integration:sandbox:none": "GEMINI_SANDBOX=false node integration-tests/run-tests.js",
-    "test:integration:sandbox:docker": "GEMINI_SANDBOX=docker node integration-tests/run-tests.js",
-    "test:integration:sandbox:podman": "GEMINI_SANDBOX=podman node integration-tests/run-tests.js",
+    "test:integration:sandbox:none": "ALCUB3_SANDBOX=false node integration-tests/run-tests.js",
+    "test:integration:sandbox:docker": "ALCUB3_SANDBOX=docker node integration-tests/run-tests.js",
+    "test:integration:sandbox:podman": "ALCUB3_SANDBOX=podman node integration-tests/run-tests.js",
     "start": "node scripts/start.js",
     "debug": "cross-env DEBUG=1 node --inspect-brk scripts/start.js",
     "lint:fix": "eslint . --fix && eslint integration-tests --fix",
@@ -56,7 +56,7 @@
     "publish:actions-release": "npm run prepare:package && npm run build:packages && npm run publish:npm"
   },
   "bin": {
-    "gemini": "bundle/gemini.js"
+    "alcub3": "bundle/alcub3.js"
   },
   "files": [
     "bundle/",

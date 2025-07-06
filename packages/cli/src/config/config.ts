@@ -18,7 +18,7 @@ import {
   DEFAULT_GEMINI_EMBEDDING_MODEL,
   FileDiscoveryService,
   TelemetryTarget,
-} from '@google/gemini-cli-core';
+} from '@alcub3/alcub3-cli-core';
 import { Settings } from './settings.js';
 
 import { Extension } from './extension.js';

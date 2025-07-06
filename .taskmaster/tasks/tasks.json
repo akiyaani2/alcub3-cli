@@ -1,0 +1,91 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Test integration between Task Master and Claude Code by creating a simple task",
+        "description": "Create a basic task through the Task Master interface and verify it can be processed and executed by Claude Code to validate the integration pipeline.",
+        "details": "This task involves testing the end-to-end integration between Task Master and Claude Code by creating a simple development task and observing the complete workflow. Steps include: 1) Access the Task Master interface and create a new task with basic requirements (e.g., 'Add a hello world function to utils.ts'), 2) Submit the task and monitor how it's transmitted to Claude Code, 3) Observe Claude Code's task processing including task parsing, file discovery, and code generation, 4) Verify the generated code meets the task requirements, 5) Check that the task status is properly updated in Task Master, 6) Document any communication failures or workflow bottlenecks encountered during the process. This integration test will use the existing Gemini CLI codebase structure and focus on a simple file modification task to minimize variables while thoroughly testing the core integration points.",
+        "testStrategy": "Execute the integration test by creating a task to add a simple 'greetUser' function to /packages/core/src/utils/ directory. Verify: 1) Task creation succeeds in Task Master interface, 2) Claude Code receives and acknowledges the task, 3) Claude Code correctly identifies target file location using file discovery service, 4) Generated function includes proper TypeScript typing and follows project conventions, 5) Code passes lint and build checks (npm run lint, npm run build), 6) Task status updates correctly in Task Master, 7) Integration completes within reasonable time bounds. Test both success and failure scenarios by intentionally creating an invalid task request.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Update root package.json for ALCUB3 rebranding",
+        "description": "Change package name from @google/gemini-cli to @alcub3/alcub3-cli and update all related metadata including repository URLs, description, and Docker registry references.",
+        "details": "This task involves comprehensive updates to the root package.json file to rebrand from Google's Gemini CLI to ALCUB3. Key changes include: 1) Update 'name' field from '@google/gemini-cli' to '@alcub3/alcub3-cli', 2) Modify 'description' field to reflect ALCUB3's defense-grade AI integration platform purpose, 3) Update 'repository' URLs to point to ALCUB3 repositories instead of Google's, 4) Change 'homepage' and 'bugs' URLs to ALCUB3 project pages, 5) Update any Docker registry references from Google Container Registry to ALCUB3's registry, 6) Modify 'author' and 'contributors' fields as appropriate, 7) Update any Google-specific keywords with ALCUB3-relevant terms, 8) Review and update license information if different from Apache 2.0, 9) Update any scripts that reference the old package name, 10) Verify all URL references are valid and accessible.",
+        "testStrategy": "Validate the package.json changes by: 1) Running 'npm run preflight' to ensure all build processes still work with the new package name, 2) Verify 'npm install' works correctly with the updated package.json, 3) Check that all repository URLs are accessible and point to correct ALCUB3 resources, 4) Validate Docker registry references by attempting to pull/push test images, 5) Run 'npm run build' to ensure no hardcoded references to the old package name cause build failures, 6) Test that package scripts execute properly with the new configuration, 7) Verify the package can be published to the intended registry (dry-run), 8) Check that any internal imports or references to the package name still resolve correctly.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Update CLI package.json for ALCUB3 rebranding",
+        "description": "Change binary name from 'gemini' to 'alcub3' in CLI package.json and update package name and dependencies for ALCUB3 rebranding.",
+        "details": "This task involves updating the CLI-specific package.json file located at /packages/cli/package.json to complete the ALCUB3 rebranding. Key changes include: 1) Update the 'bin' field to change the binary name from 'gemini' to 'alcub3' so users will run 'alcub3' command instead of 'gemini', 2) Change the package 'name' field from '@google/gemini-cli' to '@alcub3/alcub3-cli' to match the new branding, 3) Update the 'description' field to reflect ALCUB3's defense-grade AI integration platform purpose, 4) Review and update any CLI-specific dependencies that may reference Google/Gemini packages to ALCUB3 equivalents, 5) Update any scripts or commands that reference the old binary name, 6) Ensure all internal imports and references within the CLI package are updated to use the new package name, 7) Update any CLI-specific configuration files that reference the old binary name.",
+        "testStrategy": "Validate the CLI package.json changes by: 1) Running 'npm run build' from the CLI package directory to ensure it builds successfully with the new package name, 2) Test the new binary name by running 'npm link' and verifying 'alcub3' command is available in the terminal, 3) Verify 'alcub3 --help' displays the correct help information, 4) Run 'npm run preflight' to ensure all CLI-specific tests pass with the updated configuration, 5) Check that the CLI can still communicate with the core package using the updated package references, 6) Verify that any CLI-specific scripts or commands work correctly with the new binary name, 7) Test a basic CLI operation like 'alcub3 --version' to ensure the rebranding is complete and functional.",
+        "status": "done",
+        "dependencies": [
+          2
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Update core package.json for ALCUB3 rebranding",
+        "description": "Change package name from @google/gemini-cli-core to @alcub3/alcub3-cli-core and update all related metadata in the core package.json file.",
+        "details": "This task involves updating the core package.json file located at /packages/core/package.json to complete the ALCUB3 rebranding for the core component. Key changes include: 1) Update the 'name' field from '@google/gemini-cli-core' to '@alcub3/alcub3-cli-core' to match the new branding, 2) Modify the 'description' field to reflect ALCUB3's defense-grade AI integration platform core functionality, 3) Update any 'repository' URLs to point to ALCUB3 repositories instead of Google's, 4) Change 'homepage' and 'bugs' URLs to ALCUB3 project pages, 5) Update any Docker registry references from Google's to ALCUB3's registry, 6) Verify all internal package references and peer dependencies are correctly updated, 7) Update any author/maintainer fields to reflect ALCUB3 team, 8) Ensure license compatibility with ALCUB3's Apache 2.0 license, 9) Update keywords to include ALCUB3-specific terms like 'defense-grade', 'air-gapped', 'MCP', and 'robotics'.",
+        "testStrategy": "Validate the core package.json changes by: 1) Running 'npm run build' from the core package directory to ensure it builds successfully with the new package name, 2) Execute 'npm run preflight' from the root to verify all build processes work with the updated core package, 3) Check that all inter-package dependencies resolve correctly by running 'npm install' in both root and packages/cli directories, 4) Verify that the CLI package can still import and use core functionality after the name change, 5) Test that any TypeScript imports referencing the old package name are updated or still resolve correctly, 6) Confirm that all repository URLs are accessible and point to correct ALCUB3 resources, 7) Run unit tests with 'npm test' to ensure no functionality is broken by the rebranding.",
+        "status": "done",
+        "dependencies": [
+          2
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Update README.md - Rebrand from Gemini CLI to ALCUB3 CLI",
+        "description": "Comprehensively update the README.md file to rebrand from Google's Gemini CLI to ALCUB3 CLI while preserving all functional accuracy and technical details.",
+        "details": "This task involves a complete rebranding of the main README.md file to reflect ALCUB3's defense-grade AI integration platform while maintaining technical accuracy. Key changes include: 1) Replace all instances of 'Gemini CLI' with 'ALCUB3 CLI' throughout the document, 2) Update the project description to emphasize ALCUB3's defense-grade capabilities, air-gapped operations, and universal system interoperability, 3) Change installation commands from 'npm install -g @google/gemini-cli' to 'npm install -g @alcub3/alcub3-cli', 4) Update all CLI command examples from 'gemini' to 'alcub3' (e.g., 'gemini --help' becomes 'alcub3 --help'), 5) Modify repository URLs, badges, and links to point to ALCUB3 repositories instead of Google's, 6) Update Docker commands to use ALCUB3 registry references, 7) Add ALCUB3-specific features like MAESTRO security framework, air-gap MCP implementation, and universal robotics interface to the feature list, 8) Update contributing guidelines to reflect ALCUB3's security-first development approach, 9) Ensure all code examples, configuration snippets, and API references use the new ALCUB3 branding consistently, 10) Update any Google-specific authentication or API references to reflect ALCUB3's implementation.",
+        "testStrategy": "Validate the README.md rebranding by: 1) Performing a comprehensive text search to ensure no 'Gemini CLI' references remain except in historical context, 2) Verify all installation commands are updated to use '@alcub3/alcub3-cli' package name, 3) Check that all CLI command examples use 'alcub3' instead of 'gemini', 4) Test that all repository URLs and links are accessible and point to correct ALCUB3 resources, 5) Validate that Docker commands reference correct ALCUB3 registry, 6) Ensure markdown formatting is preserved and renders correctly, 7) Verify technical accuracy by cross-referencing with CLAUDE.md and alcub3_PRD.md for consistency, 8) Check that new ALCUB3-specific features are accurately described and aligned with the security-first architecture, 9) Confirm that the rebranded README maintains the same level of technical detail and usability as the original.",
+        "status": "done",
+        "dependencies": [
+          2,
+          3,
+          4
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Update telemetry constants - Change gemini-cli to alcub3-cli and gemini_cli to alcub3_cli",
+        "description": "Update all telemetry-related constants and configuration values throughout the codebase to replace 'gemini-cli' with 'alcub3-cli' and 'gemini_cli' with 'alcub3_cli' for complete ALCUB3 rebranding.",
+        "details": "This task involves systematically updating telemetry constants and configuration values across the entire codebase to complete the ALCUB3 rebranding. Key changes include: 1) Search for all instances of 'gemini-cli' and 'gemini_cli' in telemetry configuration files, typically located in /packages/core/src/telemetry/, 2) Update service names, metric names, and trace identifiers from 'gemini-cli' to 'alcub3-cli' and 'gemini_cli' to 'alcub3_cli', 3) Modify OpenTelemetry service name configurations to use 'alcub3-cli' instead of 'gemini-cli', 4) Update any telemetry attribute names that reference the old naming convention, 5) Check for telemetry constants in configuration files like .env, config.json, or TypeScript constant files, 6) Update any telemetry endpoint URLs or service identifiers that might still reference the old naming, 7) Verify that telemetry data collection and reporting systems use the new ALCUB3 naming convention, 8) Update any telemetry-related documentation or comments to reflect the new naming.",
+        "testStrategy": "Validate the telemetry constants update by: 1) Running a comprehensive text search using 'grep -r \"gemini-cli\\|gemini_cli\" .' to ensure no old references remain in telemetry code, 2) Execute 'npm run build' to verify all telemetry modules compile successfully with the new constants, 3) Run 'npm run preflight' to ensure telemetry functionality works end-to-end with the updated naming, 4) Test telemetry data collection by running the CLI with telemetry enabled and verifying service names appear as 'alcub3-cli' in logs/traces, 5) Check that OpenTelemetry traces and metrics use the correct 'alcub3-cli' service name, 6) Verify any telemetry dashboards or monitoring systems can still receive data with the new naming convention, 7) Test that telemetry configuration files load correctly with the updated constants.",
+        "status": "done",
+        "dependencies": [
+          2,
+          3,
+          4
+        ],
+        "priority": "medium",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "created": "2025-07-06T20:13:00.000Z",
+      "lastModified": "2025-07-06T20:13:00.000Z",
+      "description": "Tasks for master context",
+      "updated": "2025-07-06T21:22:55.803Z"
+    }
+  }
+}

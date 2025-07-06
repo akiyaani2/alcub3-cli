@@ -1,0 +1,11 @@
+# Task ID: 3
+# Title: Update CLI package.json for ALCUB3 rebranding
+# Status: pending
+# Dependencies: 2
+# Priority: medium
+# Description: Change binary name from 'gemini' to 'alcub3' in CLI package.json and update package name and dependencies for ALCUB3 rebranding.
+# Details:
+This task involves updating the CLI-specific package.json file located at /packages/cli/package.json to complete the ALCUB3 rebranding. Key changes include: 1) Update the 'bin' field to change the binary name from 'gemini' to 'alcub3' so users will run 'alcub3' command instead of 'gemini', 2) Change the package 'name' field from '@google/gemini-cli' to '@alcub3/alcub3-cli' to match the new branding, 3) Update the 'description' field to reflect ALCUB3's defense-grade AI integration platform purpose, 4) Review and update any CLI-specific dependencies that may reference Google/Gemini packages to ALCUB3 equivalents, 5) Update any scripts or commands that reference the old binary name, 6) Ensure all internal imports and references within the CLI package are updated to use the new package name, 7) Update any CLI-specific configuration files that reference the old binary name.
+
+# Test Strategy:
+Validate the CLI package.json changes by: 1) Running 'npm run build' from the CLI package directory to ensure it builds successfully with the new package name, 2) Test the new binary name by running 'npm link' and verifying 'alcub3' command is available in the terminal, 3) Verify 'alcub3 --help' displays the correct help information, 4) Run 'npm run preflight' to ensure all CLI-specific tests pass with the updated configuration, 5) Check that the CLI can still communicate with the core package using the updated package references, 6) Verify that any CLI-specific scripts or commands work correctly with the new binary name, 7) Test a basic CLI operation like 'alcub3 --version' to ensure the rebranding is complete and functional.

@@ -7,7 +7,7 @@
 import {
   ToolCallConfirmationDetails,
   ToolResultDisplay,
-} from '@google/gemini-cli-core';
+} from '@alcub3/alcub3-cli-core';
 
 // Only defining the state enum needed by the UI
 export enum StreamingState {

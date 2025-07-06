@@ -1,0 +1,11 @@
+# Task ID: 2
+# Title: Update root package.json for ALCUB3 rebranding
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Change package name from @google/gemini-cli to @alcub3/alcub3-cli and update all related metadata including repository URLs, description, and Docker registry references.
+# Details:
+This task involves comprehensive updates to the root package.json file to rebrand from Google's Gemini CLI to ALCUB3. Key changes include: 1) Update 'name' field from '@google/gemini-cli' to '@alcub3/alcub3-cli', 2) Modify 'description' field to reflect ALCUB3's defense-grade AI integration platform purpose, 3) Update 'repository' URLs to point to ALCUB3 repositories instead of Google's, 4) Change 'homepage' and 'bugs' URLs to ALCUB3 project pages, 5) Update any Docker registry references from Google Container Registry to ALCUB3's registry, 6) Modify 'author' and 'contributors' fields as appropriate, 7) Update any Google-specific keywords with ALCUB3-relevant terms, 8) Review and update license information if different from Apache 2.0, 9) Update any scripts that reference the old package name, 10) Verify all URL references are valid and accessible.
+
+# Test Strategy:
+Validate the package.json changes by: 1) Running 'npm run preflight' to ensure all build processes still work with the new package name, 2) Verify 'npm install' works correctly with the updated package.json, 3) Check that all repository URLs are accessible and point to correct ALCUB3 resources, 4) Validate Docker registry references by attempting to pull/push test images, 5) Run 'npm run build' to ensure no hardcoded references to the old package name cause build failures, 6) Test that package scripts execute properly with the new configuration, 7) Verify the package can be published to the intended registry (dry-run), 8) Check that any internal imports or references to the package name still resolve correctly.

@@ -7,10 +7,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getStartupWarnings } from './startupWarnings.js';
 import * as fs from 'fs/promises';
-import { getErrorMessage } from '@google/gemini-cli-core';
+import { getErrorMessage } from '@alcub3/alcub3-cli-core';
 
 vi.mock('fs/promises');
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@alcub3/alcub3-cli-core', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,

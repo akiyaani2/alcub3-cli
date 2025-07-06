@@ -18,7 +18,7 @@ import {
   MCPServerStatus,
   getMCPDiscoveryState,
   getMCPServerStatus,
-} from '@google/gemini-cli-core';
+} from '@alcub3/alcub3-cli-core';
 import { useSessionStats } from '../contexts/SessionContext.js';
 import {
   Message,

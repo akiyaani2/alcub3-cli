@@ -16,7 +16,7 @@ import {
   uiTelemetryService,
   SessionMetrics,
   ModelMetrics,
-} from '@google/gemini-cli-core';
+} from '@alcub3/alcub3-cli-core';
 
 // --- Interface Definitions ---
 
