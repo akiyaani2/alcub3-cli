@@ -1,0 +1,13 @@
+import { jsxs as _jsxs, jsx as _jsx } from "react/jsx-runtime";
+import { Box, Text } from 'ink';
+import { Colors } from '../colors.js';
+import { shortenPath, tildeifyPath, tokenLimit } from '@alcub3/alcub3-cli-core';
+import { ConsoleSummaryDisplay } from './ConsoleSummaryDisplay.js';
+import process from 'node:process';
+import { MemoryUsageDisplay } from './MemoryUsageDisplay.js';
+export const Footer = ({ model, targetDir, branchName, debugMode, debugMessage, corgiMode, errorCount, showErrorDetails, showMemoryUsage, promptTokenCount, }) => {
+    const limit = tokenLimit(model);
+    const percentage = promptTokenCount / limit;
+    return (_jsxs(Box, { marginTop: 1, justifyContent: "space-between", width: "100%", children: [_jsxs(Box, { children: [_jsxs(Text, { color: Colors.LightBlue, children: [shortenPath(tildeifyPath(targetDir), 70), branchName && _jsxs(Text, { color: Colors.Gray, children: [" (", branchName, "*)"] })] }), debugMode && (_jsx(Text, { color: Colors.AccentRed, children: ' ' + (debugMessage || '--debug') }))] }), _jsx(Box, { flexGrow: 1, alignItems: "center", justifyContent: "center", display: "flex", children: process.env.SANDBOX && process.env.SANDBOX !== 'sandbox-exec' ? (_jsx(Text, { color: "green", children: process.env.SANDBOX.replace(/^gemini-(?:cli-)?/, '') })) : process.env.SANDBOX === 'sandbox-exec' ? (_jsxs(Text, { color: Colors.AccentYellow, children: ["MacOS Seatbelt", ' ', _jsxs(Text, { color: Colors.Gray, children: ["(", process.env.SEATBELT_PROFILE, ")"] })] })) : (_jsxs(Text, { color: Colors.AccentRed, children: ["no sandbox ", _jsx(Text, { color: Colors.Gray, children: "(see /docs)" })] })) }), _jsxs(Box, { alignItems: "center", children: [_jsxs(Text, { color: Colors.AccentBlue, children: [' ', model, ' ', _jsxs(Text, { color: Colors.Gray, children: ["(", ((1 - percentage) * 100).toFixed(0), "% context left)"] })] }), corgiMode && (_jsxs(Text, { children: [_jsx(Text, { color: Colors.Gray, children: "| " }), _jsx(Text, { color: Colors.AccentRed, children: "\u25BC" }), _jsx(Text, { color: Colors.Foreground, children: "(\u00B4" }), _jsx(Text, { color: Colors.AccentRed, children: "\u1D25" }), _jsx(Text, { color: Colors.Foreground, children: "`)" }), _jsx(Text, { color: Colors.AccentRed, children: "\u25BC " })] })), !showErrorDetails && errorCount > 0 && (_jsxs(Box, { children: [_jsx(Text, { color: Colors.Gray, children: "| " }), _jsx(ConsoleSummaryDisplay, { errorCount: errorCount })] })), showMemoryUsage && _jsx(MemoryUsageDisplay, {})] })] }));
+};
+//# sourceMappingURL=Footer.js.map

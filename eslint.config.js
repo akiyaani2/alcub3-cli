@@ -29,6 +29,7 @@ export default tseslint.config(
     // Global ignores
     ignores: [
       'node_modules/*',
+      '.venv/*',
       'eslint.config.js',
       'packages/cli/dist/**',
       'packages/core/dist/**',

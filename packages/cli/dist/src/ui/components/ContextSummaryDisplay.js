@@ -1,0 +1,41 @@
+import { jsx as _jsx } from "react/jsx-runtime";
+import { Text } from 'ink';
+import { Colors } from '../colors.js';
+export const ContextSummaryDisplay = ({ geminiMdFileCount, contextFileNames, mcpServers, showToolDescriptions, }) => {
+    const mcpServerCount = Object.keys(mcpServers || {}).length;
+    if (geminiMdFileCount === 0 && mcpServerCount === 0) {
+        return _jsx(Text, { children: " " }); // Render an empty space to reserve height
+    }
+    const geminiMdText = (() => {
+        if (geminiMdFileCount === 0) {
+            return '';
+        }
+        const allNamesTheSame = new Set(contextFileNames).size < 2;
+        const name = allNamesTheSame ? contextFileNames[0] : 'context';
+        return `${geminiMdFileCount} ${name} file${geminiMdFileCount > 1 ? 's' : ''}`;
+    })();
+    const mcpText = mcpServerCount > 0
+        ? `${mcpServerCount} MCP server${mcpServerCount > 1 ? 's' : ''}`
+        : '';
+    let summaryText = 'Using ';
+    if (geminiMdText) {
+        summaryText += geminiMdText;
+    }
+    if (geminiMdText && mcpText) {
+        summaryText += ' and ';
+    }
+    if (mcpText) {
+        summaryText += mcpText;
+        // Add ctrl+t hint when MCP servers are available
+        if (mcpServers && Object.keys(mcpServers).length > 0) {
+            if (showToolDescriptions) {
+                summaryText += ' (ctrl+t to toggle)';
+            }
+            else {
+                summaryText += ' (ctrl+t to view)';
+            }
+        }
+    }
+    return _jsx(Text, { color: Colors.Gray, children: summaryText });
+};
+//# sourceMappingURL=ContextSummaryDisplay.js.map

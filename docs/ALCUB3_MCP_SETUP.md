@@ -36,6 +36,7 @@ This guide sets up Model Context Protocol (MCP) servers to accelerate ALCUB3 dev
 ## 🛠️ Installation Details
 
 ### **MCP Servers Directory Structure**
+
 ```
 ~/Dev/alcub3-mcp-servers/
 ├── mcp-official-servers/
@@ -51,6 +52,7 @@ This guide sets up Model Context Protocol (MCP) servers to accelerate ALCUB3 dev
 ```
 
 ### **Installed Dependencies**
+
 - **@upstash/context7-mcp**: Global installation for documentation access
 - **@notionhq/notion-mcp-server**: Global installation for project management
 - **supermemory**: Global SDK for knowledge base integration
@@ -58,6 +60,7 @@ This guide sets up Model Context Protocol (MCP) servers to accelerate ALCUB3 dev
 ## 🚀 Usage Examples
 
 ### **Check Current MCP Configuration**
+
 ```bash
 # List all configured MCP servers
 claude mcp list
@@ -72,7 +75,9 @@ claude mcp get context7
 ### **Daily Development Workflow**
 
 #### **Morning Standup (9:00-9:30 AM)**
+
 In Claude Code session:
+
 ```
 // Pull overnight updates from all MCP sources
 - Check Notion for compliance updates and partnership progress
@@ -82,6 +87,7 @@ In Claude Code session:
 ```
 
 #### **Development Work (9:30 AM - 5:00 PM)**
+
 ```
 // Real-time development assistance
 - Use Context7 to pull latest Boston Dynamics SDK documentation
@@ -91,6 +97,7 @@ In Claude Code session:
 ```
 
 #### **Evening Wrap-up (5:00-5:30 PM)**
+
 ```
 // Automated progress tracking and planning
 - Update Notion with project progress and next-day priorities
@@ -104,24 +111,28 @@ In Claude Code session:
 ### **Classification-Aware Access Controls**
 
 **Filesystem Access Restrictions:**
+
 ```
 ALLOWED_PATHS="/Users/aaronkiyaani-mcclary/Dev IDE Projects/alcub3-cli/,/Users/aaronkiyaani-mcclary/secure/data/"
 ```
 
 **API Key Security:**
+
 - All API keys stored in environment variables
 - Keys rotate regularly for operational security
 - Access logged for compliance audit trails
 
 ### **Audit Trail Requirements**
+
 All MCP interactions should be logged for defense compliance:
+
 ```python
 # Example security wrapper for MCP calls
 class SecureMCPIntegration:
     def secure_mcp_call(self, tool, query, classification_level):
         # Validate query against classification requirements
         validated_query = self.classification_engine.validate_query(query, classification_level)
-        
+
         # Execute with appropriate security measures
         if classification_level in ["SECRET", "TOP_SECRET"]:
             encrypted_query = self.encrypt_for_classification(validated_query)
@@ -129,16 +140,17 @@ class SecureMCPIntegration:
             decrypted_response = self.decrypt_response(response)
         else:
             response = self.execute_mcp_call(tool, validated_query)
-            
+
         # Log all interactions for audit
         self.audit_logger.log_mcp_interaction(tool, query, response, classification_level)
-        
+
         return self.apply_classification_handling(response, classification_level)
 ```
 
 ## 🎯 ALCUB3-Specific Use Cases
 
 ### **MAESTRO L1-L7 Compliance Tracking**
+
 ```python
 # Use Notion MCP for real-time compliance tracking
 notion_integration.track_maestro_compliance(
@@ -150,6 +162,7 @@ notion_integration.track_maestro_compliance(
 ```
 
 ### **Partnership Pipeline Management**
+
 ```python
 # Track Boston Dynamics, Anduril, Palantir integrations
 notion_integration.manage_partnership_pipeline(
@@ -161,6 +174,7 @@ notion_integration.manage_partnership_pipeline(
 ```
 
 ### **Competitive Intelligence Monitoring**
+
 ```python
 # Monitor competitive landscape with Brave Search
 brave_search.monitor_competitive_landscape(
@@ -172,6 +186,7 @@ brave_search.monitor_competitive_landscape(
 ```
 
 ### **Technical Decision Documentation**
+
 ```python
 # Store architecture decisions in Supermemory
 supermemory_integration.store_architecture_decisions(
@@ -188,12 +203,14 @@ supermemory_integration.store_architecture_decisions(
 ### **Common Issues**
 
 **MCP Server Not Found:**
+
 ```bash
 # Re-add server if it disappears from configuration
 claude mcp add <server-name> "<command>" --env KEY="value"
 ```
 
 **Permission Denied for Filesystem:**
+
 ```bash
 # Check ALLOWED_PATHS environment variable
 claude mcp get filesystem
@@ -202,6 +219,7 @@ ls -la "/Users/aaronkiyaani-mcclary/Dev IDE Projects/alcub3-cli/"
 ```
 
 **API Key Issues:**
+
 ```bash
 # Verify API keys are correctly set
 claude mcp get brave-search
@@ -236,6 +254,7 @@ claude mcp add supermemory "curl -X POST https://mcp.supermemory.ai/tLdB0e3aH1fT
 ## 📈 Expected Development Acceleration
 
 ### **Quantified Benefits**
+
 - **3x Faster Development**: Automated research, documentation, and progress tracking
 - **Zero Manual Overhead**: Automated compliance tracking and audit trail generation
 - **Real-Time Intelligence**: Continuous competitive and threat intelligence monitoring
@@ -243,6 +262,7 @@ claude mcp add supermemory "curl -X POST https://mcp.supermemory.ai/tLdB0e3aH1fT
 - **Defense-Grade Security**: All MCP interactions follow classification and audit requirements
 
 ### **Weekly Development Impact**
+
 - **Monday**: Morning brief with competitive landscape and compliance updates
 - **Tuesday-Thursday**: Real-time development assistance with SDK docs and technical patterns
 - **Friday**: Automated weekly summary and next sprint planning
@@ -251,7 +271,7 @@ claude mcp add supermemory "curl -X POST https://mcp.supermemory.ai/tLdB0e3aH1fT
 ## 🎯 Next Steps
 
 1. **Test MCP Integration**: Verify each server works in Claude Code sessions
-2. **Create Security Wrapper**: Implement classification-aware MCP interaction layer  
+2. **Create Security Wrapper**: Implement classification-aware MCP interaction layer
 3. **Automate Workflows**: Set up daily/weekly automated MCP workflows
 4. **Monitor Performance**: Track development acceleration metrics
 5. **Expand Integration**: Add additional MCP servers as needed for ALCUB3 development
