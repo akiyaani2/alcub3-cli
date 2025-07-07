@@ -1,11 +1,61 @@
 # Task ID: 3
-# Title: Update CLI package.json for ALCUB3 rebranding
+# Title: Develop Air-Gapped MCP Server Core
 # Status: pending
 # Dependencies: 2
-# Priority: medium
-# Description: Change binary name from 'gemini' to 'alcub3' in CLI package.json and update package name and dependencies for ALCUB3 rebranding.
+# Priority: high
+# Description: Create the patent-pending air-gapped Model Context Protocol server with 30+ day offline operation capability, context persistence, and secure transfer protocols.
 # Details:
-This task involves updating the CLI-specific package.json file located at /packages/cli/package.json to complete the ALCUB3 rebranding. Key changes include: 1) Update the 'bin' field to change the binary name from 'gemini' to 'alcub3' so users will run 'alcub3' command instead of 'gemini', 2) Change the package 'name' field from '@google/gemini-cli' to '@alcub3/alcub3-cli' to match the new branding, 3) Update the 'description' field to reflect ALCUB3's defense-grade AI integration platform purpose, 4) Review and update any CLI-specific dependencies that may reference Google/Gemini packages to ALCUB3 equivalents, 5) Update any scripts or commands that reference the old binary name, 6) Ensure all internal imports and references within the CLI package are updated to use the new package name, 7) Update any CLI-specific configuration files that reference the old binary name.
+Build air-gapped context persistence engine with AES-256-GCM encrypted local storage and context compression using zstd algorithm. Implement secure transfer protocol for USB/removable media with cryptographic package integrity verification using Ed25519 signatures. Create state reconciliation engine with conflict resolution for divergent offline changes and merge capabilities for multi-user scenarios. Develop transfer package structure (.atpkg format) including manifest.json with checksums, encrypted context data, classified data products, cryptographic signatures, and chain-of-custody logging. Implement <5 second sync time for typical context packages.
 
 # Test Strategy:
-Validate the CLI package.json changes by: 1) Running 'npm run build' from the CLI package directory to ensure it builds successfully with the new package name, 2) Test the new binary name by running 'npm link' and verifying 'alcub3' command is available in the terminal, 3) Verify 'alcub3 --help' displays the correct help information, 4) Run 'npm run preflight' to ensure all CLI-specific tests pass with the updated configuration, 5) Check that the CLI can still communicate with the core package using the updated package references, 6) Verify that any CLI-specific scripts or commands work correctly with the new binary name, 7) Test a basic CLI operation like 'alcub3 --version' to ensure the rebranding is complete and functional.
+Validate 30+ day offline operation without degradation using physical air-gap simulation environment. Test secure transfer packages with zero data integrity failures across connected/air-gapped/transfer simulation networks. Verify context merge and conflict resolution with rollback capability. Conduct electromagnetic isolation testing to ensure no data leakage during offline-to-online transitions.
+
+# Subtasks:
+## 1. Design Air-Gapped Context Persistence Engine Architecture [pending]
+### Dependencies: None
+### Description: Design the core architecture for offline context storage with AES-256-GCM encryption and zstd compression algorithms
+### Details:
+Define data structures, encryption key management, compression ratios, storage formats, and performance requirements for 30+ day offline operation
+
+## 2. Implement Encrypted Local Storage System [pending]
+### Dependencies: 3.1
+### Description: Build the encrypted local storage backend using AES-256-GCM with secure key derivation and management
+### Details:
+Implement secure key generation, storage encryption/decryption, data integrity verification, and secure key rotation mechanisms
+
+## 3. Develop Context Compression Engine [pending]
+### Dependencies: 3.1
+### Description: Implement zstd-based compression system for efficient context storage and transfer
+### Details:
+Integrate zstd compression library, optimize compression levels for speed vs size, implement decompression with error handling
+
+## 4. Create Transfer Package Structure (.atpkg Format) [pending]
+### Dependencies: 3.2, 3.3
+### Description: Design and implement the .atpkg file format with manifest, encrypted data, signatures, and chain-of-custody logging
+### Details:
+Define manifest.json schema, implement package creation/extraction, include checksums, Ed25519 signatures, and metadata tracking
+
+## 5. Implement Ed25519 Cryptographic Signing System [pending]
+### Dependencies: 3.1
+### Description: Build cryptographic package integrity verification using Ed25519 digital signatures
+### Details:
+Implement key pair generation, digital signing, signature verification, and key management for package authentication
+
+## 6. Develop Secure Transfer Protocol for Removable Media [pending]
+### Dependencies: 3.4, 3.5
+### Description: Create secure USB/removable media transfer protocol with integrity verification and chain-of-custody tracking
+### Details:
+Implement media detection, secure package writing/reading, transfer verification, and audit logging for all operations
+
+## 7. Build State Reconciliation and Conflict Resolution Engine [pending]
+### Dependencies: 3.2, 3.3
+### Description: Implement state reconciliation for divergent offline changes with merge capabilities for multi-user scenarios
+### Details:
+Design conflict detection algorithms, implement merge strategies, handle divergent context states, and provide resolution interfaces
+
+## 8. Optimize Sync Performance for Sub-5 Second Target [pending]
+### Dependencies: 3.6, 3.7
+### Description: Optimize the entire sync pipeline to achieve <5 second sync times for typical context packages
+### Details:
+Profile sync operations, optimize I/O operations, implement parallel processing where possible, and fine-tune compression/encryption performance
+

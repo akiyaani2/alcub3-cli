@@ -1,11 +1,61 @@
 # Task ID: 4
-# Title: Update core package.json for ALCUB3 rebranding
+# Title: Build Universal Robotics Interface Foundation
 # Status: pending
-# Dependencies: 2
-# Priority: medium
-# Description: Change package name from @google/gemini-cli-core to @alcub3/alcub3-cli-core and update all related metadata in the core package.json file.
+# Dependencies: 3
+# Priority: high
+# Description: Implement the patent-pending universal robotics interface supporting Boston Dynamics, ROS2, and drone platforms with hardware-agnostic command interface and safety validation.
 # Details:
-This task involves updating the core package.json file located at /packages/core/package.json to complete the ALCUB3 rebranding for the core component. Key changes include: 1) Update the 'name' field from '@google/gemini-cli-core' to '@alcub3/alcub3-cli-core' to match the new branding, 2) Modify the 'description' field to reflect ALCUB3's defense-grade AI integration platform core functionality, 3) Update any 'repository' URLs to point to ALCUB3 repositories instead of Google's, 4) Change 'homepage' and 'bugs' URLs to ALCUB3 project pages, 5) Update any Docker registry references from Google's to ALCUB3's registry, 6) Verify all internal package references and peer dependencies are correctly updated, 7) Update any author/maintainer fields to reflect ALCUB3 team, 8) Ensure license compatibility with ALCUB3's Apache 2.0 license, 9) Update keywords to include ALCUB3-specific terms like 'defense-grade', 'air-gapped', 'MCP', and 'robotics'.
+Create universal command interface with hardware-agnostic robotics integration supporting Boston Dynamics Spot SDK, ROS2 ecosystem (Iron Irwini/Jazzy Jalopy), and DJI drone platforms (Mobile SDK 5.0+, Onboard SDK 3.9+). Implement real-time safety interlocks with <50ms emergency response time and defense-grade authentication/authorization for robot control. Build platform-specific adapters: boston-dynamics-adapter.py, ros2-adapter.py, dji-drone-adapter.py with unified API. Create safety validation system with operational boundary enforcement, collision avoidance, and graceful degradation. Support 100+ simultaneous robot platform connections with command authentication and audit trails.
 
 # Test Strategy:
-Validate the core package.json changes by: 1) Running 'npm run build' from the core package directory to ensure it builds successfully with the new package name, 2) Execute 'npm run preflight' from the root to verify all build processes work with the updated core package, 3) Check that all inter-package dependencies resolve correctly by running 'npm install' in both root and packages/cli directories, 4) Verify that the CLI package can still import and use core functionality after the name change, 5) Test that any TypeScript imports referencing the old package name are updated or still resolve correctly, 6) Confirm that all repository URLs are accessible and point to correct ALCUB3 resources, 7) Run unit tests with 'npm test' to ensure no functionality is broken by the rebranding.
+Test hardware-in-the-loop integration with real Boston Dynamics Spot robot achieving <50ms control latency. Validate safety interlocks with 100% emergency stop reliability. Conduct multi-platform coordination tests with heterogeneous robot teams. Verify real-time command and telemetry validation across all supported platforms with 24+ hour continuous operation testing.
+
+# Subtasks:
+## 1. Research and analyze existing robotics SDKs and protocols [pending]
+### Dependencies: None
+### Description: Conduct comprehensive analysis of Boston Dynamics Spot SDK, ROS2 ecosystem (Iron Irwini/Jazzy Jalopy), and DJI drone platforms (Mobile SDK 5.0+, Onboard SDK 3.9+) to understand integration requirements and capabilities.
+### Details:
+Deep dive into API documentation, authentication mechanisms, command structures, and safety protocols for each platform. Identify common patterns and differences to inform universal interface design.
+
+## 2. Design universal command interface architecture [pending]
+### Dependencies: 4.1
+### Description: Create hardware-agnostic command interface specification that abstracts platform-specific implementations while maintaining full functionality access.
+### Details:
+Define unified command schema, data structures, and communication protocols. Design plugin architecture for platform adapters with standardized interfaces.
+
+## 3. Implement Boston Dynamics adapter (boston-dynamics-adapter.py) [pending]
+### Dependencies: 4.2
+### Description: Create platform-specific adapter for Boston Dynamics Spot SDK integration with the universal interface.
+### Details:
+Implement authentication, command translation, status monitoring, and error handling for Spot SDK. Ensure proper lease management and graceful connection handling.
+
+## 4. Implement ROS2 ecosystem adapter (ros2-adapter.py) [pending]
+### Dependencies: 4.2
+### Description: Create platform-specific adapter for ROS2 ecosystem supporting Iron Irwini and Jazzy Jalopy distributions.
+### Details:
+Implement ROS2 node architecture, topic/service management, parameter handling, and lifecycle management. Support multiple robot types through ROS2 standards.
+
+## 5. Implement DJI drone adapter (dji-drone-adapter.py) [pending]
+### Dependencies: 4.2
+### Description: Create platform-specific adapter for DJI drone platforms supporting Mobile SDK 5.0+ and Onboard SDK 3.9+.
+### Details:
+Implement flight controller communication, mission management, telemetry handling, and safety compliance for both mobile and onboard SDK variants.
+
+## 6. Build real-time safety validation system [pending]
+### Dependencies: 4.3, 4.4, 4.5
+### Description: Implement comprehensive safety system with <50ms emergency response time, operational boundary enforcement, and collision avoidance.
+### Details:
+Create safety monitors, emergency stop mechanisms, geofencing, collision detection algorithms, and graceful degradation protocols. Implement real-time safety checks across all platforms.
+
+## 7. Implement defense-grade authentication and authorization [pending]
+### Dependencies: 4.2
+### Description: Build secure authentication and authorization system for robot control with audit trails and command verification.
+### Details:
+Implement role-based access control, command authentication, session management, and comprehensive audit logging. Ensure defense-grade security compliance.
+
+## 8. Build scalable connection management for 100+ platforms [pending]
+### Dependencies: 4.6, 4.7
+### Description: Implement connection pooling, load balancing, and resource management to support 100+ simultaneous robot platform connections.
+### Details:
+Create connection manager with efficient resource allocation, heartbeat monitoring, failover mechanisms, and performance optimization for high-scale deployments.
+
