@@ -17,11 +17,15 @@ from .audit_logger import AuditLogger
 from .threat_detector import ThreatDetector
 from .compliance_validator import ComplianceValidator
 from .crypto_utils import FIPSCryptoUtils
+from .owasp_security_controls import OWASPSecurityControls
+from .ai_bias_detection import AIBiasDetectionSystem
 
 __all__ = [
     "SecurityClassification",
     "AuditLogger", 
     "ThreatDetector",
     "ComplianceValidator",
-    "FIPSCryptoUtils"
+    "FIPSCryptoUtils",
+    "OWASPSecurityControls",
+    "AIBiasDetectionSystem"
 ]

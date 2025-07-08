@@ -1,0 +1,13 @@
+{
+  "key_id": "d201a604f1a439c7",
+  "shares": [
+    "d201a604f1a439c7_share_0:66cb2516a448939a1774fae4f4e4a5e3dcd9ec6dca6cb52abc77d5cfba280b81",
+    "d201a604f1a439c7_share_1:68fc2e6c31c11ad70f7662fa433f1002bc2cd38a8b4e45d2954f7305912657cf",
+    "d201a604f1a439c7_share_2:19dc9e6f2ff7c479ff5fe4a329742cf903961d4213a39193394ac00b74da590a",
+    "d201a604f1a439c7_share_3:749eeabf800876e9a8dcda20acc237d04929a581b99bc9e3260158ffc0f83c42",
+    "d201a604f1a439c7_share_4:1b6473be6c42a50a4b616a6cf656f4609fea37e8868e970bac0e4cbafde36d63"
+  ],
+  "threshold": 3,
+  "created": 1751898443.8524249,
+  "classification": "top_secret"
+}

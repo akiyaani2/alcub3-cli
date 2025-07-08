@@ -40,33 +40,17 @@ from enum import Enum
 import logging
 
 # Custom cryptographic exceptions for better error handling
-class CryptographicError(Exception):
-    """Base exception for cryptographic operations."""
-    pass
+from .exceptions import (
+    CryptographicError, InvalidKeyError, EncryptionError, DecryptionError,
+    SignatureError, KeyGenerationError, FIPSComplianceError
+)
 
-class InvalidKeyError(CryptographicError):
-    """Raised when a cryptographic key is invalid or corrupted."""
-    pass
-
-class EncryptionError(CryptographicError):
-    """Raised when encryption operation fails."""
-    pass
-
-class DecryptionError(CryptographicError):
-    """Raised when decryption operation fails."""
-    pass
-
-class SignatureError(CryptographicError):
-    """Raised when digital signature operation fails."""
-    pass
-
-class KeyGenerationError(CryptographicError):
-    """Raised when key generation fails."""
-    pass
-
-class FIPSComplianceError(CryptographicError):
-    """Raised when FIPS compliance validation fails."""
-    pass
+# Export main classes and exceptions
+__all__ = [
+    'CryptoAlgorithm', 'SecurityLevel', 'CryptoKeyMaterial', 'CryptoOperationResult',
+    'FIPSCryptoUtils', 'CryptographicError', 'InvalidKeyError', 'EncryptionError',
+    'DecryptionError', 'SignatureError', 'KeyGenerationError', 'FIPSComplianceError'
+]
 
 try:
     from cryptography.hazmat.primitives import hashes, serialization
@@ -80,6 +64,17 @@ try:
 except ImportError:
     CRYPTO_AVAILABLE = False
     logging.error("Cryptography library not available - FIPS operations disabled")
+
+# Import HSM integration components
+try:
+    from .hsm_integration import (
+        HSMManager, HSMConfiguration, HSMKeyHandle, HSMType, 
+        FIPSLevel, HSMAuthenticationMethod, HSMException
+    )
+    HSM_AVAILABLE = True
+except ImportError:
+    HSM_AVAILABLE = False
+    logging.warning("HSM integration not available - falling back to software crypto")
 
 class CryptoAlgorithm(Enum):
     """FIPS 140-2 approved cryptographic algorithms."""
@@ -131,6 +126,8 @@ class CryptoKeyMaterial:
     creation_timestamp: float
     key_purpose: str
     classification_level: str
+    hsm_backed: bool = False
+    hsm_key_handle: Optional['HSMKeyHandle'] = None
     
 @dataclass
 class CryptoOperationResult:
@@ -197,6 +194,9 @@ class FIPSCryptoUtils:
             "operations_per_second": 0.0,
             "last_performance_calculation": time.time()
         }
+        
+        # Cache for loaded RSA private keys to optimize signing/verification
+        self._loaded_rsa_keys: Dict[str, rsa.RSAPrivateKey] = {}
         
         # Perform FIPS self-tests
         self._perform_fips_self_tests()
@@ -276,9 +276,15 @@ class FIPSCryptoUtils:
         }
     
     def _collect_hardware_entropy(self, num_bytes: int) -> bytes:
-        """Collect high-quality entropy from multiple sources."""
-        # In production, this would interface with hardware RNG
-        # For now, use cryptographically secure pseudo-random
+        """Collect high-quality entropy from multiple sources.
+
+        WARNING: This is a placeholder for a true hardware entropy source.
+        In a production environment, this MUST be replaced with an interface
+        to a FIPS 140-2 validated hardware random number generator (RNG)
+        (e.g., TPM, dedicated hardware RNG, or HSM-backed entropy).
+        """
+        # Placeholder implementation: combines OS random, secrets module, and timing-based entropy.
+        # This is NOT suitable for defense-grade production environments requiring true hardware entropy.
         entropy = bytearray()
         
         # Combine multiple entropy sources
@@ -323,6 +329,7 @@ class FIPSCryptoUtils:
     def generate_key(self, algorithm: CryptoAlgorithm, key_purpose: str = "general") -> CryptoKeyMaterial:
         """
         Generate cryptographic key material using FIPS-approved methods.
+        Prioritizes HSM for SECRET/TOP_SECRET keys if HSM is configured.
         
         Args:
             algorithm: Cryptographic algorithm for key generation
@@ -341,26 +348,40 @@ class FIPSCryptoUtils:
             if not alg_config["validated"]:
                 raise ValueError(f"Algorithm {algorithm.value} not FIPS validated")
             
-            # Generate key based on algorithm type
-            if algorithm in [CryptoAlgorithm.AES_256_GCM, CryptoAlgorithm.AES_256_CBC]:
-                key_data = self._generate_symmetric_key(alg_config["key_size_bytes"])
-            elif algorithm == CryptoAlgorithm.RSA_4096:
-                key_data = self._generate_rsa_key_pair(alg_config["key_size_bits"])
-            elif algorithm == CryptoAlgorithm.ECDSA_P384:
-                key_data = self._generate_ec_key_pair(alg_config["curve"])
-            else:
-                raise ValueError(f"Key generation not implemented for {algorithm.value}")
+            key_material = None
             
-            # Create key material object
-            key_material = CryptoKeyMaterial(
-                key_id=self._generate_key_id(),
-                algorithm=algorithm,
-                key_data=key_data,
-                security_level=self.security_level,
-                creation_timestamp=time.time(),
-                key_purpose=key_purpose,
-                classification_level=self.classification.default_level.value
-            )
+            # Prioritize HSM for SECRET and TOP_SECRET keys if HSM is enabled
+            if getattr(self, '_hsm_enabled', False) and \
+               self.security_level in [SecurityLevel.SECRET, SecurityLevel.TOP_SECRET]:
+                try:
+                    self.logger.info(f"Attempting to generate HSM-backed key for {self.security_level.value} {algorithm.value}...")
+                    key_material = self.generate_hsm_key(algorithm, key_purpose)
+                except Exception as hsm_e:
+                    self.logger.warning(f"HSM key generation failed for {self.security_level.value} {algorithm.value}: {hsm_e}. Falling back to software generation.")
+            
+            # If HSM generation was not attempted, or failed, proceed with software generation
+            if key_material is None:
+                if self.security_level in [SecurityLevel.SECRET, SecurityLevel.TOP_SECRET] and not getattr(self, '_hsm_enabled', False):
+                    self.logger.warning(f"HSM not enabled. Generating {self.security_level.value} {algorithm.value} key using software. This is NOT recommended for production.")
+
+                if algorithm in [CryptoAlgorithm.AES_256_GCM, CryptoAlgorithm.AES_256_CBC]:
+                    key_data = self._generate_symmetric_key(alg_config["key_size_bytes"])
+                elif algorithm == CryptoAlgorithm.RSA_4096:
+                    key_data = self._generate_rsa_key_pair(alg_config["key_size_bits"])
+                elif algorithm == CryptoAlgorithm.ECDSA_P384:
+                    key_data = self._generate_ec_key_pair(alg_config["curve"])
+                else:
+                    raise ValueError(f"Key generation not implemented for {algorithm.value}")
+                
+                key_material = CryptoKeyMaterial(
+                    key_id=self._generate_key_id(),
+                    algorithm=algorithm,
+                    key_data=key_data,
+                    security_level=self.security_level,
+                    creation_timestamp=time.time(),
+                    key_purpose=key_purpose,
+                    classification_level=self.classification.default_level.value
+                )
             
             # Update crypto state
             self._crypto_state["key_derivations"] += 1
@@ -380,24 +401,10 @@ class FIPSCryptoUtils:
     
     def _generate_symmetric_key(self, key_size_bytes: int) -> bytes:
         """Generate symmetric encryption key using hardware entropy."""
-        # Use multiple entropy sources for defense-grade key generation
-        entropy_1 = self._collect_hardware_entropy(key_size_bytes)
-        entropy_2 = os.urandom(key_size_bytes)
-        
-        # Combine entropy sources using XOR
-        combined_entropy = bytes(a ^ b for a, b in zip(entropy_1, entropy_2))
-        
-        # Apply key derivation for additional security
-        salt = os.urandom(16)
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=key_size_bytes,
-            salt=salt,
-            iterations=self.security_level.key_derivation_iterations,
-            backend=default_backend()
-        )
-        
-        return kdf.derive(combined_entropy)
+        # For performance optimization, directly use os.urandom for key generation.
+        # In a production environment, this would be replaced with a hardware-backed
+        # key generation mechanism or a highly optimized FIPS-validated KDF.
+        return os.urandom(key_size_bytes)
     
     def _generate_rsa_key_pair(self, key_size_bits: int) -> bytes:
         """Generate RSA key pair for asymmetric operations."""
@@ -743,12 +750,19 @@ class FIPSCryptoUtils:
             if hash_algorithm not in [CryptoAlgorithm.SHA_256, CryptoAlgorithm.SHA_384, CryptoAlgorithm.SHA_512]:
                 raise ValueError(f"Hash algorithm {hash_algorithm.value} not supported for signing")
             
-            # Load private key from key material
-            private_key = serialization.load_pem_private_key(
-                key_material.key_data,
-                password=None,
-                backend=default_backend()
-            )
+            # Load private key from cache or key material
+            private_key_cache_key = f"rsa_private_{key_material.key_id}"
+            if private_key_cache_key in self._loaded_rsa_keys:
+                private_key = self._loaded_rsa_keys[private_key_cache_key]
+                self.logger.debug(f"Using cached RSA private key for {key_material.key_id}")
+            else:
+                private_key = serialization.load_pem_private_key(
+                    key_material.key_data,
+                    password=None,
+                    backend=default_backend()
+                )
+                self._loaded_rsa_keys[private_key_cache_key] = private_key
+                self.logger.debug(f"Cached RSA private key for {key_material.key_id}")
             
             # Validate key is RSA and correct size
             if not isinstance(private_key, rsa.RSAPrivateKey):
@@ -850,12 +864,19 @@ class FIPSCryptoUtils:
             if hash_algorithm not in [CryptoAlgorithm.SHA_256, CryptoAlgorithm.SHA_384, CryptoAlgorithm.SHA_512]:
                 raise ValueError(f"Hash algorithm {hash_algorithm.value} not supported for verification")
             
-            # Load private key and extract public key
-            private_key = serialization.load_pem_private_key(
-                key_material.key_data,
-                password=None,
-                backend=default_backend()
-            )
+            # Load private key from cache or key material
+            private_key_cache_key = f"rsa_private_{key_material.key_id}"
+            if private_key_cache_key in self._loaded_rsa_keys:
+                private_key = self._loaded_rsa_keys[private_key_cache_key]
+                self.logger.debug(f"Using cached RSA private key for {key_material.key_id}")
+            else:
+                private_key = serialization.load_pem_private_key(
+                    key_material.key_data,
+                    password=None,
+                    backend=default_backend()
+                )
+                self._loaded_rsa_keys[private_key_cache_key] = private_key
+                self.logger.debug(f"Cached RSA private key for {key_material.key_id}")
             
             if not isinstance(private_key, rsa.RSAPrivateKey):
                 raise ValueError("Key material does not contain RSA private key")
@@ -1342,6 +1363,379 @@ class FIPSCryptoUtils:
                 "multi_source_entropy_collection",
                 "air_gapped_cryptographic_operations",
                 "patent_pending_gcm_enhancements",
-                "classification_aware_authenticated_encryption"
+                "classification_aware_authenticated_encryption",
+                "hsm_integrated_crypto_operations"
             ]
         }
+    
+    # HSM Integration Methods
+    
+    def configure_hsm(self, hsm_manager: 'HSMManager') -> bool:
+        """
+        Configure HSM integration for hardware-enforced cryptographic operations.
+        
+        Args:
+            hsm_manager: HSMManager instance for hardware operations
+            
+        Returns:
+            bool: True if HSM configured successfully
+        """
+        if not HSM_AVAILABLE:
+            self.logger.warning("HSM integration not available - using software crypto")
+            return False
+        
+        try:
+            self.hsm_manager = hsm_manager
+            self._hsm_enabled = True
+            
+            self.logger.info("HSM integration configured successfully")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to configure HSM: {e}")
+            self._hsm_enabled = False
+            return False
+    
+    def generate_hsm_key(self, algorithm: CryptoAlgorithm, key_purpose: str = "general") -> CryptoKeyMaterial:
+        """
+        Generate cryptographic key using HSM hardware-enforced operations.
+        
+        Args:
+            algorithm: Cryptographic algorithm for key generation
+            key_purpose: Purpose of the key (encryption, signing, etc.)
+            
+        Returns:
+            CryptoKeyMaterial: Generated key material with HSM backing
+        """
+        if not getattr(self, '_hsm_enabled', False):
+            self.logger.warning("HSM not available - falling back to software key generation")
+            return self.generate_key(algorithm, key_purpose)
+        
+        start_time = time.time()
+        
+        try:
+            # Map crypto algorithm to HSM algorithm string
+            algorithm_map = {
+                CryptoAlgorithm.AES_256_GCM: "AES-256-GCM",
+                CryptoAlgorithm.AES_256_CBC: "AES-256-CBC",
+                CryptoAlgorithm.RSA_4096: "RSA-4096",
+                CryptoAlgorithm.ECDSA_P384: "ECDSA-P384"
+            }
+            
+            hsm_algorithm = algorithm_map.get(algorithm)
+            if not hsm_algorithm:
+                raise ValueError(f"Algorithm {algorithm.value} not supported by HSM")
+            
+            # Determine key type
+            key_type = "symmetric" if algorithm in [CryptoAlgorithm.AES_256_GCM, CryptoAlgorithm.AES_256_CBC] else "asymmetric"
+            
+            # Generate key in HSM
+            hsm_key_handle = self.hsm_manager.generate_key(
+                key_type=key_type,
+                algorithm=hsm_algorithm,
+                classification=self.classification.default_level.value
+            )
+            
+            # Create key material with HSM backing
+            key_material = CryptoKeyMaterial(
+                key_id=hsm_key_handle.key_id,
+                algorithm=algorithm,
+                key_data=b"",  # Key data stays in HSM
+                security_level=self.security_level,
+                creation_timestamp=hsm_key_handle.creation_timestamp,
+                key_purpose=key_purpose,
+                classification_level=hsm_key_handle.classification,
+                hsm_backed=True,
+                hsm_key_handle=hsm_key_handle
+            )
+            
+            # Update crypto state
+            self._crypto_state["key_derivations"] += 1
+            
+            # Log key generation
+            generation_time = (time.time() - start_time) * 1000
+            self.logger.info(
+                f"Generated HSM-backed {algorithm.value} key for {key_purpose} "
+                f"in {generation_time:.1f}ms [{key_material.key_id}]"
+            )
+            
+            return key_material
+            
+        except Exception as e:
+            self.logger.error(f"HSM key generation failed: {e}")
+            # Fallback to software key generation
+            return self.generate_key(algorithm, key_purpose)
+    
+    def hsm_encrypt_data(self, plaintext: bytes, key_material: CryptoKeyMaterial) -> CryptoOperationResult:
+        """
+        Encrypt data using HSM hardware-enforced operations.
+        
+        Args:
+            plaintext: Data to encrypt
+            key_material: HSM-backed key material
+            
+        Returns:
+            CryptoOperationResult: Encryption result with HSM attestation
+        """
+        if not key_material.hsm_backed or not getattr(self, '_hsm_enabled', False):
+            self.logger.warning("HSM not available - falling back to software encryption")
+            return self.encrypt_data(plaintext, key_material)
+        
+        start_time = time.time()
+        
+        try:
+            # Perform HSM encryption
+            hsm_result = self.hsm_manager.encrypt_data(key_material.hsm_key_handle, plaintext)
+            
+            if not hsm_result.success:
+                raise EncryptionError(f"HSM encryption failed: {hsm_result.error_message}")
+            
+            # Update crypto state
+            self._crypto_state["encryption_operations"] += 1
+            self._crypto_state["total_operations"] += 1
+            
+            # Update performance stats
+            operation_time = hsm_result.execution_time_ms
+            self._performance_stats["encryption_times"].append(operation_time)
+            if operation_time > self._performance_stats["max_operation_time"]:
+                self._performance_stats["max_operation_time"] = operation_time
+            
+            # Create result with HSM attestation
+            operation_result = CryptoOperationResult(
+                success=True,
+                data=hsm_result.result_data,
+                algorithm_used=key_material.algorithm,
+                operation_time_ms=operation_time,
+                security_level=key_material.security_level,
+                audit_trail={
+                    "hsm_backed": True,
+                    "hsm_attestation": hsm_result.attestation_data,
+                    "key_id": key_material.key_id,
+                    "classification_level": key_material.classification_level,
+                    "operation_timestamp": time.time(),
+                    "hsm_status": hsm_result.hsm_status
+                }
+            )
+            
+            self.logger.info(f"HSM encryption completed in {operation_time:.1f}ms")
+            return operation_result
+            
+        except Exception as e:
+            self.logger.error(f"HSM encryption failed: {e}")
+            # Fallback to software encryption
+            return self.encrypt_data(plaintext, key_material)
+    
+    def hsm_decrypt_data(self, ciphertext: bytes, key_material: CryptoKeyMaterial) -> CryptoOperationResult:
+        """
+        Decrypt data using HSM hardware-enforced operations.
+        
+        Args:
+            ciphertext: Data to decrypt
+            key_material: HSM-backed key material
+            
+        Returns:
+            CryptoOperationResult: Decryption result with HSM attestation
+        """
+        if not key_material.hsm_backed or not getattr(self, '_hsm_enabled', False):
+            self.logger.warning("HSM not available - falling back to software decryption")
+            return self.decrypt_data(ciphertext, key_material)
+        
+        start_time = time.time()
+        
+        try:
+            # Perform HSM decryption
+            hsm_result = self.hsm_manager.decrypt_data(key_material.hsm_key_handle, ciphertext)
+            
+            if not hsm_result.success:
+                raise DecryptionError(f"HSM decryption failed: {hsm_result.error_message}")
+            
+            # Update crypto state
+            self._crypto_state["decryption_operations"] += 1
+            self._crypto_state["total_operations"] += 1
+            
+            # Update performance stats
+            operation_time = hsm_result.execution_time_ms
+            self._performance_stats["decryption_times"].append(operation_time)
+            if operation_time > self._performance_stats["max_operation_time"]:
+                self._performance_stats["max_operation_time"] = operation_time
+            
+            # Create result with HSM attestation
+            operation_result = CryptoOperationResult(
+                success=True,
+                data=hsm_result.result_data,
+                algorithm_used=key_material.algorithm,
+                operation_time_ms=operation_time,
+                security_level=key_material.security_level,
+                audit_trail={
+                    "hsm_backed": True,
+                    "hsm_attestation": hsm_result.attestation_data,
+                    "key_id": key_material.key_id,
+                    "classification_level": key_material.classification_level,
+                    "operation_timestamp": time.time(),
+                    "hsm_status": hsm_result.hsm_status
+                }
+            )
+            
+            self.logger.info(f"HSM decryption completed in {operation_time:.1f}ms")
+            return operation_result
+            
+        except Exception as e:
+            self.logger.error(f"HSM decryption failed: {e}")
+            # Fallback to software decryption
+            return self.decrypt_data(ciphertext, key_material)
+    
+    def hsm_sign_data(self, data: bytes, key_material: CryptoKeyMaterial) -> CryptoOperationResult:
+        """
+        Sign data using HSM hardware-enforced operations.
+        
+        Args:
+            data: Data to sign
+            key_material: HSM-backed key material
+            
+        Returns:
+            CryptoOperationResult: Signing result with HSM attestation
+        """
+        if not key_material.hsm_backed or not getattr(self, '_hsm_enabled', False):
+            self.logger.warning("HSM not available - falling back to software signing")
+            return self.sign_data(data, key_material)
+        
+        start_time = time.time()
+        
+        try:
+            # Perform HSM signing
+            hsm_result = self.hsm_manager.sign_data(key_material.hsm_key_handle, data)
+            
+            if not hsm_result.success:
+                raise SignatureError(f"HSM signing failed: {hsm_result.error_message}")
+            
+            # Update crypto state
+            self._crypto_state["signing_operations"] += 1
+            self._crypto_state["total_operations"] += 1
+            
+            # Update performance stats
+            operation_time = hsm_result.execution_time_ms
+            self._performance_stats["signing_times"].append(operation_time)
+            if operation_time > self._performance_stats["max_operation_time"]:
+                self._performance_stats["max_operation_time"] = operation_time
+            
+            # Create result with HSM attestation
+            operation_result = CryptoOperationResult(
+                success=True,
+                data=hsm_result.result_data,
+                algorithm_used=key_material.algorithm,
+                operation_time_ms=operation_time,
+                security_level=key_material.security_level,
+                audit_trail={
+                    "hsm_backed": True,
+                    "hsm_attestation": hsm_result.attestation_data,
+                    "key_id": key_material.key_id,
+                    "classification_level": key_material.classification_level,
+                    "operation_timestamp": time.time(),
+                    "hsm_status": hsm_result.hsm_status
+                }
+            )
+            
+            self.logger.info(f"HSM signing completed in {operation_time:.1f}ms")
+            return operation_result
+            
+        except Exception as e:
+            self.logger.error(f"HSM signing failed: {e}")
+            # Fallback to software signing
+            return self.sign_data(data, key_material)
+    
+    def hsm_verify_signature(self, data: bytes, signature: bytes, key_material: CryptoKeyMaterial) -> CryptoOperationResult:
+        """
+        Verify signature using HSM hardware-enforced operations.
+        
+        Args:
+            data: Data that was signed
+            signature: Signature to verify
+            key_material: HSM-backed key material
+            
+        Returns:
+            CryptoOperationResult: Verification result with HSM attestation
+        """
+        if not key_material.hsm_backed or not getattr(self, '_hsm_enabled', False):
+            self.logger.warning("HSM not available - falling back to software verification")
+            return self.verify_signature(data, signature, key_material)
+        
+        start_time = time.time()
+        
+        try:
+            # Perform HSM verification
+            hsm_result = self.hsm_manager.verify_signature(key_material.hsm_key_handle, data, signature)
+            
+            # Update crypto state
+            self._crypto_state["verification_operations"] += 1
+            self._crypto_state["total_operations"] += 1
+            
+            # Update performance stats
+            operation_time = hsm_result.execution_time_ms
+            self._performance_stats["verification_times"].append(operation_time)
+            if operation_time > self._performance_stats["max_operation_time"]:
+                self._performance_stats["max_operation_time"] = operation_time
+            
+            # Create result with HSM attestation
+            operation_result = CryptoOperationResult(
+                success=hsm_result.success,
+                data=hsm_result.result_data,
+                algorithm_used=key_material.algorithm,
+                operation_time_ms=operation_time,
+                security_level=key_material.security_level,
+                audit_trail={
+                    "hsm_backed": True,
+                    "hsm_attestation": hsm_result.attestation_data,
+                    "key_id": key_material.key_id,
+                    "classification_level": key_material.classification_level,
+                    "operation_timestamp": time.time(),
+                    "hsm_status": hsm_result.hsm_status,
+                    "verification_result": hsm_result.success
+                },
+                error_message=hsm_result.error_message if not hsm_result.success else None
+            )
+            
+            self.logger.info(f"HSM verification completed in {operation_time:.1f}ms")
+            return operation_result
+            
+        except Exception as e:
+            self.logger.error(f"HSM verification failed: {e}")
+            # Fallback to software verification
+            return self.verify_signature(data, signature, key_material)
+    
+    def get_hsm_status(self) -> Dict[str, Any]:
+        """
+        Get HSM integration status and health information.
+        
+        Returns:
+            Dict: HSM status information
+        """
+        if not getattr(self, '_hsm_enabled', False):
+            return {
+                "hsm_enabled": False,
+                "hsm_available": HSM_AVAILABLE,
+                "status": "software_crypto_only"
+            }
+        
+        try:
+            health_statuses = self.hsm_manager.get_comprehensive_health_status()
+            performance_metrics = self.hsm_manager.get_performance_metrics()
+            
+            return {
+                "hsm_enabled": True,
+                "hsm_available": HSM_AVAILABLE,
+                "status": "hardware_crypto_active",
+                "active_hsm": self.hsm_manager.active_hsm,
+                "total_hsms": len(self.hsm_manager.hsm_instances),
+                "health_status": health_statuses,
+                "performance_metrics": performance_metrics,
+                "fips_compliance": "Level 3+"
+            }
+        
+        except Exception as e:
+            self.logger.error(f"Failed to get HSM status: {e}")
+            return {
+                "hsm_enabled": True,
+                "hsm_available": HSM_AVAILABLE,
+                "status": "hsm_error",
+                "error": str(e)
+            }

@@ -1,0 +1,9 @@
+# Sample commands for scripted demo
+1 # PKI/CAC Authentication Demo (will authenticate first user)
+2 # Security Clearance Validation
+3 # Access Control Demonstration
+4 # Performance Benchmarking
+5 # System Status Dashboard
+6 # Security Metrics Report
+7 # Export Demo Report
+8 # Exit Demo

@@ -152,6 +152,10 @@ ALCUB3 is a polyglot system designed for security and performance.
 - **Formatting**: Run `npm run format` (Prettier). 2-space indentation, single quotes, semicolons.
 - **Comments**: Only add high-value comments that explain the _why_, not the _what_. Do not add comments to talk to me or explain your changes.
 
+### Code Review Feedback
+
+- **Feedback Location**: All code review feedback must be written to `FEEDBACK.md`.
+
 ### Git & Commits
 
 - **Conventional Commits**: Commit messages must follow the Conventional Commits standard.

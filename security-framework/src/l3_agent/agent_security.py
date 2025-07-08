@@ -75,11 +75,11 @@ class AgentFrameworkSecurity:
         # Simple anomaly detection: check for unexpected actions or resource spikes
         anomalous = False
         if "action" in current_behavior and current_behavior["action"] not in expected_behavior_profile.get("allowed_actions", []):
-            self.logger.warning(f"Agent {agent_id} performed unauthorized action: {current_behavior["action"]}")
+            self.logger.warning(f"Agent {agent_id} performed unauthorized action: {current_behavior['action']}")
             anomalous = True
         
         if current_behavior.get("cpu_usage", 0) > expected_behavior_profile.get("max_cpu_usage", 100) * 1.5:
-            self.logger.warning(f"Agent {agent_id} has high CPU usage: {current_behavior["cpu_usage"]}%. Expected max: {expected_behavior_profile.get("max_cpu_usage", 100)}%.")
+            self.logger.warning(f"Agent {agent_id} has high CPU usage: {current_behavior['cpu_usage']}%. Expected max: {expected_behavior_profile.get('max_cpu_usage', 100)}%.")
             anomalous = True
             
         if anomalous:

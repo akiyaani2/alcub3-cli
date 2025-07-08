@@ -68,7 +68,7 @@ export class SpotSecurityAdapter extends EventEmitter {
       this.connected = true;
       this.emit('spot:connected', { robotId: this.robotId });
       
-    } catch (error) {
+    } catch (error: any) {
       this.emit('spot:connection_failed', { robotId: this.robotId, error: error.message });
       throw error;
     }
@@ -134,7 +134,7 @@ export class SpotSecurityAdapter extends EventEmitter {
       
       return result;
       
-    } catch (error) {
+    } catch (error: any) {
       // Remove from queue on failure
       this.commandQueue.delete(command.id);
       
@@ -183,7 +183,7 @@ export class SpotSecurityAdapter extends EventEmitter {
         timestamp: Date.now()
       });
       
-    } catch (error) {
+    } catch (error: any) {
       this.emit('spot:emergency_failed', { 
         robotId: this.robotId, 
         type,
@@ -231,7 +231,7 @@ export class SpotSecurityAdapter extends EventEmitter {
 
       return statusUpdate;
       
-    } catch (error) {
+    } catch (error: any) {
       this.emit('spot:status_failed', { 
         robotId: this.robotId, 
         error: error.message 
@@ -254,7 +254,7 @@ export class SpotSecurityAdapter extends EventEmitter {
       this.connected = false;
       this.emit('spot:disconnected', { robotId: this.robotId });
       
-    } catch (error) {
+    } catch (error: any) {
       this.emit('spot:disconnect_failed', { 
         robotId: this.robotId, 
         error: error.message 
@@ -644,10 +644,23 @@ export class SpotSecurityAdapter extends EventEmitter {
    * Encrypt status update for secure transmission
    */
   private async encryptStatusUpdate(statusUpdate: StatusUpdate): Promise<void> {
-    // TODO: Implement AES-256-GCM encryption for status data
-    // Encrypt sensitive fields
-    // Add integrity checksums
-    // Sign with security context
+    try {
+      const encryptedPayload = this.securityContext.encrypt(statusUpdate);
+
+      // Replace sensitive fields with encrypted blob
+      // Retain minimal metadata to identify robot and timestamp
+      (statusUpdate as any).encrypted = true;
+      (statusUpdate as any).payload = encryptedPayload;
+
+      delete (statusUpdate as any).position;
+      delete (statusUpdate as any).velocity;
+      delete (statusUpdate as any).orientation;
+      delete (statusUpdate as any).battery;
+      delete (statusUpdate as any).system;
+    } catch (e: any) {
+      this.emit('spot:encryption_failed', { robotId: this.robotId, error: e.message });
+      throw e;
+    }
   }
 
   /**
@@ -664,7 +677,7 @@ export class SpotSecurityAdapter extends EventEmitter {
 /**
  * Spot security context for managing classification and encryption
  */
-class SpotSecurityContext {
+export class SpotSecurityContext {
   private classification: SecurityClassification;
   private encryptionKey: Buffer;
   private signatureKey: Buffer;
@@ -679,14 +692,38 @@ class SpotSecurityContext {
     return this.classification;
   }
 
+  /**
+   * Encrypt an arbitrary JS object using AES-256-GCM.
+   * The returned string is base64-encoded concatenation of:
+   *   [12-byte IV][ciphertext][16-byte authTag]
+   */
   encrypt(data: any): string {
-    // TODO: Implement AES-256-GCM encryption
-    return JSON.stringify(data);
+    const iv = crypto.randomBytes(12); // 96-bit IV per NIST SP 800-38D
+    const cipher = crypto.createCipheriv('aes-256-gcm', this.encryptionKey, iv);
+    const plaintext = Buffer.from(JSON.stringify(data), 'utf8');
+    const cipherText = Buffer.concat([cipher.update(plaintext), cipher.final()]);
+    const authTag = cipher.getAuthTag();
+
+    // Concatenate IV + ciphertext + tag, then base64 encode for transport
+    return Buffer.concat([iv, cipherText, authTag]).toString('base64');
   }
 
+  /**
+   * Decrypt data previously encrypted with encrypt().
+   */
   decrypt(encryptedData: string): any {
-    // TODO: Implement AES-256-GCM decryption
-    return JSON.parse(encryptedData);
+    const raw = Buffer.from(encryptedData, 'base64');
+    if (raw.length < 12 + 16) {
+      throw new Error('Invalid encrypted payload');
+    }
+    const iv = raw.subarray(0, 12);
+    const tag = raw.subarray(raw.length - 16);
+    const cipherText = raw.subarray(12, raw.length - 16);
+
+    const decipher = crypto.createDecipheriv('aes-256-gcm', this.encryptionKey, iv);
+    decipher.setAuthTag(tag);
+    const decrypted = Buffer.concat([decipher.update(cipherText), decipher.final()]);
+    return JSON.parse(decrypted.toString('utf8'));
   }
 
   sign(data: any): string {

@@ -225,6 +225,16 @@ class EnhancedAgentFrameworkSecurity:
     
     def __init__(self, classification_system: SecurityClassification,
                  crypto_utils: FIPSCryptoUtils, audit_logger: AuditLogger):
+        self._system_signing_key_material: Optional[CryptoKeyMaterial] = None
+        try:
+            self._system_signing_key_material = self.crypto_utils.generate_key(
+                algorithm=CryptoAlgorithm.RSA_4096,
+                key_purpose="maestro_l3_system_signing"
+            )
+            self.logger.info(f"MAESTRO L3 system signing key generated: {self._system_signing_key_material.key_id}")
+        except Exception as e:
+            self.logger.critical(f"Failed to generate MAESTRO L3 system signing key: {e}. Agent identity verification will be compromised.")
+            self._system_signing_key_material = None
         self.classification_system = classification_system
         self.crypto_utils = crypto_utils
         self.audit_logger = audit_logger
@@ -310,6 +320,20 @@ class EnhancedAgentFrameworkSecurity:
                 ClassificationLevel.CUI: {"sensitivity": 1.2},
                 ClassificationLevel.SECRET: {"sensitivity": 1.5},
                 ClassificationLevel.TOP_SECRET: {"sensitivity": 2.0}
+            },
+            "ml_model_config": {
+                "model_type": "simulated_behavioral_ml",
+                "version": "1.0.0",
+                "simulated_accuracy": {
+                    BehaviorAnomalyType.RESOURCE_SPIKE: 0.90,
+                    BehaviorAnomalyType.UNAUTHORIZED_ACTION: 0.98,
+                    BehaviorAnomalyType.COMMUNICATION_ANOMALY: 0.92,
+                    BehaviorAnomalyType.GOAL_DEVIATION: 0.85,
+                    BehaviorAnomalyType.PATTERN_BREAK: 0.88,
+                    BehaviorAnomalyType.SECURITY_VIOLATION: 0.99
+                },
+                "simulated_false_positive_rate": 0.01,
+                "simulated_latency_ms": 5.0 # Simulated inference time for ML model
             }
         }
 
@@ -422,8 +446,16 @@ class EnhancedAgentFrameworkSecurity:
             }
             
             # Sign certificate with system key
+            if self._system_signing_key_material is None:
+                raise AgentAuthenticationError("System signing key not available. Cannot register agent securely.")
+
             certificate_json = json.dumps(certificate_data, sort_keys=True)
-            digital_certificate = hashlib.sha256(certificate_json.encode()).hexdigest()
+            sign_result = self.crypto_utils.sign_data(certificate_json.encode(), self._system_signing_key_material)
+            
+            if not sign_result.success:
+                raise AgentAuthenticationError(f"Failed to sign agent certificate: {sign_result.error_message}")
+            
+            digital_certificate = sign_result.data.hex() # Store signature as hex string
             
             # Create agent identity
             agent_identity = AgentIdentity(
@@ -587,6 +619,11 @@ class EnhancedAgentFrameworkSecurity:
             # Determine overall anomaly result
             anomaly_detected = len(anomalies) > 0
             
+            # Simulate ML model's decision and confidence adjustment
+            ml_model_config = self._behavior_analyzer.get("ml_model_config", {})
+            simulated_latency = ml_model_config.get("simulated_latency_ms", 0.0)
+            time.sleep(simulated_latency / 1000.0) # Simulate ML inference time
+
             if anomaly_detected:
                 # Calculate severity score
                 severity_scores = [a.get("severity", 0.5) for a in anomalies]
@@ -596,15 +633,34 @@ class EnhancedAgentFrameworkSecurity:
                 primary_anomaly = max(anomalies, key=lambda x: x.get("severity", 0))
                 anomaly_type = BehaviorAnomalyType(primary_anomaly.get("type", "pattern_break"))
                 
+                # Adjust confidence based on simulated ML accuracy for the detected anomaly type
+                sim_accuracy = ml_model_config.get("simulated_accuracy", {}).get(anomaly_type, 0.9)
+                confidence = profile.confidence_level * sim_accuracy + (1 - sim_accuracy) * (1 - profile.confidence_level)
+
+                # Simulate false positives/negatives based on ml_model_config
+                if secrets.randbelow(100) < (ml_model_config.get("simulated_false_positive_rate", 0.01) * 100):
+                    anomaly_detected = True # Force detection for false positive simulation
+                    if not anomalies: # Add a generic anomaly if none existed
+                        anomalies.append({"type": "simulated_false_positive", "description": "Simulated false positive anomaly", "severity": 0.3})
+                        self.logger.debug(f"Simulated false positive for {agent_id}")
+                
                 # Generate description
                 description = f"Behavioral anomaly detected: {'; '.join([a['description'] for a in anomalies])}"
                 
                 # Generate remediation suggestions
                 remediation = self._generate_remediation_suggestions(anomalies, agent_identity)
             else:
+                # If no anomaly detected, but ML model might have a false negative
+                if secrets.randbelow(100) < (ml_model_config.get("simulated_false_negative_rate", 0.005) * 100):
+                    anomaly_detected = True # Force detection for false negative simulation
+                    anomalies.append({"type": "simulated_false_negative", "description": "Simulated false negative anomaly", "severity": 0.7})
+                    self.logger.debug(f"Simulated false negative for {agent_id}")
+
                 anomaly_type = BehaviorAnomalyType.PATTERN_BREAK  # Default
                 description = "No behavioral anomalies detected"
                 remediation = []
+
+            confidence = max(0.0, min(1.0, confidence)) # Clamp confidence between 0 and 1
             
             # Track performance
             detection_time = (time.time() - start_time) * 1000
@@ -1036,8 +1092,15 @@ class EnhancedAgentFrameworkSecurity:
                 raise AgentCommunicationError(f"Encryption failed: {encryption_result.error_message}")
             
             # Create digital signature for message
-            signature_data = encryption_result.data + associated_data
-            digital_signature = hashlib.sha256(signature_data).hexdigest()
+            if self._system_signing_key_material is None:
+                raise AgentCommunicationError("System signing key not available. Cannot sign message.")
+
+            sign_result = self.crypto_utils.sign_data(encryption_result.data + associated_data, self._system_signing_key_material)
+            
+            if not sign_result.success:
+                raise AgentCommunicationError(f"Failed to sign message: {sign_result.error_message}")
+            
+            digital_signature = sign_result.data.hex()
             
             # Determine message classification
             message_classification = max(
@@ -1359,10 +1422,66 @@ class EnhancedAgentFrameworkSecurity:
                 logging.error(f"Agent behavior monitoring error: {e}")
 
     def _collect_agent_behavior_metrics(self, agent_id: str):
-        """Collect current behavior metrics for an agent."""
-        # This would collect actual metrics from the agent runtime
-        # For now, simulate some metrics
-        pass
+        """Collect current behavior metrics for an agent (simulated)."""
+        # In a production environment, this would collect actual metrics from the agent runtime
+        # (e.g., via agent-side instrumentation, system monitoring APIs, or a dedicated telemetry service).
+        # For now, we simulate realistic-ish metrics for demonstration and testing of anomaly detection.
+        
+        if agent_id not in self._registered_agents:
+            self.logger.warning(f"Attempted to collect metrics for unregistered agent: {agent_id}")
+            return
+
+        agent_identity = self._registered_agents[agent_id]
+        
+        # Simulate current behavior metrics
+        current_behavior = self._simulate_agent_activity(agent_identity.agent_type)
+        
+        # Update the agent's behavior profile with the new observations
+        self._update_behavior_profile(agent_id, current_behavior)
+
+        self.logger.debug(f"Collected simulated metrics for {agent_id}: {current_behavior}")
+
+    def _simulate_agent_activity(self, agent_type: AgentType) -> Dict[str, Any]:
+        """Simulate realistic agent activity metrics based on agent type."""
+        # Base values (can be adjusted for more realistic simulation)
+        base_cpu = 10.0
+        base_memory = 50.0
+        base_network = 1.0
+        base_actions = ["process_data", "communicate", "idle"]
+
+        if agent_type == AgentType.DATA_PROCESSOR:
+            base_cpu = 50.0
+            base_memory = 200.0
+            base_network = 10.0
+            base_actions = ["transform_data", "store_result", "fetch_data"]
+        elif agent_type == AgentType.SECURITY_MONITOR:
+            base_cpu = 20.0
+            base_memory = 100.0
+            base_network = 5.0
+            base_actions = ["scan_logs", "alert_system", "update_rules"]
+        elif agent_type == AgentType.SYSTEM_AUTOMATION:
+            base_cpu = 5.0
+            base_memory = 30.0
+            base_network = 0.5
+            base_actions = ["execute_script", "check_status", "report_state"]
+
+        # Add some randomness to simulate fluctuations
+        cpu_usage = max(0.1, base_cpu + (secrets.randbelow(20) - 10) * 0.5) # +/- 5%
+        memory_usage = max(10.0, base_memory + (secrets.randbelow(20) - 10) * 2.0) # +/- 20MB
+        network_usage = max(0.01, base_network + (secrets.randbelow(20) - 10) * 0.1) # +/- 1MB/s
+
+        # Simulate a random action
+        current_action = secrets.choice(base_actions)
+
+        # Simulate activity level (for temporal anomaly detection)
+        activity_level = max(1, int(cpu_usage + network_usage * 2))
+
+        return {
+            "resource_usage": {"cpu": cpu_usage, "memory": memory_usage, "network": network_usage},
+            "actions": [current_action],
+            "communication": {"frequency": network_usage * 2, "targets": secrets.randbelow(5) + 1},
+            "activity_level": activity_level
+        }
 
     def _cleanup_expired_authorizations(self):
         """Background thread for cleaning up expired authorizations."""

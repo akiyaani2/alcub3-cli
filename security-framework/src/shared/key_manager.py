@@ -566,7 +566,9 @@ class SecureKeyManager:
                 metadata_dict["algorithm"] = metadata_dict["algorithm"].value
                 metadata_dict["status"] = metadata_dict["status"].value
                 metadata_dict["security_level"] = metadata_dict["security_level"].value
-                if metadata_dict["rotation_policy"]:
+                
+                
+                if isinstance(metadata_dict["rotation_policy"], KeyRotationPolicy):
                     metadata_dict["rotation_policy"] = asdict(metadata_dict["rotation_policy"])
                 
                 json.dump(metadata_dict, f, indent=2)

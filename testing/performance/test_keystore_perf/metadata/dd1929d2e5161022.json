@@ -1,0 +1,24 @@
+{
+  "key_id": "dd1929d2e5161022",
+  "algorithm": "RSA-4096",
+  "status": "active",
+  "creation_timestamp": 1751898444.620595,
+  "last_used_timestamp": 1751898444.620595,
+  "usage_count": 0,
+  "bytes_processed": 0,
+  "rotation_generation": 1,
+  "classification_level": "top_secret",
+  "security_level": "top_secret",
+  "purpose": "digital_signature",
+  "parent_key_id": null,
+  "rotation_policy": {
+    "max_age_hours": 720,
+    "max_operations": 100000,
+    "max_bytes_processed": 10737418240,
+    "auto_rotation_enabled": true,
+    "pre_rotation_warning_hours": 72,
+    "emergency_rotation_enabled": true,
+    "classification_based_rotation": true
+  },
+  "escrow_shares": null
+}

@@ -1,0 +1,13 @@
+{
+  "key_id": "dd1929d2e5161022",
+  "shares": [
+    "dd1929d2e5161022_share_0:60fa5bff253e16ddd6105cf8b37eab8eaeff4f62bb889581f805f21c63a62179",
+    "dd1929d2e5161022_share_1:61016a1b638c21df348f263502074b09ff6d3dd08dbb16543b67adce2d34c642",
+    "dd1929d2e5161022_share_2:386bf04fd59af901a32ac192a2d4727c3ad51f71cb634d4a8e79aeb9defe22bc",
+    "dd1929d2e5161022_share_3:3fd048a3fe4b1cc011f51ae9045171858b77c4a8ab9c25cd2ef6d678fbfd4a2e",
+    "dd1929d2e5161022_share_4:bd2ac4764b9c688264572db815b25cae4f4f03fcdd640612dd7ef333c20aed56"
+  ],
+  "threshold": 3,
+  "created": 1751898444.621262,
+  "classification": "top_secret"
+}

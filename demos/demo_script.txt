@@ -1,0 +1,7 @@
+# ALCUB3 Demo Script Commands
+# Lines starting with # are comments
+1
+2
+3
+7
+8

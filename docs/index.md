@@ -30,6 +30,24 @@ This documentation is organized into the following sections:
   - **[Web Fetch Tool](./tools/web-fetch.md):** Documentation for the `web_fetch` tool.
   - **[Web Search Tool](./tools/web-search.md):** Documentation for the `google_web_search` tool.
   - **[Memory Tool](./tools/memory.md):** Documentation for the `save_memory` tool.
+- **[Secure Key Management & Rotation](./key-management.md):** Documentation for secure key management and rotation.
+- **[STIG Compliance Validation System](./stig-compliance.md):** Documentation for STIG compliance validation.
+- **[Real-Time Security Monitoring & Alerting](./security-monitoring.md):** Documentation for real-time security monitoring and alerting.
+- **[API Security Integration](./api-security-integration.md):** Documentation for API security integration.
+- **[Security HAL Architecture Design](./security-hal-architecture.md):** Documentation for the Universal Security HAL.
+- **[Boston Dynamics Spot Security Adapter](./spot-security-adapter.md):** Documentation for the Boston Dynamics Spot security adapter.
+- **[ROS2 Security Integration](./ros2-security-integration.md):** Documentation for ROS2 security integration.
+- **[DJI Drone Security Adapter](./dji-drone-security-adapter.md):** Documentation for DJI drone security adapter.
+- **[AI Bias Detection & Mitigation](./ai-bias-detection.md):** FISMA-compliant AI fairness monitoring system.
+- **[OWASP Top 10 + SAST/DAST](./owasp-sast-dast.md):** Comprehensive security controls with integrated testing.
+- **[Agent Sandboxing & Integrity Verification](./agent-sandboxing.md):** Multi-layer agent isolation and behavioral monitoring.
+- **[Unified Robotics C2 Interface](./unified-robotics-c2-interface.md):** Documentation for the Unified Robotics C2 Interface.
+- **[Prompt Injection Prevention](./prompt-injection-prevention.md):** Documentation for prompt injection prevention.
+- **[Performance Optimization](./performance-optimization.md):** Documentation for performance optimization efforts.
+- **[Integration Testing](./integration-testing.md):** Documentation for integration testing strategy.
+- **[Penetration Testing Framework](./penetration-testing-framework.md):** Documentation for the penetration testing framework.
+- **[Air-Gap MCP Server Integration (Phase 4)](./air-gap-mcp-server-integration.md):** Documentation for advanced Air-Gap MCP server integration.
+- **[Advanced Threat Intelligence (Phase 5)](./advanced-threat-intelligence.md):** Documentation for advanced threat intelligence capabilities.
 - **[Contributing & Development Guide](../CONTRIBUTING.md):** Information for contributors and developers, including setup, building, testing, and coding conventions.
 - **[NPM Workspaces and Publishing](./npm.md):** Details on how the project's packages are managed and published.
 - **[Troubleshooting Guide](./troubleshooting.md):** Find solutions to common problems and FAQs.

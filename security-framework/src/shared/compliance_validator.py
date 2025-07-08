@@ -32,6 +32,18 @@ from dataclasses import dataclass, asdict
 from enum import Enum
 import logging
 from pathlib import Path
+import asyncio
+
+# Import NIST SP 800-171 components if available
+try:
+    from .nist_800_171_controls import (
+        NIST800171Controls, NISTControl, ControlValidationResult as NISTValidationResult,
+        ControlFamily, ControlPriority, ValidationStatus as NISTValidationStatus
+    )
+    from .cui_handler import CUIHandler, CUIValidationResult
+    NIST_800_171_AVAILABLE = True
+except ImportError:
+    NIST_800_171_AVAILABLE = False
 
 class ComplianceFramework(Enum):
     """Supported compliance frameworks for defense operations."""
@@ -39,6 +51,7 @@ class ComplianceFramework(Enum):
     FISMA = "FISMA_SP_800_171"
     FIPS = "FIPS_140_2"
     NIST = "NIST_800_53"
+    NIST_800_171 = "NIST_SP_800_171"  # Added for CUI compliance
     DFARS = "DFARS_252_204_7012"
     MAESTRO = "MAESTRO_L1_L7"
 
@@ -104,13 +117,25 @@ class ComplianceValidator:
         self._initialize_validation_engines()
         self._initialize_compliance_baselines()
         
+        # Initialize NIST SP 800-171 components if available
+        self.nist_800_171_controls = None
+        self.cui_handler = None
+        if NIST_800_171_AVAILABLE:
+            try:
+                self.nist_800_171_controls = NIST800171Controls()
+                self.cui_handler = CUIHandler()
+                self.logger.info("NIST SP 800-171 compliance module loaded")
+            except Exception as e:
+                self.logger.warning(f"Failed to load NIST SP 800-171 module: {e}")
+        
         # Patent Innovation: Compliance state tracking
         self._compliance_state = {
             "total_validations": 0,
             "compliant_controls": 0,
             "non_compliant_controls": 0,
             "last_full_validation": 0,
-            "compliance_drift_events": 0
+            "compliance_drift_events": 0,
+            "nist_800_171_validations": 0
         }
         
         self.logger.info("MAESTRO Compliance Validator initialized")
@@ -589,9 +614,14 @@ class ComplianceValidator:
                 "mandatory_controls": ["MAESTRO-L1-1"]
             },
             "CUI": {
-                "required_frameworks": [ComplianceFramework.FISMA, ComplianceFramework.MAESTRO],
+                "required_frameworks": [
+                    ComplianceFramework.FISMA, 
+                    ComplianceFramework.NIST_800_171,
+                    ComplianceFramework.MAESTRO
+                ],
                 "minimum_compliance_score": 0.9,
-                "mandatory_controls": ["FISMA-AC-1", "MAESTRO-L1-1", "MAESTRO-L2-1"]
+                "mandatory_controls": ["FISMA-AC-1", "MAESTRO-L1-1", "MAESTRO-L2-1"],
+                "nist_800_171_required": True
             },
             "SECRET": {
                 "required_frameworks": [ComplianceFramework.STIG, ComplianceFramework.FISMA, 
@@ -1831,3 +1861,150 @@ class ComplianceValidator:
             ],
             "timestamp": time.time()
         }
+    
+    async def validate_nist_800_171(self, system_state: Dict = None) -> Dict:
+        """
+        Validate NIST SP 800-171 compliance for CUI handling.
+        
+        Args:
+            system_state: Current system state for validation
+            
+        Returns:
+            dict: NIST SP 800-171 compliance validation results
+        """
+        if not self.nist_800_171_controls:
+            return {
+                "error": "NIST SP 800-171 module not available",
+                "compliance_score": 0.0,
+                "is_compliant": False
+            }
+        
+        try:
+            # Validate all NIST SP 800-171 controls
+            validation_results = await self.nist_800_171_controls.validate_all_controls(system_state or {})
+            
+            # Generate compliance summary
+            compliance_summary = self.nist_800_171_controls.generate_compliance_summary(validation_results)
+            
+            # Update compliance state
+            self._compliance_state["nist_800_171_validations"] += 1
+            
+            # Log validation
+            self.logger.info(
+                f"NIST SP 800-171 validation complete: "
+                f"{compliance_summary['summary']['compliance_percentage']:.1f}% compliant"
+            )
+            
+            return {
+                "framework": "NIST_SP_800_171",
+                "validation_results": validation_results,
+                "compliance_summary": compliance_summary,
+                "timestamp": time.time(),
+                "classification_level": self.classification.default_level.value
+            }
+            
+        except Exception as e:
+            self.logger.error(f"NIST SP 800-171 validation error: {e}")
+            return {
+                "error": str(e),
+                "compliance_score": 0.0,
+                "is_compliant": False
+            }
+    
+    async def validate_cui_handling(self, content: str, context: Dict = None) -> Dict:
+        """
+        Validate CUI handling compliance.
+        
+        Args:
+            content: Content to check for CUI
+            context: Additional context for validation
+            
+        Returns:
+            dict: CUI validation results
+        """
+        if not self.cui_handler:
+            return {
+                "error": "CUI handler not available",
+                "contains_cui": False,
+                "is_valid": False
+            }
+        
+        try:
+            # Detect CUI in content
+            cui_result = await self.cui_handler.detect_cui(content, context)
+            
+            # If CUI detected, validate handling requirements
+            handling_validation = {
+                "contains_cui": cui_result.contains_cui,
+                "cui_categories": [cat.value for cat in cui_result.cui_categories],
+                "confidence_score": cui_result.confidence_score,
+                "validation_time_ms": cui_result.validation_time_ms
+            }
+            
+            if cui_result.contains_cui:
+                # Check NIST SP 800-171 compliance for CUI
+                baseline = self._compliance_baselines.get("CUI", {})
+                if baseline.get("nist_800_171_required", False):
+                    handling_validation["nist_800_171_required"] = True
+                    handling_validation["suggested_marking"] = cui_result.suggested_marking
+            
+            return handling_validation
+            
+        except Exception as e:
+            self.logger.error(f"CUI validation error: {e}")
+            return {
+                "error": str(e),
+                "contains_cui": False,
+                "is_valid": False
+            }
+    
+    def validate_all_with_nist_800_171(self, system_state: Dict = None) -> Dict:
+        """
+        Validate all compliance frameworks including NIST SP 800-171.
+        
+        This is a synchronous wrapper that handles async NIST SP 800-171 validation.
+        
+        Args:
+            system_state: Current system state for validation
+            
+        Returns:
+            dict: Complete compliance validation results including NIST SP 800-171
+        """
+        # Get standard compliance results
+        results = self.validate_all(system_state)
+        
+        # Add NIST SP 800-171 validation if required
+        classification_level = self.classification.default_level.value
+        baseline = self._compliance_baselines.get(classification_level, {})
+        
+        if ComplianceFramework.NIST_800_171 in baseline.get("required_frameworks", []):
+            try:
+                # Run async validation in sync context
+                import asyncio
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                nist_results = loop.run_until_complete(self.validate_nist_800_171(system_state))
+                loop.close()
+                
+                # Add NIST SP 800-171 results
+                results["nist_800_171_validation"] = nist_results
+                
+                # Update overall compliance based on NIST SP 800-171
+                if nist_results.get("compliance_summary"):
+                    nist_score = nist_results["compliance_summary"]["summary"]["overall_score"]
+                    # Weighted average with existing score
+                    current_score = results["overall_compliance_score"]
+                    results["overall_compliance_score"] = (current_score + nist_score) / 2
+                    results["is_compliant"] = results["is_compliant"] and (
+                        nist_score >= baseline.get("minimum_compliance_score", 0.9)
+                    )
+                
+            except Exception as e:
+                self.logger.error(f"Failed to run NIST SP 800-171 validation: {e}")
+                results["nist_800_171_validation"] = {
+                    "error": str(e),
+                    "compliance_score": 0.0,
+                    "is_compliant": False
+                }
+        
+        return results

@@ -237,6 +237,31 @@ class EnhancedDataOperationsSecurity:
         
         logging.info("Enhanced L2 Data Operations Security initialized with patent-pending innovations")
 
+        # Initialize key for data integrity signing
+        self._data_integrity_signing_key_material = None
+        self._data_integrity_verification_key_material = None # Public key for verification
+        try:
+            self._data_integrity_signing_key_material = self.crypto_utils.generate_key(
+                algorithm=CryptoAlgorithm.RSA_4096,
+                key_purpose="data_integrity_signing"
+            )
+            self.logger.info(f"Data integrity signing key generated/loaded: {self._data_integrity_signing_key_material.key_id}")
+
+            # Extract public key for verification
+            public_key_pem = self.crypto_utils.get_public_key(self._data_integrity_signing_key_material)
+            self._data_integrity_verification_key_material = CryptoKeyMaterial(
+                key_id=f"{self._data_integrity_signing_key_material.key_id}_pub",
+                algorithm=CryptoAlgorithm.RSA_4096,
+                key_data=public_key_pem,
+                security_level=self._data_integrity_signing_key_material.security_level,
+                creation_timestamp=time.time(),
+                key_purpose="data_integrity_verification",
+                classification_level=self._data_integrity_signing_key_material.classification_level
+            )
+
+        except Exception as e:
+            self.logger.error(f"Failed to generate/load data integrity signing key: {e}. Cryptographic signatures for data integrity will not be available.")
+
     def _initialize_data_flow_policies(self) -> Dict[str, DataFlowControl]:
         """
         Patent Innovation: Classification-Aware Data Flow Control Policies
@@ -308,12 +333,30 @@ class EnhancedDataOperationsSecurity:
         
         Initialize blockchain-like provenance tracking for air-gapped environments.
         """
-        # Create temporary database for provenance records
-        temp_dir = tempfile.mkdtemp(prefix="alcub3_provenance_")
-        self._provenance_db_path = os.path.join(temp_dir, "provenance.db")
-        
-        # Initialize SQLite database with encryption
-        conn = sqlite3.connect(self._provenance_db_path)
+        # Define permanent database path
+        provenance_dir = Path("/Users/aaronkiyaani-mcclary/Dev IDE Projects/alcub3-cli/security-framework/data")
+        provenance_dir.mkdir(parents=True, exist_ok=True)
+        self._provenance_db_path = provenance_dir / "provenance.db"
+        self._provenance_encryption_key_id = "provenance_db_key" # Unique ID for the key
+        self._is_provenance_encrypted = True # Flag to indicate if encryption is active
+
+        # Generate or load encryption key for the provenance database
+        try:
+            # Attempt to load an existing key for the provenance database
+            # In a real system, this key would be securely stored and retrieved,
+            # ideally from an HSM. For this example, we'll simulate key management.
+            self._provenance_encryption_key_material = self.crypto_utils.generate_key(
+                algorithm=CryptoAlgorithm.AES_256_GCM,
+                key_purpose="provenance_db_encryption",
+                key_id=self._provenance_encryption_key_id # Use a consistent key ID
+            )
+            self.logger.info(f"Provenance DB encryption key loaded/generated: {self._provenance_encryption_key_material.key_id}")
+        except Exception as e:
+            self.logger.error(f"Failed to generate/load provenance DB encryption key: {e}. Provenance will NOT be encrypted.")
+            self._is_provenance_encrypted = False
+
+        # Connect to SQLite database (decrypt if encrypted)
+        conn = self._get_provenance_db_connection()
         conn.execute("""
             CREATE TABLE IF NOT EXISTS provenance_records (
                 record_id TEXT PRIMARY KEY,
@@ -338,47 +381,241 @@ class EnhancedDataOperationsSecurity:
         """)
         conn.commit()
         conn.close()
-        
-        # Initialize genesis record
-        genesis_record = DataProvenanceRecord(
-            record_id="genesis",
-            previous_hash="0" * 64,
-            data_id="system_initialization",
-            operation=DataOperationType.WRITE,
-            classification=ClassificationLevel.UNCLASSIFIED,
-            user_id="system",
-            agent_id=None,
-            data_hash=hashlib.sha256(b"genesis").hexdigest(),
-            operation_metadata={"type": "genesis_block"},
-            timestamp=datetime.utcnow()
-        )
-        
-        self._add_provenance_record(genesis_record)
+
+        # Initialize genesis record if database is empty
+        if not self._get_latest_provenance_hash(): # Check if DB is empty
+            genesis_record = DataProvenanceRecord(
+                record_id="genesis",
+                previous_hash="0" * 64,
+                data_id="system_initialization",
+                operation=DataOperationType.WRITE,
+                classification=ClassificationLevel.UNCLASSIFIED,
+                user_id="system",
+                agent_id=None,
+                data_hash=hashlib.sha256(b"genesis").hexdigest(),
+                operation_metadata={"type": "genesis_block"},
+                timestamp=datetime.utcnow()
+            )
+            self._add_provenance_record(genesis_record)
+
+    def _get_provenance_db_connection(self):
+        """Get a connection to the provenance database, handling encryption/decryption."""
+        if self._is_provenance_encrypted and self._provenance_encryption_key_material:
+            # Decrypt the database file before connecting
+            if self._provenance_db_path.exists():
+                with open(self._provenance_db_path, "rb") as f:
+                    encrypted_data = f.read()
+                
+                try:
+                    decrypted_result = self.crypto_utils.decrypt_data(encrypted_data, self._provenance_encryption_key_material)
+                    if not decrypted_result.success or not decrypted_result.data:
+                        raise ProvenanceError(f"Failed to decrypt provenance database: {decrypted_result.error_message}")
+                    
+                    # Write decrypted data to a temporary file for SQLite to open
+                    temp_db_fd, temp_db_path = tempfile.mkstemp(suffix=".db")
+                    with os.fdopen(temp_db_fd, "wb") as f:
+                        f.write(decrypted_result.data)
+                    
+                    conn = sqlite3.connect(temp_db_path)
+                    # Store temp path to clean up later
+                    conn.temp_db_path = temp_db_path 
+                    return conn
+                except Exception as e:
+                    self.logger.error(f"Error decrypting provenance DB: {e}")
+                    self._is_provenance_encrypted = False # Disable encryption if decryption fails
+                    # Fallback to unencrypted connection if decryption fails
+                    return sqlite3.connect(self._provenance_db_path)
+            else:
+                # If file doesn't exist, connect directly to create it, then encrypt on close
+                return sqlite3.connect(self._provenance_db_path)
+        else:
+            return sqlite3.connect(self._provenance_db_path)
+
+    def _close_provenance_db_connection(self, conn):
+        """Close the provenance database connection, handling encryption/re-encryption."""
+        if self._is_provenance_encrypted and self._provenance_encryption_key_material:
+            temp_db_path = getattr(conn, "temp_db_path", None)
+            conn.close() # Close connection to temp file
+
+            if temp_db_path and Path(temp_db_path).exists():
+                with open(temp_db_path, "rb") as f:
+                    decrypted_data = f.read()
+                
+                try:
+                    encrypted_result = self.crypto_utils.encrypt_data(decrypted_data, self._provenance_encryption_key_material)
+                    if not encrypted_result.success or not encrypted_result.data:
+                        raise ProvenanceError(f"Failed to encrypt provenance database: {encrypted_result.error_message}")
+                    
+                    with open(self._provenance_db_path, "wb") as f:
+                        f.write(encrypted_result.data)
+                    
+                except Exception as e:
+                    self.logger.error(f"Error encrypting provenance DB: {e}")
+                    self._is_provenance_encrypted = False # Disable encryption if encryption fails
+                finally:
+                    os.remove(temp_db_path) # Clean up temp file
+        else:
+            conn.close()
+
+    def _get_latest_provenance_hash(self) -> str:
+        """Get the hash of the latest provenance record for chaining."""
+        try:
+            conn = self._get_provenance_db_connection()
+            cursor = conn.execute(
+                "SELECT record_hash FROM provenance_records ORDER BY created_at DESC LIMIT 1"
+            )
+            result = cursor.fetchone()
+            self._close_provenance_db_connection(conn)
+            
+            if result:
+                return result[0]
+            else:
+                return "0" * 64  # Genesis hash
+                
+        except Exception as e:
+            self.logger.error(f"Failed to get latest provenance hash: {e}")
+            return "0" * 64
+
+    def _add_provenance_record(self, record: DataProvenanceRecord):
+        """Add provenance record to the blockchain-like chain."""
+        try:
+            conn = self._get_provenance_db_connection()
+            conn.execute("""
+                INSERT INTO provenance_records 
+                (record_id, previous_hash, data_id, operation, classification, 
+                 user_id, agent_id, data_hash, operation_metadata, timestamp, record_hash)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                record.record_id,
+                record.previous_hash,
+                record.data_id,
+                record.operation.value,
+                record.classification.value,
+                record.user_id,
+                record.agent_id,
+                record.data_hash,
+                json.dumps(record.operation_metadata),
+                record.timestamp.isoformat(),
+                record.record_hash
+            ))
+            conn.commit()
+            self._close_provenance_db_connection(conn)
+            
+            # Add to in-memory chain for quick access
+            self._provenance_chain.append(record)
+            
+            # Maintain chain size limit for performance
+            if len(self._provenance_chain) > 1000:
+                self._provenance_chain = self._provenance_chain[-500:]
+                
+        except Exception as e:
+            raise ProvenanceError(f"Failed to add provenance record: {str(e)}")
 
     def _initialize_classification_model(self):
         """
-        Initialize ML-based data classification model.
+        Initialize ML-based data classification model (sophisticated mock).
         
-        In production, this would load a trained model for automated classification.
-        For now, implements rule-based classification with confidence scoring.
+        This mock simulates a trained ML model's behavior, including confidence
+        and performance characteristics, to prepare the framework for future
+        integration with a real model.
         """
         return {
-            "model_type": "rule_based_classifier",
-            "version": "1.0.0",
+            "model_type": "simulated_ml_classifier",
+            "version": "1.1.0",
+            "simulated_latency_ms": 30.0, # Simulate average inference time
+            "simulated_accuracy": {
+                ClassificationLevel.UNCLASSIFIED: 0.95,
+                ClassificationLevel.CUI: 0.90,
+                ClassificationLevel.SECRET: 0.85,
+                ClassificationLevel.TOP_SECRET: 0.80 # Higher classification, potentially lower initial accuracy
+            },
+            "simulated_bias_factors": {
+                "keyword_overemphasis": 0.05, # Tendency to over-classify based on keywords
+                "length_sensitivity": 0.02 # Longer texts might have slightly lower confidence
+            },
             "classification_rules": {
-                # Keywords that indicate classification levels
-                "top_secret_keywords": ["top secret", "ts", "classified", "compartmented"],
-                "secret_keywords": ["secret", "confidential", "restricted"],
-                "cui_keywords": ["cui", "sensitive", "fouo", "proprietary"],
-                "pii_indicators": ["ssn", "social security", "credit card", "passport"],
-                "technical_indicators": ["algorithm", "source code", "cryptographic", "technical manual"]
+                # Keywords that indicate classification levels (used as features for mock ML)
+                "top_secret_keywords": ["top secret", "ts", "classified", "compartmented", "nuclear", "strike plan"],
+                "secret_keywords": ["secret", "confidential", "restricted", "military operation", "intelligence report"],
+                "cui_keywords": ["cui", "sensitive", "fouo", "proprietary", "personnel record", "financial data"],
+                "pii_indicators": ["ssn", "social security", "credit card", "passport", "date of birth", "home address"],
+                "technical_indicators": ["algorithm", "source code", "cryptographic", "technical manual", "exploit", "vulnerability"]
             },
             "confidence_thresholds": {
-                "high_confidence": 0.8,
-                "medium_confidence": 0.6,
-                "low_confidence": 0.4
-            }
+                "high_confidence": 0.85,
+                "medium_confidence": 0.70,
+                "low_confidence": 0.50
+            },
+            "simulated_model_weights": "mock_ml_model_weights_binary_data" # Placeholder for actual model weights
         }
+
+    def _classify_text(self, text: str) -> Tuple[ClassificationLevel, float, List[str]]:
+        """
+        Classify text using a sophisticated rule-based approach that simulates ML behavior.
+        
+        This method incorporates simulated latency, accuracy, and bias to mimic
+        a real ML classification model's characteristics.
+        """
+        text_lower = text.lower()
+        reasons = []
+        scores = {
+            ClassificationLevel.UNCLASSIFIED: 0.1,  # Start with low baseline
+            ClassificationLevel.CUI: 0.0,
+            ClassificationLevel.SECRET: 0.0,
+            ClassificationLevel.TOP_SECRET: 0.0
+        }
+        
+        # Simulate ML inference latency
+        time.sleep(self._classification_model["simulated_latency_ms"] / 1000.0)
+
+        # Apply rule-based scoring (simulating feature extraction and initial scoring by ML)
+        for keyword in self._classification_model["classification_rules"]["top_secret_keywords"]:
+            if keyword in text_lower:
+                scores[ClassificationLevel.TOP_SECRET] += 0.4
+                reasons.append(f"Simulated ML feature: TOP SECRET keyword '{keyword}'")
+        
+        for keyword in self._classification_model["classification_rules"]["secret_keywords"]:
+            if keyword in text_lower:
+                scores[ClassificationLevel.SECRET] += 0.35
+                reasons.append(f"Simulated ML feature: SECRET keyword '{keyword}'")
+        
+        for keyword in self._classification_model["classification_rules"]["cui_keywords"]:
+            if keyword in text_lower:
+                scores[ClassificationLevel.CUI] += 0.25
+                reasons.append(f"Simulated ML feature: CUI keyword '{keyword}'")
+        
+        for keyword in self._classification_model["classification_rules"]["pii_indicators"]:
+            if keyword in text_lower:
+                scores[ClassificationLevel.CUI] += 0.2
+                reasons.append(f"Simulated ML feature: PII indicator '{keyword}'")
+        
+        for keyword in self._classification_model["classification_rules"]["technical_indicators"]:
+            if keyword in text_lower:
+                scores[ClassificationLevel.SECRET] += 0.15
+                reasons.append(f"Simulated ML feature: Technical indicator '{keyword}'")
+        
+        # Simulate ML model's final decision and confidence adjustment
+        detected_classification = max(scores.keys(), key=lambda k: scores[k])
+        base_confidence = min(scores[detected_classification], 1.0)
+
+        # Adjust confidence based on simulated accuracy for the detected class
+        sim_accuracy = self._classification_model["simulated_accuracy"].get(detected_classification, 0.8)
+        confidence = base_confidence * sim_accuracy + (1 - sim_accuracy) * (1 - base_confidence) # Blend with accuracy
+
+        # Apply simulated bias factors
+        if "keyword_overemphasis" in self._classification_model["simulated_bias_factors"]:
+            if any(k in text_lower for k in self._classification_model["classification_rules"]["top_secret_keywords"] + self._classification_model["classification_rules"]["secret_keywords"]):
+                confidence -= self._classification_model["simulated_bias_factors"]["keyword_overemphasis"]
+                reasons.append("Simulated ML bias: Keyword overemphasis")
+        
+        if "length_sensitivity" in self._classification_model["simulated_bias_factors"]:
+            if len(text) > 1000: # Example: longer texts might reduce confidence slightly
+                confidence -= self._classification_model["simulated_bias_factors"]["length_sensitivity"]
+                reasons.append("Simulated ML bias: Length sensitivity")
+
+        confidence = max(0.0, min(1.0, confidence)) # Clamp confidence between 0 and 1
+
+        return detected_classification, confidence, reasons
 
     def _start_background_processing(self):
         """Start background processing threads for async operations."""
@@ -552,12 +789,38 @@ class EnhancedDataOperationsSecurity:
                     violations.append(f"Hash mismatch: expected {expected_hash}, got {hash_value}")
             
             elif method == DataIntegrityMethod.CRYPTOGRAPHIC_SIGNATURE:
-                # Generate cryptographic signature using FIPS crypto utils
-                hash_value = hashlib.sha256(data_bytes).hexdigest()
-                
-                # Create signature (placeholder - would use actual key)
-                signature_data = f"{hash_value}_{classification.value}_{time.time()}"
-                signature = hashlib.sha256(signature_data.encode()).hexdigest()
+                hash_value = hashlib.sha256(data_bytes).hexdigest() # Still calculate hash for record keeping
+
+                if not self._data_integrity_signing_key_material:
+                    violations.append("Data integrity signing key not available.")
+                    signature = None
+                else:
+                    # Generate cryptographic signature using FIPS crypto utils
+                    sign_result = self.crypto_utils.sign_data(data_bytes, self._data_integrity_signing_key_material)
+                    if not sign_result.success:
+                        violations.append(f"Failed to generate signature: {sign_result.error_message}")
+                        signature = None
+                    else:
+                        signature = sign_result.data.hex() # Store signature as hex string
+
+                if expected_hash: # Assuming expected_hash is actually expected_signature in this context
+                    if not self._data_integrity_verification_key_material:
+                        violations.append("Data integrity verification key not available.")
+                    else:
+                        try:
+                            # Convert expected_hash (signature string) back to bytes
+                            expected_signature_bytes = bytes.fromhex(expected_hash)
+                            verify_result = self.crypto_utils.verify_signature(
+                                data_bytes,
+                                expected_signature_bytes,
+                                self._data_integrity_verification_key_material
+                            )
+                            if not verify_result.success:
+                                violations.append(f"Signature verification failed: {verify_result.error_message}")
+                        except ValueError:
+                            violations.append("Invalid expected signature format (must be hex string).")
+                        except Exception as e:
+                            violations.append(f"Error during signature verification: {e}")
                 
             elif method == DataIntegrityMethod.MERKLE_TREE:
                 # For large datasets, use Merkle tree validation
@@ -1082,12 +1345,41 @@ class EnhancedDataOperationsSecurity:
 
     def _process_integrity_validations(self):
         """Background thread for processing integrity validation queue."""
+        self.logger.info("Starting background integrity validation processor.")
         while self._processing_active:
             try:
-                # Process queued integrity validations
-                time.sleep(1.0)  # Process every second
+                # Get item from queue with a timeout to allow graceful shutdown
+                data_to_validate = self._integrity_validation_queue.get(timeout=1.0)
+                
+                # Assuming data_to_validate is a tuple: (data, expected_hash, method, classification)
+                data, expected_hash, method, classification = data_to_validate
+                
+                self.logger.debug(f"Processing integrity validation for data_id: {hashlib.sha256(data).hexdigest()[:16]}")
+                
+                result = self.validate_data_integrity(
+                    data=data,
+                    expected_hash=expected_hash,
+                    method=method,
+                    classification=classification
+                )
+                
+                if result.is_valid:
+                    self.logger.info(f"Integrity validation successful for data_id: {hashlib.sha256(data).hexdigest()[:16]}")
+                else:
+                    self.logger.warning(f"Integrity validation failed for data_id: {hashlib.sha256(data).hexdigest()[:16]}. Violations: {result.integrity_violations}")
+                
+                self._integrity_validation_queue.task_done()
+                
+            except queue.Empty:
+                # Queue is empty, continue loop to check _processing_active flag
+                continue
             except Exception as e:
-                logging.error(f"Integrity validation processing error: {e}")
+                self.logger.error(f"Integrity validation processing error: {e}")
+                # If an error occurs, ensure the task is marked done to prevent blocking
+                if not self._integrity_validation_queue.empty():
+                    self._integrity_validation_queue.task_done()
+
+        self.logger.info("Background integrity validation processor stopped.")
 
     def validate(self) -> Dict[str, Any]:
         """Validate L2 enhanced data operations security layer."""
