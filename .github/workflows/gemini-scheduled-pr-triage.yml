@@ -20,16 +20,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate GitHub App Token
-        id: generate_token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.PRIVATE_KEY }}
-
       - name: Run PR Triage Script
         id: run_triage
         env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: ./.github/scripts/pr-triage.sh
