@@ -1,0 +1,518 @@
+# .github/workflows/task-completion-security.yml
+name: ALCUB3 Task Completion Security Pipeline
+
+on:
+  push:
+    branches: [main, develop, feature/*, release/*]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      execution_mode:
+        description: 'Execution mode for task completion handler'
+        required: false
+        default: 'ci_cd'
+        type: choice
+        options:
+          - full
+          - security
+          - patent
+          - docs
+          - quick
+          - ci_cd
+          - production
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '20.x'
+
+jobs:
+  detect-changes:
+    name: Detect Changes & Context
+    runs-on: ubuntu-latest
+    outputs:
+      task_type: ${{ steps.analyze.outputs.task_type }}
+      changed_files: ${{ steps.analyze.outputs.changed_files }}
+      should_run_security: ${{ steps.analyze.outputs.should_run_security }}
+      should_run_patent: ${{ steps.analyze.outputs.should_run_patent }}
+      classification_level: ${{ steps.analyze.outputs.classification_level }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for diff
+      
+      - name: Analyze changes
+        id: analyze
+        run: |
+          # Get changed files
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | jq -R -s -c 'split("\n")[:-1]')
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | jq -R -s -c 'split("\n")[:-1]')
+          fi
+          
+          echo "changed_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+          
+          # Determine task type based on commit message and files
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          TASK_TYPE="feature"  # default
+          
+          if [[ "$COMMIT_MSG" =~ ^fix:|^bugfix: ]]; then
+            TASK_TYPE="bug_fix"
+          elif [[ "$COMMIT_MSG" =~ ^security:|^vuln: ]]; then
+            TASK_TYPE="security_patch"
+          elif [[ "$COMMIT_MSG" =~ ^refactor: ]]; then
+            TASK_TYPE="refactoring"
+          elif [[ "$COMMIT_MSG" =~ ^docs: ]]; then
+            TASK_TYPE="documentation"
+          elif [[ "$COMMIT_MSG" =~ ^test: ]]; then
+            TASK_TYPE="testing"
+          elif [[ "$COMMIT_MSG" =~ ^perf: ]]; then
+            TASK_TYPE="performance"
+          fi
+          
+          echo "task_type=$TASK_TYPE" >> $GITHUB_OUTPUT
+          
+          # Determine if we should run security/patent checks
+          SHOULD_RUN_SECURITY="true"
+          SHOULD_RUN_PATENT="false"
+          
+          # Check if changes affect security-sensitive areas
+          if echo "$CHANGED_FILES" | grep -E "(security|auth|crypto|maestro)" > /dev/null; then
+            SHOULD_RUN_SECURITY="true"
+          fi
+          
+          # Check if changes might contain patentable innovations
+          if echo "$CHANGED_FILES" | grep -E "\.(py|ts|tsx|js)$" > /dev/null; then
+            if [[ "$TASK_TYPE" == "feature" ]] || [[ "$COMMIT_MSG" =~ innovation|patent|novel ]]; then
+              SHOULD_RUN_PATENT="true"
+            fi
+          fi
+          
+          echo "should_run_security=$SHOULD_RUN_SECURITY" >> $GITHUB_OUTPUT
+          echo "should_run_patent=$SHOULD_RUN_PATENT" >> $GITHUB_OUTPUT
+          
+          # Determine classification level from commit or PR
+          CLASSIFICATION="unclassified"
+          if [[ "$COMMIT_MSG" =~ \[SECRET\] ]]; then
+            CLASSIFICATION="secret"
+          elif [[ "$COMMIT_MSG" =~ \[TOP-SECRET\]|\[TS\] ]]; then
+            CLASSIFICATION="top_secret"
+          fi
+          
+          echo "classification_level=$CLASSIFICATION" >> $GITHUB_OUTPUT
+
+  task-completion-handler:
+    name: Run Task Completion Handler
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    permissions:
+      contents: read
+      security-events: write
+      issues: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          # Python dependencies
+          cd security-framework
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio pytest-cov
+          
+          # Node dependencies
+          cd ..
+          npm ci
+      
+      - name: Prepare task context
+        id: context
+        run: |
+          # Extract task information
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            TASK_ID="PR-${{ github.event.pull_request.number }}"
+            TITLE="${{ github.event.pull_request.title }}"
+            DESCRIPTION="${{ github.event.pull_request.body }}"
+            AUTHOR="${{ github.event.pull_request.user.login }}"
+            BRANCH="${{ github.event.pull_request.head.ref }}"
+          else
+            TASK_ID="PUSH-${{ github.sha }}"
+            TITLE="$(git log -1 --pretty=%s)"
+            DESCRIPTION="$(git log -1 --pretty=%B)"
+            AUTHOR="${{ github.actor }}"
+            BRANCH="${{ github.ref_name }}"
+          fi
+          
+          # Save context for handler
+          echo "task_id=$TASK_ID" >> $GITHUB_OUTPUT
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+          echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
+          echo "author=$AUTHOR" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "commit=${{ github.sha }}" >> $GITHUB_OUTPUT
+      
+      - name: Create handler configuration
+        run: |
+          cat > handler_config.yml << EOF
+          execution_mode: ${{ inputs.execution_mode || 'ci_cd' }}
+          parallel_execution: true
+          max_workers: 4
+          timeout_minutes: 30
+          
+          security_tests:
+            red_team: ${{ needs.detect-changes.outputs.should_run_security == 'true' && needs.detect-changes.outputs.task_type == 'security_patch' }}
+            fuzzing: ${{ needs.detect-changes.outputs.should_run_security == 'true' }}
+            chaos: false  # Disable for CI/CD
+            adversarial: ${{ needs.detect-changes.outputs.task_type == 'feature' }}
+          
+          patent_analysis:
+            enabled: ${{ needs.detect-changes.outputs.should_run_patent == 'true' }}
+            prior_art_search: false  # Disable for CI/CD (too slow)
+            claim_generation: true
+          
+          documentation:
+            technical_guide: false  # Disable for CI/CD
+            security_report: true
+            compliance: ${{ needs.detect-changes.outputs.classification_level != 'unclassified' }}
+            patent_draft: ${{ needs.detect-changes.outputs.should_run_patent == 'true' }}
+          
+          thresholds:
+            security_score_minimum: 85
+            patent_score_minimum: 3
+            performance_degradation_max: 10
+          EOF
+      
+      - name: Run task completion handler
+        id: handler
+        run: |
+          cd security-framework/src
+          
+          # Run the handler
+          python task_completion_handler.py \
+            "${{ steps.context.outputs.task_id }}" \
+            --type "${{ needs.detect-changes.outputs.task_type }}" \
+            --title "${{ steps.context.outputs.title }}" \
+            --description "${{ steps.context.outputs.description }}" \
+            --files ${{ needs.detect-changes.outputs.changed_files }} \
+            --commit "${{ steps.context.outputs.commit }}" \
+            --branch "${{ steps.context.outputs.branch }}" \
+            --author "${{ steps.context.outputs.author }}" \
+            --classification "${{ needs.detect-changes.outputs.classification_level }}" \
+            --mode "${{ inputs.execution_mode || 'ci_cd' }}" \
+            --config ../handler_config.yml \
+            --output task_completion_report.json
+          
+          # Extract key metrics
+          SECURITY_SCORE=$(jq -r '.security_results.summary.score // 100' task_completion_report.json)
+          PATENTS_FOUND=$(jq -r '.patent_findings | length' task_completion_report.json)
+          ISSUES_FOUND=$(jq -r '.issues_found | length' task_completion_report.json)
+          PRODUCTION_READY=$(jq -r '.compliance_status.production_ready // false' task_completion_report.json)
+          
+          echo "security_score=$SECURITY_SCORE" >> $GITHUB_OUTPUT
+          echo "patents_found=$PATENTS_FOUND" >> $GITHUB_OUTPUT
+          echo "issues_found=$ISSUES_FOUND" >> $GITHUB_OUTPUT
+          echo "production_ready=$PRODUCTION_READY" >> $GITHUB_OUTPUT
+      
+      - name: Generate markdown report
+        id: report
+        run: |
+          cd security-framework/src
+          
+          python -c "
+          import json
+          from datetime import datetime
+          
+          with open('task_completion_report.json', 'r') as f:
+              report = json.load(f)
+          
+          # Generate markdown
+          markdown = f'''# 🔒 ALCUB3 Task Completion Security Report
+          
+          **Task ID**: {report['task_context']['task_id']}  
+          **Type**: {report['task_context']['task_type']}  
+          **Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}
+          
+          ## 📊 Summary
+          
+          | Metric | Value | Status |
+          |--------|-------|--------|
+          | **Security Score** | {report['security_results'].get('summary', {}).get('score', 100):.1f}/100 | {'✅' if report['security_results'].get('summary', {}).get('score', 100) >= 85 else '❌'} |
+          | **Patent Innovations** | {len(report['patent_findings'])} | {'🎯' if len(report['patent_findings']) > 0 else '➖'} |
+          | **Issues Found** | {len(report['issues_found'])} | {'❌' if len(report['issues_found']) > 0 else '✅'} |
+          | **Production Ready** | {'Yes' if report['compliance_status']['production_ready'] else 'No'} | {'✅' if report['compliance_status']['production_ready'] else '❌'} |
+          
+          ## 🛡️ Security Testing Results
+          '''
+          
+          if 'security' in report['security_results']:
+              security = report['security_results']
+              
+              if 'red_team' in security:
+                  markdown += f'''
+          ### Red Team Testing
+          - Attacks Executed: {security['red_team'].get('attacks_executed', 0)}
+          - Vulnerabilities Found: {security['red_team'].get('vulnerabilities_found', 0)}
+          - Critical Findings: {len(security['red_team'].get('critical_findings', []))}
+          '''
+              
+              if 'fuzzing' in security:
+                  markdown += f'''
+          ### Fuzzing Results
+          - Test Cases: {security['fuzzing'].get('test_cases', 0)}
+          - Crashes: {security['fuzzing'].get('crashes', 0)}
+          - Hangs: {security['fuzzing'].get('hangs', 0)}
+          '''
+          
+          if len(report['patent_findings']) > 0:
+              markdown += f'''
+          ## 💡 Patent Opportunities Detected
+          
+          Found **{len(report['patent_findings'])}** potentially patentable innovations:
+          '''
+              for patent in report['patent_findings'][:3]:  # Show top 3
+                  markdown += f'''
+          - **{patent['title']}** (Score: {patent['patentability_score']}/5)
+            - Type: {patent['innovation_type']}
+            - Description: {patent['description'][:100]}...
+          '''
+          
+          if len(report['issues_found']) > 0:
+              markdown += f'''
+          ## ⚠️ Issues Requiring Attention
+          '''
+              for issue in report['issues_found']:
+                  emoji = {'critical': '🔴', 'high': '🟠', 'medium': '🟡', 'low': '🟢'}.get(issue['severity'], '⚪')
+                  markdown += f'''
+          - {emoji} **{issue['severity'].upper()}**: {issue['description']} (Source: {issue['source']})
+          '''
+          
+          if len(report['recommendations']) > 0:
+              markdown += f'''
+          ## 📋 Recommendations
+          '''
+              for rec in report['recommendations']:
+                  markdown += f'- {rec}\\n'
+          
+          markdown += f'''
+          ## ⏱️ Performance Metrics
+          - Total Processing Time: {report['performance_metrics']['total_time']:.2f}s
+          - Security Testing: {report['performance_metrics']['security_time']:.2f}s
+          - Patent Analysis: {report['performance_metrics']['patent_time']:.2f}s
+          - Documentation: {report['performance_metrics']['doc_time']:.2f}s
+          
+          ---
+          
+          <details>
+          <summary>View Full Report</summary>
+          
+          [Download Complete JSON Report](https://github.com/{report['task_context'].get('metadata', {}).get('repository', 'owner/repo')}/actions/runs/${{github.run_id}})
+          
+          </details>
+          '''
+          
+          with open('task_completion_report.md', 'w') as f:
+              f.write(markdown)
+          "
+          
+          # Set report as output
+          REPORT=$(cat task_completion_report.md)
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          echo "$REPORT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: task-completion-artifacts
+          path: |
+            security-framework/src/task_completion_report.json
+            security-framework/src/task_completion_report.md
+            security-framework/handler_config.yml
+      
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const report = `${{ steps.report.outputs.report }}`;
+            
+            // Find and update existing comment or create new one
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('ALCUB3 Task Completion Security Report')
+            );
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: report
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: report
+              });
+            }
+      
+      - name: Create security issue if needed
+        if: steps.handler.outputs.issues_found > 0 && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issuesCount = ${{ steps.handler.outputs.issues_found }};
+            const securityScore = ${{ steps.handler.outputs.security_score }};
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔒 Security Alert: ${issuesCount} issues found in ${{ steps.context.outputs.task_id }}`,
+              body: `The automated task completion handler detected ${issuesCount} security issues.
+              
+              **Security Score**: ${securityScore}/100
+              **Task**: ${{ steps.context.outputs.title }}
+              **Commit**: ${{ github.sha }}
+              
+              Please review the [detailed security report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.
+              
+              cc: @${{ steps.context.outputs.author }}`,
+              labels: ['security', 'automated-testing', 'priority-high']
+            });
+      
+      - name: Create patent review issue if needed
+        if: steps.handler.outputs.patents_found > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const patentsCount = ${{ steps.handler.outputs.patents_found }};
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `💡 Patent Review: ${patentsCount} innovations detected in ${{ steps.context.outputs.task_id }}`,
+              body: `The automated patent tracker detected ${patentsCount} potentially patentable innovations.
+              
+              **Task**: ${{ steps.context.outputs.title }}
+              **Author**: @${{ steps.context.outputs.author }}
+              **Commit**: ${{ github.sha }}
+              
+              Please review the [patent analysis report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) and consider filing patent applications.
+              
+              cc: @legal-team`,
+              labels: ['patent', 'innovation', 'review-needed']
+            });
+      
+      - name: Set workflow status
+        if: always()
+        run: |
+          # Fail the workflow if not production ready (when not in draft PR)
+          if [ "${{ steps.handler.outputs.production_ready }}" = "false" ]; then
+            if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.draft }}" = "false" ]; then
+              echo "::error::Task is not production ready. Please address the issues found."
+              exit 1
+            else
+              echo "::warning::Task is not production ready. Issues found but allowing draft/development work to continue."
+            fi
+          fi
+
+  update-task-status:
+    name: Update Task Management System
+    runs-on: ubuntu-latest
+    needs: [detect-changes, task-completion-handler]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Update task status
+        run: |
+          # This would integrate with your task management system
+          # For now, we'll update the .taskmaster files if they exist
+          
+          if [ -f ".taskmaster/tasks/tasks.json" ]; then
+            # Update task status based on commit message
+            COMMIT_MSG=$(git log -1 --pretty=%B)
+            
+            # Extract task ID from commit message (e.g., "feat: [TASK-123] Add feature")
+            if [[ "$COMMIT_MSG" =~ \[TASK-([0-9]+)\] ]]; then
+              TASK_ID="${BASH_REMATCH[1]}"
+              
+              # Update task status in JSON
+              python -c "
+import json
+import sys
+
+with open('.taskmaster/tasks/tasks.json', 'r') as f:
+    data = json.load(f)
+
+# Find and update task
+updated = False
+for category in data.values():
+    if 'tasks' in category:
+        for task in category['tasks']:
+            if str(task.get('id')) == '$TASK_ID':
+                task['status'] = 'done'
+                task['completion_report'] = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+                updated = True
+                break
+
+if updated:
+    with open('.taskmaster/tasks/tasks.json', 'w') as f:
+        json.dump(data, f, indent=2)
+    print(f'Updated task {TASK_ID} status to done')
+else:
+    print(f'Task {TASK_ID} not found')
+              "
+            fi
+          fi
+
+  security-gate:
+    name: Security Gate Check
+    runs-on: ubuntu-latest
+    needs: task-completion-handler
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    
+    steps:
+      - name: Check security gate
+        run: |
+          SECURITY_SCORE="${{ needs.task-completion-handler.outputs.security_score }}"
+          PRODUCTION_READY="${{ needs.task-completion-handler.outputs.production_ready }}"
+          
+          echo "Security Score: $SECURITY_SCORE"
+          echo "Production Ready: $PRODUCTION_READY"
+          
+          if [ "$PRODUCTION_READY" != "true" ]; then
+            echo "::error::Security gate failed. Task is not production ready."
+            exit 1
+          fi
+          
+          echo "✅ Security gate passed!"

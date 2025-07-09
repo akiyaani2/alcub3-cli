@@ -1,0 +1,167 @@
+#!/bin/bash
+# ALCUB3 Pre-Push Hook
+# Runs task completion handler in quick mode before pushing to remote
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo "🔒 ALCUB3 Security Pre-Push Hook"
+echo "================================"
+
+# Get the current branch
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Skip hook for certain branches
+if [[ "$BRANCH" =~ ^(hotfix/|temp/|wip/) ]]; then
+    echo "Skipping security checks for $BRANCH branch"
+    exit 0
+fi
+
+# Check if security-framework is set up
+if [ ! -d "security-framework/src" ]; then
+    echo -e "${YELLOW}Warning: Security framework not found. Skipping security checks.${NC}"
+    exit 0
+fi
+
+# Get changed files
+CHANGED_FILES=$(git diff --name-only origin/$BRANCH..HEAD 2>/dev/null || git diff --name-only HEAD~1..HEAD)
+
+if [ -z "$CHANGED_FILES" ]; then
+    echo "No changes detected. Skipping security checks."
+    exit 0
+fi
+
+# Determine task type from recent commits
+TASK_TYPE="feature"
+RECENT_COMMITS=$(git log --oneline -n 5)
+
+if echo "$RECENT_COMMITS" | grep -qE "^[a-f0-9]+ (fix|bugfix):"; then
+    TASK_TYPE="bug_fix"
+elif echo "$RECENT_COMMITS" | grep -qE "^[a-f0-9]+ security:"; then
+    TASK_TYPE="security_patch"
+elif echo "$RECENT_COMMITS" | grep -qE "^[a-f0-9]+ refactor:"; then
+    TASK_TYPE="refactoring"
+elif echo "$RECENT_COMMITS" | grep -qE "^[a-f0-9]+ test:"; then
+    TASK_TYPE="testing"
+fi
+
+# Create temporary task context
+TASK_ID="LOCAL-$(date +%s)"
+TITLE=$(git log -1 --pretty=%s)
+DESCRIPTION=$(git log -1 --pretty=%B)
+AUTHOR=$(git config user.name)
+COMMIT=$(git rev-parse HEAD)
+
+echo -e "${YELLOW}Running quick security validation...${NC}"
+echo "Task Type: $TASK_TYPE"
+echo "Changed Files: $(echo "$CHANGED_FILES" | wc -l) files"
+
+# Create quick mode config
+cat > /tmp/alcub3_hook_config.yml << EOF
+execution_mode: quick
+parallel_execution: true
+max_workers: 2
+timeout_minutes: 5
+
+security_tests:
+  red_team: false
+  fuzzing: true
+  chaos: false
+  adversarial: false
+
+patent_analysis:
+  enabled: false
+  prior_art_search: false
+  claim_generation: false
+
+documentation:
+  technical_guide: false
+  security_report: true
+  compliance: false
+  patent_draft: false
+
+thresholds:
+  security_score_minimum: 85
+  patent_score_minimum: 3
+  performance_degradation_max: 10
+EOF
+
+# Run task completion handler in quick mode
+cd security-framework/src
+
+# Convert changed files to JSON array
+CHANGED_FILES_JSON=$(echo "$CHANGED_FILES" | jq -R -s -c 'split("\n")[:-1]')
+
+# Run the handler
+python task_completion_handler.py \
+    "$TASK_ID" \
+    --type "$TASK_TYPE" \
+    --title "$TITLE" \
+    --description "$DESCRIPTION" \
+    --files $CHANGED_FILES \
+    --commit "$COMMIT" \
+    --branch "$BRANCH" \
+    --author "$AUTHOR" \
+    --classification "unclassified" \
+    --mode "quick" \
+    --config /tmp/alcub3_hook_config.yml \
+    --output /tmp/alcub3_security_report.json 2>&1
+
+HANDLER_EXIT_CODE=$?
+
+# Clean up config
+rm -f /tmp/alcub3_hook_config.yml
+
+# Check results
+if [ $HANDLER_EXIT_CODE -ne 0 ]; then
+    echo -e "${RED}❌ Security validation failed!${NC}"
+    echo "Please check the errors above and fix any security issues before pushing."
+    exit 1
+fi
+
+# Parse results
+if [ -f "/tmp/alcub3_security_report.json" ]; then
+    SECURITY_SCORE=$(jq -r '.security_results.summary.score // 100' /tmp/alcub3_security_report.json)
+    ISSUES_COUNT=$(jq -r '.issues_found | length' /tmp/alcub3_security_report.json)
+    PRODUCTION_READY=$(jq -r '.compliance_status.production_ready // false' /tmp/alcub3_security_report.json)
+    
+    echo ""
+    echo "Security Validation Results:"
+    echo "============================"
+    echo "Security Score: $SECURITY_SCORE/100"
+    echo "Issues Found: $ISSUES_COUNT"
+    echo "Production Ready: $PRODUCTION_READY"
+    
+    # Show any critical issues
+    if [ $ISSUES_COUNT -gt 0 ]; then
+        echo ""
+        echo -e "${YELLOW}Issues detected:${NC}"
+        jq -r '.issues_found[] | "- [\(.severity)] \(.description)"' /tmp/alcub3_security_report.json
+    fi
+    
+    # Check if we should block the push
+    if [ "$PRODUCTION_READY" != "true" ] && [[ "$BRANCH" =~ ^(main|master|release/) ]]; then
+        echo ""
+        echo -e "${RED}❌ Push blocked: Code is not production ready${NC}"
+        echo "Please address the security issues before pushing to $BRANCH"
+        
+        # Save report for developer
+        REPORT_PATH="security-report-$(date +%Y%m%d-%H%M%S).json"
+        cp /tmp/alcub3_security_report.json "$REPORT_PATH"
+        echo "Full security report saved to: $REPORT_PATH"
+        
+        exit 1
+    fi
+    
+    # Clean up
+    rm -f /tmp/alcub3_security_report.json
+fi
+
+echo ""
+echo -e "${GREEN}✅ Security validation passed!${NC}"
+echo "Proceeding with push..."
+
+exit 0

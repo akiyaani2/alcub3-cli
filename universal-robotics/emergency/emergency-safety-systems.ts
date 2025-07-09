@@ -31,10 +31,10 @@ import {
   AuditLog,
   SafetyZone,
   OverrideAuthority
-} from '../interfaces/robotics-types';
+} from '../interfaces/robotics-types.js';
 
 // Emergency stop levels with increasing severity
-enum EmergencyStopLevel {
+export enum EmergencyStopLevel {
   SOFT_STOP = 0,        // Controlled deceleration and stop
   HARD_STOP = 1,        // Immediate motor cutoff
   EMERGENCY_STOP = 2,   // Hardware-level emergency stop
@@ -160,7 +160,7 @@ interface SafetyAssessment {
   emergencyReadiness: EmergencyReadiness;
 }
 
-enum SafetyLevel {
+export enum SafetyLevel {
   SAFE = 'safe',
   CAUTION = 'caution',
   WARNING = 'warning',
@@ -438,7 +438,7 @@ export class UniversalEmergencySafetySystem extends EventEmitter {
       // Process results and handle failures
       const stopResults: EmergencyStopResult[] = [];
       for (let i = 0; i < results.length; i++) {
-        const result = results[i];
+        const result = results[i] as PromiseSettledResult<EmergencyStopResult>;
         if (result.status === 'fulfilled') {
           stopResults.push(result.value);
         } else {

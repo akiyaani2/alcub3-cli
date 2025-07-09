@@ -196,7 +196,7 @@ export class SpotSecurityAdapter extends EventEmitter {
   /**
    * Get secure status from Spot
    */
-  async getSecureStatus(): Promise<StatusUpdate> {
+  async getStatus(): Promise<StatusUpdate> {
     if (!this.connected) {
       throw new Error('Spot robot not connected');
     }

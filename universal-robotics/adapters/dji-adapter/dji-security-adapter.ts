@@ -22,19 +22,21 @@
 
 import { EventEmitter } from 'events';
 import { SecurityValidator } from '../../hal/security-hal';
-import { 
-  SecurityClassification, 
-  RobotCommand, 
-  RobotStatus, 
-  EmergencyResponse,
-  TelemetryData,
+import {
+  SecurityClassification,
+  RoboticsCommand,
+  StatusUpdate,
+  RoboticsPlatform,
   SecurityValidationResult,
-  DroneCommand,
+  SecurityAuditLog,
+  EmergencyType,
+  EmergencyAction,
+  EmergencyResponse,
   FlightMode,
-  DroneStatus,
-  SecurityContext,
-  AuditLog
+  RobotStatus,
+  DroneCommand
 } from '../../interfaces/robotics-types';
+import { SecurityContext } from '../../hal/security-hal';
 
 // DJI-specific security context extending base SecurityContext
 interface DJISecurityContext extends SecurityContext {
@@ -172,7 +174,7 @@ interface SecurityCheckpoint {
  */
 export class DJISecurityAdapter extends SecurityValidator {
   private eventEmitter: EventEmitter;
-  private securityContext: DJISecurityContext;
+  private securityContext: DJISecurityContext = {} as DJISecurityContext;
   private connectionPool: Map<string, any>; // DJI SDK connection instances
   private flightState: FlightMode;
   private emergencyProtocols: Map<string, EmergencyResponse>;
@@ -584,7 +586,7 @@ export class DJISecurityAdapter extends SecurityValidator {
     };
   }
 
-  private isDroneCommand(command: RobotCommand): boolean {
+  private isDroneCommand(command: RoboticsCommand): boolean {
     const droneCommands = ['takeoff', 'land', 'move_to', 'hover', 'return_to_home', 'follow_path', 'emergency_stop'];
     return droneCommands.includes(command.type);
   }
@@ -722,7 +724,7 @@ export class DJISecurityAdapter extends SecurityValidator {
   private async activateCommunicationLossProtocol(event: any): Promise<void> {}
   private async executeLowBatteryProtocol(event: any): Promise<void> {}
   private async blockUnauthorizedCommand(event: any): Promise<void> {}
-  private async logSecurityEvent(event: string, data: any, level: string, error?: any): Promise<void> {}
+  private async logSecurityEvent(event: string, data: any, result: 'SUCCESS' | 'ERROR' | 'CRITICAL', error?: any, classification?: SecurityClassification): Promise<void> {}
 }
 
 /**

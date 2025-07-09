@@ -9,6 +9,8 @@
 import express, { Request, Response } from 'express';
 import { maestroClient } from './enhanced_middleware.js';
 import { authManager } from './auth.js';
+import { cisaAPI } from './cisa_api.js';
+import { jitAPI } from './jit_api.js';
 
 const router = express.Router();
 
@@ -128,5 +130,11 @@ maestroRouter.post('/admin/keys', async (req: Request, res: Response) => {
 
 // Mount under /v1/maestro
 router.use('/v1/maestro', maestroRouter);
+
+// Mount CISA Remediation Engine API
+router.use('/v1/cisa', cisaAPI.createRouter());
+
+// Mount JIT Privilege API
+router.use('/v1/jit', jitAPI.createRouter());
 
 export { router as apiRoutes };

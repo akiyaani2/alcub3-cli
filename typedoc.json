@@ -1,0 +1,31 @@
+{
+  "entryPoints": [
+    "./packages/core/src/index.ts",
+    "./packages/cli/src/gemini.tsx",
+    "./packages/core/src/api/enhanced_middleware.ts",
+    "./packages/core/src/api/server.ts",
+    "./universal-robotics/physics/physics-validation-engine.ts",
+    "./universal-robotics/emergency/emergency-safety-systems.ts",
+    "./universal-robotics/hal/anomaly-detection.ts",
+    "./universal-robotics/hal/advanced-security-hal.ts",
+    "./universal-robotics/adapters/dji-adapter/dji-security-adapter.ts",
+    "./universal-robotics/adapters/ros2-adapter/ros2-security-integration.ts",
+    "./universal-robotics/adapters/spot-adapter/spot-security-adapter.ts",
+    "./universal-robotics/command-control/unified-control-interface.ts",
+    "./universal-robotics/hal/security-hal.ts",
+    "./universal-robotics/interfaces/robotics-types.ts"
+  ],
+  "entryPointStrategy": "expand",
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/test/**",
+    "**/__tests__/**"
+  ],
+  "out": "./docs/api",
+  "name": "ALCUB3 API Documentation",
+  "includeVersion": true,
+  "excludePrivate": true,
+}

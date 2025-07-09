@@ -53,7 +53,8 @@
     "release:version": "node scripts/version.js",
     "tag:release:nightly": "TAG_NAME=\"v$(node -p \"require('./package.json').version\")+nightly.$(date -u +%d%m%y).$(git rev-parse --short HEAD)\"; git tag -a $TAG_NAME -m '' && git push origin $TAG_NAME",
     "check:versions": "node scripts/check-versions.js",
-    "publish:actions-release": "npm run prepare:package && npm run build:packages && npm run publish:npm"
+    "publish:actions-release": "npm run prepare:package && npm run build:packages && npm run publish:npm",
+    "docs:api": "typedoc --options typedoc.json"
   },
   "bin": {
     "alcub3": "bundle/alcub3.js"
@@ -64,7 +65,9 @@
     "LICENSE"
   ],
   "devDependencies": {
+    "@types/date-fns": "^2.5.3",
     "@types/express": "^5.0.3",
+    "@types/express-validator": "^2.20.33",
     "@types/micromatch": "^4.0.9",
     "@types/mime-types": "^2.1.4",
     "@types/minimatch": "^5.1.2",
@@ -87,13 +90,19 @@
     "prettier": "^3.5.3",
     "react-devtools-core": "^4.28.5",
     "supertest": "^7.1.1",
+    "typedoc": "^0.26.0",
     "typescript-eslint": "^8.30.1",
     "yargs": "^17.7.2"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",
     "axios": "^1.10.0",
+    "cli-table3": "^0.6.5",
+    "console-table-printer": "^2.14.6",
     "crypto-js": "^4.2.0",
-    "express-rate-limit": "^7.5.1"
+    "date-fns": "^4.1.0",
+    "express-async-handler": "^1.2.0",
+    "express-rate-limit": "^7.5.1",
+    "express-validator": "^7.2.1"
   }
 }

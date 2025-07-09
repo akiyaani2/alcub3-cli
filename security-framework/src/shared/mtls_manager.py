@@ -48,7 +48,7 @@ except ImportError:
     logging.error("Cryptography library not available - mTLS operations disabled")
 
 from .crypto_utils import FIPSCryptoUtils, CryptoAlgorithm, SecurityLevel, CryptographicError
-from .classification import SecurityClassification, SecurityClassificationLevel
+from .classification import ClassificationLevel
 
 class MTLSError(Exception):
     """Base exception for mTLS operations."""

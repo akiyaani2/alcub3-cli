@@ -7,10 +7,14 @@
 // packages/core/src/api/server.ts
 
 import express from 'express';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import rateLimit from 'express-rate-limit';
 import { enhancedMiddlewareStack } from './enhanced_middleware.js';
 import { apiRoutes } from './routes.js';
 import { metricsMiddleware } from './metrics.js';
+import { cisaAPI } from './cisa_api.js';
+import { jitAPI } from './jit_api.js';
 import cors from 'cors';
 
 const app = express();
@@ -52,10 +56,38 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // Apply enhanced middleware stack to all API routes
-app.use('/api', limiter, ...enhancedMiddlewareStack, apiRoutes);
+app.use('/api', limiter as any, ...enhancedMiddlewareStack, apiRoutes);
 
 export const startApiServer = (port: number) => {
-  app.listen(port, () => {
+  // Create HTTP server
+  const httpServer = createServer(app);
+  
+  // Create Socket.IO server
+  const io = new Server(httpServer, {
+    cors: {
+      origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+      credentials: true
+    }
+  });
+  
+  // Set up Socket.IO for APIs
+  cisaAPI.setSocketIO(io);
+  jitAPI.setSocketIO(io);
+  
+  // Start server
+  httpServer.listen(port, () => {
     console.log(`ALCUB3 API server listening on port ${port}`);
+    console.log(`WebSocket server ready for real-time updates`);
+  });
+  
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully');
+    cisaAPI.cleanup();
+    jitAPI.cleanup();
+    httpServer.close(() => {
+      console.log('Server closed');
+      process.exit(0);
+    });
   });
 };

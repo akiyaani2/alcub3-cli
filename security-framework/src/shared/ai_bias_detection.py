@@ -596,6 +596,14 @@ class AIBiasDetectionSystem:
                 result = detector.detect_bias(predictions, protected_attributes, true_labels)
                 detection_results.append(result)
                 
+                # Enhanced AuditLogger integration - log bias detection events
+                if result.severity in [SeverityLevel.HIGH, SeverityLevel.CRITICAL] and self.audit_logger:
+                    await self.audit_logger.log_security_event(
+                        "AI_BIAS_DETECTED",
+                        f"Significant bias detected: {result.metric.value} with severity {result.severity.value}",
+                        asdict(result)
+                    )
+                
                 # Apply mitigation if requested and bias is significant
                 if apply_mitigation and result.severity in [SeverityLevel.HIGH, SeverityLevel.CRITICAL]:
                     mitigation_strategy = self._select_mitigation_strategy(result)
@@ -603,9 +611,25 @@ class AIBiasDetectionSystem:
                         mitigation_strategy, predictions, protected_attributes, result
                     )
                     mitigation_results.append(mitigation_result)
+                    
+                    # Enhanced AuditLogger integration - log mitigation attempts
+                    if mitigation_result and self.audit_logger:
+                        await self.audit_logger.log_security_event(
+                            "AI_BIAS_MITIGATION_ATTEMPTED",
+                            f"Mitigation strategy {mitigation_result.strategy.value} applied for {result.metric.value}",
+                            asdict(mitigation_result)
+                        )
                 
+            except ZeroDivisionError as e:
+                self.logger.error(f"Zero division error in bias detection for {metric.value}: {e}")
+                # Handle cases where groups have no samples
+                continue
+            except ValueError as e:
+                self.logger.error(f"Value error in bias detection for {metric.value}: {e}")
+                # Handle cases with invalid input data
+                continue
             except Exception as e:
-                self.logger.error(f"Error in bias detection for {metric.value}: {e}")
+                self.logger.error(f"Unexpected error in bias detection for {metric.value}: {e}")
         
         # Calculate overall fairness score
         overall_fairness_score = self._calculate_overall_fairness_score(detection_results)
@@ -654,13 +678,70 @@ class AIBiasDetectionSystem:
         return f"BIAS-ASSESS-{timestamp}-{self.assessment_count:04d}"
     
     def _select_mitigation_strategy(self, bias_result: BiasDetectionResult) -> MitigationStrategy:
-        """Select appropriate mitigation strategy based on bias type and severity."""
-        if bias_result.metric == BiasMetric.DEMOGRAPHIC_PARITY:
-            return MitigationStrategy.THRESHOLD_ADJUSTMENT
-        elif bias_result.metric == BiasMetric.EQUALIZED_ODDS:
-            return MitigationStrategy.POSTPROCESSING
-        else:
-            return MitigationStrategy.REWEIGHTING
+        """
+        Enhanced mitigation strategy selection with performance impact consideration.
+        
+        Selects optimal mitigation strategy based on bias type, severity, and
+        contextual factors including performance impact and operational constraints.
+        """
+        # Performance impact preference (lower is better)
+        performance_preferences = {
+            MitigationStrategy.THRESHOLD_ADJUSTMENT: 0.1,  # Low impact
+            MitigationStrategy.REWEIGHTING: 0.3,          # Medium impact
+            MitigationStrategy.POSTPROCESSING: 0.5,       # Higher impact
+            MitigationStrategy.PREPROCESSING: 0.7,        # High impact
+            MitigationStrategy.IN_PROCESSING: 0.9         # Highest impact
+        }
+        
+        # Strategy effectiveness by bias type
+        effectiveness_matrix = {
+            BiasMetric.DEMOGRAPHIC_PARITY: {
+                MitigationStrategy.THRESHOLD_ADJUSTMENT: 0.8,
+                MitigationStrategy.REWEIGHTING: 0.7,
+                MitigationStrategy.POSTPROCESSING: 0.6
+            },
+            BiasMetric.EQUALIZED_ODDS: {
+                MitigationStrategy.POSTPROCESSING: 0.9,
+                MitigationStrategy.THRESHOLD_ADJUSTMENT: 0.7,
+                MitigationStrategy.REWEIGHTING: 0.6
+            },
+            BiasMetric.CALIBRATION: {
+                MitigationStrategy.POSTPROCESSING: 0.8,
+                MitigationStrategy.PREPROCESSING: 0.7,
+                MitigationStrategy.REWEIGHTING: 0.6
+            }
+        }
+        
+        # Get applicable strategies for this bias type
+        applicable_strategies = effectiveness_matrix.get(bias_result.metric, {
+            MitigationStrategy.REWEIGHTING: 0.6,
+            MitigationStrategy.THRESHOLD_ADJUSTMENT: 0.5
+        })
+        
+        # Score strategies by effectiveness vs performance impact
+        strategy_scores = {}
+        for strategy, effectiveness in applicable_strategies.items():
+            performance_impact = performance_preferences.get(strategy, 0.5)
+            
+            # Adjust for severity - higher severity tolerates more performance impact
+            severity_multiplier = {
+                SeverityLevel.CRITICAL: 1.0,    # Accept any performance impact
+                SeverityLevel.HIGH: 0.8,        # Prefer lower impact
+                SeverityLevel.MEDIUM: 0.6,      # Strong preference for low impact
+                SeverityLevel.LOW: 0.4          # Very strong preference for low impact
+            }.get(bias_result.severity, 0.5)
+            
+            # Combined score: effectiveness weighted by severity tolerance
+            score = effectiveness * severity_multiplier - performance_impact * (1 - severity_multiplier)
+            strategy_scores[strategy] = score
+        
+        # Select strategy with highest score
+        best_strategy = max(strategy_scores.items(), key=lambda x: x[1])[0]
+        
+        self.logger.info(f"Selected mitigation strategy {best_strategy.value} for {bias_result.metric.value} "
+                        f"bias (severity: {bias_result.severity.value}, score: {strategy_scores[best_strategy]:.3f})")
+        
+        return best_strategy
     
     def _calculate_overall_fairness_score(self, detection_results: List[BiasDetectionResult]) -> float:
         """Calculate overall fairness score from individual metrics."""

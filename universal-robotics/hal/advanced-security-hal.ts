@@ -20,7 +20,7 @@ import {
     SecurityValidationResult,
     RoboticsSecurityAdapter,
     SecurityAuditLogger
-} from './security-hal';
+} from './security-hal.js';
 
 /**
  * ALCUB3 Advanced Universal Security HAL
@@ -933,7 +933,7 @@ interface AdvancedSecurityValidationResult extends SecurityValidationResult {
     trustScore: number;
     cryptographicProof?: CryptographicProof;
     consensusAchieved: boolean;
-    performanceMetrics: PerformanceMetrics;
+    performanceMetrics: this.performanceMetrics as any;
 }
 
 interface AdvancedEmergencyResponse {

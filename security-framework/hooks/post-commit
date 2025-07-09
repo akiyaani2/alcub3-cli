@@ -1,0 +1,136 @@
+#!/bin/bash
+# ALCUB3 Post-Commit Hook
+# Runs patent innovation analysis in background after commits
+
+# Colors for output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Check if this is a merge commit (skip analysis)
+if git rev-parse -q --verify MERGE_HEAD; then
+    exit 0
+fi
+
+# Check if security-framework is set up
+if [ ! -d "security-framework/src" ]; then
+    exit 0
+fi
+
+# Get commit info
+COMMIT_HASH=$(git rev-parse HEAD)
+COMMIT_MSG=$(git log -1 --pretty=%B)
+AUTHOR=$(git config user.name)
+
+# Check if commit might contain innovations
+if ! echo "$COMMIT_MSG" | grep -qE "(feat|feature|add|implement|create|design|optimize|enhance)"; then
+    exit 0
+fi
+
+# Get changed files (only code files)
+CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '\.(py|ts|tsx|js|jsx)$')
+
+if [ -z "$CHANGED_FILES" ]; then
+    exit 0
+fi
+
+echo -e "${BLUE}🔍 ALCUB3 Patent Innovation Scanner${NC}"
+echo "Analyzing commit for patentable innovations..."
+
+# Run patent analysis in background
+{
+    # Create patent-only config
+    cat > /tmp/alcub3_patent_config.yml << EOF
+execution_mode: patent
+parallel_execution: true
+max_workers: 2
+timeout_minutes: 10
+
+security_tests:
+  red_team: false
+  fuzzing: false
+  chaos: false
+  adversarial: false
+
+patent_analysis:
+  enabled: true
+  prior_art_search: false
+  claim_generation: true
+
+documentation:
+  technical_guide: false
+  security_report: false
+  compliance: false
+  patent_draft: true
+
+thresholds:
+  security_score_minimum: 85
+  patent_score_minimum: 3
+  performance_degradation_max: 10
+EOF
+
+    # Create task context
+    TASK_ID="PATENT-$(date +%s)"
+    TITLE="$COMMIT_MSG"
+    DESCRIPTION="Automated patent analysis for commit $COMMIT_HASH"
+    
+    cd security-framework/src
+    
+    # Run patent analysis
+    python task_completion_handler.py \
+        "$TASK_ID" \
+        --type "feature" \
+        --title "$TITLE" \
+        --description "$DESCRIPTION" \
+        --files $CHANGED_FILES \
+        --commit "$COMMIT_HASH" \
+        --author "$AUTHOR" \
+        --classification "unclassified" \
+        --mode "patent" \
+        --config /tmp/alcub3_patent_config.yml \
+        --output /tmp/alcub3_patent_report.json 2>/dev/null
+    
+    # Clean up config
+    rm -f /tmp/alcub3_patent_config.yml
+    
+    # Check results
+    if [ -f "/tmp/alcub3_patent_report.json" ]; then
+        PATENTS_COUNT=$(jq -r '.patent_findings | length' /tmp/alcub3_patent_report.json)
+        
+        if [ $PATENTS_COUNT -gt 0 ]; then
+            # Create notification file
+            NOTIFICATION_FILE=".alcub3_patent_notification"
+            
+            echo "=======================================" > $NOTIFICATION_FILE
+            echo "💡 PATENT OPPORTUNITIES DETECTED" >> $NOTIFICATION_FILE
+            echo "=======================================" >> $NOTIFICATION_FILE
+            echo "" >> $NOTIFICATION_FILE
+            echo "Commit: $COMMIT_HASH" >> $NOTIFICATION_FILE
+            echo "Found: $PATENTS_COUNT potentially patentable innovations" >> $NOTIFICATION_FILE
+            echo "" >> $NOTIFICATION_FILE
+            echo "Top innovations:" >> $NOTIFICATION_FILE
+            
+            # List top 3 innovations
+            jq -r '.patent_findings[:3][] | "- \(.title) (Score: \(.patentability_score)/5)"' \
+                /tmp/alcub3_patent_report.json >> $NOTIFICATION_FILE
+            
+            echo "" >> $NOTIFICATION_FILE
+            echo "Full report saved to: .alcub3_patents/$(date +%Y%m%d)-$COMMIT_HASH.json" >> $NOTIFICATION_FILE
+            
+            # Save full report
+            mkdir -p .alcub3_patents
+            cp /tmp/alcub3_patent_report.json ".alcub3_patents/$(date +%Y%m%d)-$COMMIT_HASH.json"
+            
+            # Show notification on next terminal prompt
+            echo -e "${GREEN}✨ Patent opportunities detected! Check .alcub3_patent_notification for details.${NC}"
+        fi
+        
+        # Clean up
+        rm -f /tmp/alcub3_patent_report.json
+    fi
+    
+} &
+
+# Let the commit complete immediately
+exit 0

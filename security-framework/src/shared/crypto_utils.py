@@ -325,6 +325,74 @@ class FIPSCryptoUtils:
         except Exception as e:
             self.logger.critical(f"FIPS self-tests failed: {e}")
             raise FIPSComplianceError(f"FIPS cryptographic module validation failed: {e}") from e
+
+    def perform_continuous_fips_self_tests(self):
+        """
+        Perform continuous FIPS self-tests during runtime.
+        
+        Enhanced implementation for continuous validation of FIPS compliance
+        during operation, including periodic self-tests and event-driven validation.
+        """
+        try:
+            current_time = time.time()
+            last_test_time = self._crypto_state.get("fips_self_test_timestamp", 0)
+            
+            # Check if periodic self-test is due (every 24 hours)
+            if current_time - last_test_time > 86400:  # 24 hours
+                self.logger.info("Performing periodic FIPS self-test")
+                self._perform_fips_self_tests()
+                return True
+            
+            # Perform lightweight continuous tests
+            self._perform_lightweight_fips_tests()
+            
+            # Update timestamp
+            self._crypto_state["fips_self_test_timestamp"] = current_time
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Continuous FIPS self-tests failed: {e}")
+            return False
+    
+    def _perform_lightweight_fips_tests(self):
+        """Perform lightweight FIPS validation tests."""
+        # Test entropy quality
+        entropy_sample = os.urandom(256)
+        if len(set(entropy_sample)) < 64:  # Basic entropy check
+            raise RuntimeError("Entropy quality test failed")
+        
+        # Test algorithm availability
+        for algorithm, config in self._fips_algorithms.items():
+            if not config["validated"]:
+                raise RuntimeError(f"Algorithm {algorithm.value} validation failed")
+        
+        # Test key generation capability
+        test_key = self._generate_symmetric_key(32)
+        if len(test_key) != 32:
+            raise RuntimeError("Key generation test failed")
+        
+        self.logger.debug("Lightweight FIPS tests passed")
+    
+    def trigger_fips_self_test_on_event(self, event_type: str):
+        """
+        Trigger FIPS self-tests based on security events.
+        
+        Args:
+            event_type: Type of security event that triggered the test
+        """
+        try:
+            self.logger.info(f"Triggering FIPS self-test due to event: {event_type}")
+            
+            # Perform comprehensive self-test
+            self._perform_fips_self_tests()
+            
+            # Log the event-driven test
+            self.logger.info(f"Event-driven FIPS self-test completed for {event_type}")
+            
+        except Exception as e:
+            self.logger.error(f"Event-driven FIPS self-test failed for {event_type}: {e}")
+            raise FIPSComplianceError(f"FIPS validation failed after {event_type} event: {e}")
     
     def generate_key(self, algorithm: CryptoAlgorithm, key_purpose: str = "general") -> CryptoKeyMaterial:
         """

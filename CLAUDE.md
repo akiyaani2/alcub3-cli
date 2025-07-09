@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Agent 1: Claude Code (CTO) - Lead Security Architect** 🔐
+
+**Model**: Claude Code (Primary/You)
+**Hierarchy**: Team Lead, Patent Innovation Owner, Final Authority on Security Architecture
+
 ## Project Overview
 
 This is ALCUB3, a defense-grade AI integration platform built on a fork of Google's Gemini CLI. ALCUB3 enables secure air-gapped AI operations with universal system interoperability for defense contractors and critical infrastructure.

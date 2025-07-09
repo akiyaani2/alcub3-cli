@@ -25,8 +25,10 @@ import {
   RoboticsPlatform,
   SecurityValidationResult,
   TelemetryData,
-  TelemetryType
-} from '../../interfaces/robotics-types.js';
+  TelemetryType,
+  EmergencyResponse
+} from '../interfaces/robotics-types';
+import { SecurityContext } from '../hal/security-hal';
 
 /**
  * ROS2 Security Integration Adapter
@@ -89,7 +91,7 @@ export class ROS2SecurityIntegration extends EventEmitter {
   /**
    * Execute secure ROS2 command
    */
-  async executeSecureCommand(command: RoboticsCommand): Promise<any> {
+  async executeCommand(command: RoboticsCommand): Promise<void> {
     if (!this.connected) {
       throw new Error('ROS2 system not connected');
     }
@@ -198,20 +200,21 @@ export class ROS2SecurityIntegration extends EventEmitter {
         timestamp: Date.now()
       });
       
-    } catch (error) {
+    } catch (err: any) {
+      await this.logSecurityEvent('EMERGENCY_FAILED', type, 'ERROR', err, SecurityClassification.CRITICAL); 
       this.emit('ros2:emergency_failed', { 
         robotId: this.robotId, 
         type,
-        error: error.message 
+        error: err.message 
       });
-      throw error;
+      throw err;
     }
   }
 
   /**
    * Get secure status from ROS2 system
    */
-  async getSecureStatus(): Promise<StatusUpdate> {
+  async getStatus(): Promise<StatusUpdate> {
     if (!this.connected) {
       throw new Error('ROS2 system not connected');
     }

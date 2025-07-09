@@ -37,6 +37,10 @@ import {
 } from '@alcub3/alcub3-cli-core';
 import { validateAuthMethod } from './config/auth.js';
 import { setMaxSizedBoxDebugging } from './ui/components/shared/MaxSizedBox.js';
+import { Command } from 'commander';
+import { registerClearanceCommands } from './commands/clearance.js';
+import { registerMaestroCommands } from './commands/maestro.js';
+import { createConfigurationDriftCommand } from './commands/configuration-drift.js';
 
 function getNodeMemoryArgs(config: Config): string[] {
   const totalMemoryMB = os.totalmem() / (1024 * 1024);
@@ -101,6 +105,12 @@ export async function main() {
 
   const extensions = loadExtensions(workspaceRoot);
   const config = await loadCliConfig(settings.merged, extensions, sessionId);
+
+  const program = new Command();
+  registerClearanceCommands(program);
+  registerMaestroCommands(program);
+  program.addCommand(createConfigurationDriftCommand());
+  program.parse(process.argv);
 
   // set default fallback to gemini api key
   // this has to go after load cli because thats where the env is set

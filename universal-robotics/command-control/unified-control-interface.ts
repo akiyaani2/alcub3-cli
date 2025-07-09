@@ -24,19 +24,16 @@ import { EventEmitter } from 'events';
 import { UniversalRoboticsSecurityHAL } from '../hal/security-hal';
 import { SpotSecurityAdapter } from '../adapters/spot-adapter/spot-security-adapter';
 import { ROS2SecurityIntegration } from '../adapters/ros2-adapter/ros2-security-integration';
-import { DJISecurityAdapter } from '../adapters/dji-adapter/dji-security-adapter';
+import { DJISecurityAdapter } from '../adapters/dji-adapter/dji-security-adapter.js';
 import {
-  SecurityClassification,
-  RobotCommand,
-  RobotStatus,
-  EmergencyResponse,
-  SecurityValidationResult,
-  Platform,
-  CoordinationTask,
-  MissionPlan,
-  ThreatAssessment,
-  AuditLog
-} from '../interfaces/robotics-types';
+  import {
+  RoboticsCommand,
+  StatusUpdate,
+  RoboticsPlatform,
+  SecurityAuditLog,
+  EmergencyType,
+  EmergencyAction
+} from '../interfaces/robotics-types.js';
 
 // Unified control system configuration
 interface UnifiedControlConfig {

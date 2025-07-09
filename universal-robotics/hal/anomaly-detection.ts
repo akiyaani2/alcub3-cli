@@ -1310,13 +1310,10 @@ interface SimilarIncident {
 
 // Export all types
 export {
-    AnomalyScore,
-    FeatureContribution,
-    BehaviorPattern,
-    FeatureStatistics,
-    TrainingConfig,
-    ModelMetrics,
-    SwarmAnomaly,
-    AnomalyExplanation,
-    StreamProcessor
+  AnomalyScore,
+  FeatureContribution,
+  BehaviorPattern,
+  FeatureStatistics,
+  TrainingConfig,
+  ModelMetrics
 };

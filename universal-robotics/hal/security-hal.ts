@@ -137,6 +137,14 @@ export interface EmergencyAction {
     details: string;
 }
 
+export interface SecurityContext {
+    platformId: string;
+    operatorId: string;
+    sessionId: string;
+    timestamp: Date;
+    classification: RoboticsSecurityLevel;
+}
+
 // Simplified audit logger interface for HAL use
 export interface SecurityAuditLogger {
     logSecurityEvent(
@@ -466,7 +474,7 @@ export class UniversalSecurityHAL extends EventEmitter {
         overallStatus: SecurityState;
         platformStatuses: Map<string, SecurityState>;
         emergencyStopActive: boolean;
-        performanceMetrics: typeof this.performanceMetrics;
+        performanceMetrics: any;
         registeredPlatforms: number;
     } {
         // Determine overall security status

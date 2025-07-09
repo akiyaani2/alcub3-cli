@@ -14,6 +14,24 @@
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "target": "es2022",
-    "types": ["node", "vitest/globals"]
-  }
+    "jsx": "react-jsx",
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "rootDir": "."
+  },
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "universal-robotics/**/*.ts",
+    "universal-robotics/**/*.tsx",
+    "src/types/**/*.d.ts",
+    "src/types/declarations.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
 }

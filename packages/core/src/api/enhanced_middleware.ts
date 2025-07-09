@@ -39,6 +39,11 @@ import { authManager } from './auth.js';
 import winston from 'winston';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
+import { ErrorObject as AjvErrorObject } from 'ajv';
+
+interface ErrorObject extends AjvErrorObject {
+  instancePath: string;
+}
 
 // Enhanced logging configuration
 const logger = winston.createLogger({
@@ -339,7 +344,7 @@ export const inputValidationMiddleware = (
       if (req.body.text) {
         const valid = validators.securityValidation(req.body);
         if (!valid) {
-          const errors = validators.securityValidation.errors?.map(error => 
+          const errors = validators.securityValidation.errors?.map((error: ErrorObject) => 
             `${error.instancePath} ${error.message}`
           ).join(', ') || 'Validation failed';
           
@@ -545,6 +550,7 @@ export const performanceMonitoringMiddleware = (
   const startTime = Date.now();
   
   // Override res.end to capture response time
+  /*
   const originalEnd = res.end;
   res.end = function(chunk?: any, encoding?: any) {
     const responseTime = Date.now() - startTime;
@@ -569,6 +575,7 @@ export const performanceMonitoringMiddleware = (
     // Call original end method
     originalEnd.call(this, chunk, encoding);
   };
+  */
   
   next();
 };

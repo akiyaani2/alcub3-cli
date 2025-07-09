@@ -3,7 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-import { spawn } from 'child_process';
 import path from 'path';
 import crypto from 'crypto';
 import { ClassificationLevel } from './classification.js';
@@ -74,8 +73,9 @@ export class AuthenticationManager {
      * Interface with MAESTRO crypto utilities for signature validation
      */
     async validateSignatureWithMaestro(keyId, signature, hashedKey) {
-        return new Promise((resolve, reject) => {
-            // Create validation payload
+        try {
+            // Use persistent MAESTRO service instead of spawning processes
+            const axios = require('axios');
             const validationPayload = {
                 operation: 'validate_api_key',
                 key_id: keyId,
@@ -83,35 +83,25 @@ export class AuthenticationManager {
                 hashed_key: hashedKey,
                 timestamp: Date.now(),
             };
-            // Spawn Python process for MAESTRO crypto validation
-            const pythonProcess = spawn('python3', [this.maestroCryptoPath], {
-                stdio: ['pipe', 'pipe', 'pipe'],
-            });
-            let result = '';
-            let error = '';
-            pythonProcess.stdout.on('data', (data) => {
-                result += data.toString();
-            });
-            pythonProcess.stderr.on('data', (data) => {
-                error += data.toString();
-            });
-            pythonProcess.on('close', (code) => {
-                if (code !== 0) {
-                    reject(new Error(`MAESTRO crypto validation failed: ${error}`));
-                    return;
-                }
-                try {
-                    const validationResult = JSON.parse(result);
-                    resolve(validationResult.valid === true);
-                }
-                catch (parseError) {
-                    reject(new Error(`Failed to parse validation result: ${parseError}`));
-                }
-            });
-            // Send validation payload to Python process
-            pythonProcess.stdin.write(JSON.stringify(validationPayload));
-            pythonProcess.stdin.end();
-        });
+            // Try to use persistent MAESTRO service
+            try {
+                const response = await axios.post('http://127.0.0.1:8001/authenticate', validationPayload, {
+                    timeout: 5000
+                });
+                return response.data.valid === true;
+            }
+            catch (serviceError) {
+                // Fallback to local validation if service unavailable
+                console.warn('MAESTRO service unavailable, using fallback validation');
+                // Use HMAC validation as fallback (same as generateSignatureWithMaestro)
+                const expectedSignature = crypto.createHmac('sha256', hashedKey).update(keyId).digest('hex');
+                return signature === expectedSignature;
+            }
+        }
+        catch (error) {
+            console.error('Signature validation error:', error);
+            return false;
+        }
     }
     /**
      * OAuth2 authentication middleware (placeholder implementation)
