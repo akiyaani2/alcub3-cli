@@ -12,7 +12,7 @@ import type {
   Context,
   Histogram,
 } from '@opentelemetry/api';
-import { Config } from '@gemini-core/core/src/config/config.js';
+import { Config } from '../config/config.js';
 import { FileOperation } from './metrics.js';
 
 const mockCounterAddFn: Mock<

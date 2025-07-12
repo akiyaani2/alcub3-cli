@@ -21,7 +21,7 @@ import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 
-if (!process.cwd().includes('packages') && !process.cwd().includes('01-security-platform')) {
+if (!process.cwd().includes('packages')) {
   console.error('must be invoked from a package directory');
   process.exit(1);
 }

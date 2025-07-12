@@ -8,7 +8,7 @@ import {
   allowEditorTypeInSandbox,
   checkHasEditorType,
   type EditorType,
-} from '../index.js';
+} from '@google/gemini-cli-core';
 
 export interface EditorDisplay {
   name: string;

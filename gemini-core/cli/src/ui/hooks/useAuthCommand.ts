@@ -11,7 +11,7 @@ import {
   Config,
   clearCachedCredentialFile,
   getErrorMessage,
-} from '../index.js';
+} from '@google/gemini-cli-core';
 
 export const useAuthCommand = (
   settings: LoadedSettings,

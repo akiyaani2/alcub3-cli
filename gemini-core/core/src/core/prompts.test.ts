@@ -6,7 +6,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { getCoreSystemPrompt } from './prompts.js';
-import { isGitRepository } from '@gemini-core/core/src/utils/gitUtils.js';
+import { isGitRepository } from '../utils/gitUtils.js';
 
 // Mock tool names if they are dynamically generated or complex
 vi.mock('../tools/ls', () => ({ LSTool: { Name: 'list_directory' } }));

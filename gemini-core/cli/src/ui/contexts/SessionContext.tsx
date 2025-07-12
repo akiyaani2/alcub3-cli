@@ -6,6 +6,7 @@
 
 import React, {
   createContext,
+  useCallback,
   useContext,
   useState,
   useMemo,
@@ -16,16 +17,17 @@ import {
   uiTelemetryService,
   SessionMetrics,
   ModelMetrics,
-} from '../index.js';
+} from '@google/gemini-cli-core';
 
 // --- Interface Definitions ---
 
 export type { SessionMetrics, ModelMetrics };
 
-interface SessionStatsState {
+export interface SessionStatsState {
   sessionStartTime: Date;
   metrics: SessionMetrics;
   lastPromptTokenCount: number;
+  promptCount: number;
 }
 
 export interface ComputedSessionStats {
@@ -46,6 +48,8 @@ export interface ComputedSessionStats {
 // and the functions to update it.
 interface SessionStatsContextValue {
   stats: SessionStatsState;
+  startNewPrompt: () => void;
+  getPromptCount: () => number;
 }
 
 // --- Context Definition ---
@@ -63,6 +67,7 @@ export const SessionStatsProvider: React.FC<{ children: React.ReactNode }> = ({
     sessionStartTime: new Date(),
     metrics: uiTelemetryService.getMetrics(),
     lastPromptTokenCount: 0,
+    promptCount: 0,
   });
 
   useEffect(() => {
@@ -92,11 +97,25 @@ export const SessionStatsProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, []);
 
+  const startNewPrompt = useCallback(() => {
+    setStats((prevState) => ({
+      ...prevState,
+      promptCount: prevState.promptCount + 1,
+    }));
+  }, []);
+
+  const getPromptCount = useCallback(
+    () => stats.promptCount,
+    [stats.promptCount],
+  );
+
   const value = useMemo(
     () => ({
       stats,
+      startNewPrompt,
+      getPromptCount,
     }),
-    [stats],
+    [stats, startNewPrompt, getPromptCount],
   );
 
   return (

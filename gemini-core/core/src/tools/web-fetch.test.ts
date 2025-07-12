@@ -6,7 +6,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { WebFetchTool } from './web-fetch.js';
-import { Config, ApprovalMode } from '@gemini-core/core/src/config/config.js';
+import { Config, ApprovalMode } from '../config/config.js';
 import { ToolConfirmationOutcome } from './tools.js';
 
 describe('WebFetchTool', () => {

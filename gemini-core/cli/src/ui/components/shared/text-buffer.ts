@@ -11,7 +11,7 @@ import os from 'os';
 import pathMod from 'path';
 import { useState, useCallback, useEffect, useMemo, useReducer } from 'react';
 import stringWidth from 'string-width';
-import { unescapePath } from '../index.js';
+import { unescapePath } from '@google/gemini-cli-core';
 import { toCodePoints, cpLen, cpSlice } from '../../utils/textUtils.js';
 
 export type Direction =
@@ -73,6 +73,7 @@ interface UseTextBufferProps {
   setRawMode?: (mode: boolean) => void; // For external editor
   onChange?: (text: string) => void; // Callback for when text changes
   isValidPath: (path: string) => boolean;
+  shellModeActive?: boolean; // Whether the text buffer is in shell mode
 }
 
 interface UndoHistoryEntry {
@@ -960,6 +961,7 @@ export function useTextBuffer({
   setRawMode,
   onChange,
   isValidPath,
+  shellModeActive = false,
 }: UseTextBufferProps): TextBuffer {
   const initialState = useMemo((): TextBufferState => {
     const lines = initialText.split('\n');
@@ -1028,7 +1030,7 @@ export function useTextBuffer({
       }
 
       const minLengthToInferAsDragDrop = 3;
-      if (ch.length >= minLengthToInferAsDragDrop) {
+      if (ch.length >= minLengthToInferAsDragDrop && !shellModeActive) {
         let potentialPath = ch;
         if (
           potentialPath.length > 2 &&
@@ -1060,7 +1062,7 @@ export function useTextBuffer({
         dispatch({ type: 'insert', payload: currentText });
       }
     },
-    [isValidPath],
+    [isValidPath, shellModeActive],
   );
 
   const newline = useCallback((): void => {

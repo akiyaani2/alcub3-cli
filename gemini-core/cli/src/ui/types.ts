@@ -7,7 +7,7 @@
 import {
   ToolCallConfirmationDetails,
   ToolResultDisplay,
-} from '../index.js';
+} from '@google/gemini-cli-core';
 
 // Only defining the state enum needed by the UI
 export enum StreamingState {
@@ -216,3 +216,16 @@ export interface ConsoleMessageItem {
   content: string;
   count: number;
 }
+
+/**
+ * Defines the result of the slash command processor for its consumer (useGeminiStream).
+ */
+export type SlashCommandProcessorResult =
+  | {
+      type: 'schedule_tool';
+      toolName: string;
+      toolArgs: Record<string, unknown>;
+    }
+  | {
+      type: 'handled'; // Indicates the command was processed and no further action is needed.
+    };

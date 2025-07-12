@@ -12,7 +12,7 @@ import { Dirent as FSDirent } from 'fs';
 import * as nodePath from 'path';
 import { getFolderStructure } from './getFolderStructure.js';
 import * as gitUtils from './gitUtils.js';
-import { FileDiscoveryService } from '@gemini-core/core/src/services/fileDiscoveryService.js';
+import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 
 vi.mock('path', async (importOriginal) => {
   const original = (await importOriginal()) as typeof nodePath;

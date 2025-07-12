@@ -14,7 +14,7 @@ import {
   ToolExecuteConfirmationDetails,
   ToolMcpConfirmationDetails,
   Config,
-} from '../index.js';
+} from '@google/gemini-cli-core';
 import {
   RadioButtonSelect,
   RadioSelectItem,

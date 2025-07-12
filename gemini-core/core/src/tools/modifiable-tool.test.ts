@@ -19,7 +19,7 @@ import {
   ModifiableTool,
   isModifiableTool,
 } from './modifiable-tool.js';
-import { EditorType } from '@gemini-core/core/src/utils/editor.js';
+import { EditorType } from '../utils/editor.js';
 import fs from 'fs';
 import os from 'os';
 import * as path from 'path';

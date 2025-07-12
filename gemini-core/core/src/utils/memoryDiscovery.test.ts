@@ -16,8 +16,8 @@ import {
   setGeminiMdFilename,
   getCurrentGeminiMdFilename,
   DEFAULT_CONTEXT_FILENAME,
-} from '@gemini-core/core/src/tools/memoryTool.js';
-import { FileDiscoveryService } from '@gemini-core/core/src/services/fileDiscoveryService.js';
+} from '../tools/memoryTool.js';
+import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 
 const ORIGINAL_GEMINI_MD_FILENAME_CONST_FOR_TEST = DEFAULT_CONTEXT_FILENAME;
 

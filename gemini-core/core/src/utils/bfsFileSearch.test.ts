@@ -9,7 +9,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import * as fsPromises from 'fs/promises';
 import * as gitUtils from './gitUtils.js';
 import { bfsFileSearch } from './bfsFileSearch.js';
-import { FileDiscoveryService } from '@gemini-core/core/src/services/fileDiscoveryService.js';
+import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 
 vi.mock('fs');
 vi.mock('fs/promises');
