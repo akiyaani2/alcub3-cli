@@ -7,7 +7,7 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
 import { Text } from 'ink';
-import { LoadingIndicator } from './LoadingIndicator.js';
+import { LoadingIndicator } from '@gemini-core/cli/src/LoadingIndicator.js';
 import { StreamingContext } from '../contexts/StreamingContext.js';
 import { StreamingState } from '../types.js';
 import { vi } from 'vitest';

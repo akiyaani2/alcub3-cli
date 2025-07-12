@@ -7,9 +7,9 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import type { Mocked } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useCompletion } from './useCompletion.js';
+import { useCompletion } from '@gemini-core/cli/src/useCompletion.js';
 import * as fs from 'fs/promises';
-import { FileDiscoveryService } from '@alcub3/alcub3-cli-core';
+import { FileDiscoveryService } from '@gemini-core/core/src/index.js';
 import { glob } from 'glob';
 
 // Mock dependencies

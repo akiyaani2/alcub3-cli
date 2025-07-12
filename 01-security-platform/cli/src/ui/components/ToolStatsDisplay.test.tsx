@@ -6,7 +6,7 @@
 
 import { render } from 'ink-testing-library';
 import { describe, it, expect, vi } from 'vitest';
-import { ToolStatsDisplay } from './ToolStatsDisplay.js';
+import { ToolStatsDisplay } from '@gemini-core/cli/src/ToolStatsDisplay.js';
 import * as SessionContext from '../contexts/SessionContext.js';
 import { SessionMetrics } from '../contexts/SessionContext.js';
 

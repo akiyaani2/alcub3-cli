@@ -47,7 +47,7 @@ import {
   USER_SETTINGS_PATH, // This IS the mocked path.
   SETTINGS_DIRECTORY_NAME, // This is from the original module, but used by the mock.
   SettingScope,
-} from './settings.js';
+} from '@gemini-core/cli/src/settings.js';
 
 const MOCK_WORKSPACE_DIR = '/mock/workspace';
 // Use the (mocked) SETTINGS_DIRECTORY_NAME for consistency

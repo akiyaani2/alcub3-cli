@@ -6,12 +6,12 @@
 
 import stripAnsi from 'strip-ansi';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { main } from './gemini.js';
+import { main } from '@gemini-core/cli/src/gemini.js';
 import {
   LoadedSettings,
   SettingsFile,
   loadSettings,
-} from './config/settings.js';
+} from '@gemini-core/cli/src/config/settings.js';
 
 // Custom error to identify mock process.exit calls
 class MockProcessExitError extends Error {

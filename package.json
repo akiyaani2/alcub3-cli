@@ -48,6 +48,9 @@
     "tag:release:nightly": "node .build/scripts/version.js nightly",
     "check:versions": "node .build/scripts/check-versions.js",
     "security:check": "bash .build/scripts/security-regression-script.sh",
+    "update:check": "node scripts/update-gemini.js",
+    "update:gemini": "node scripts/update-gemini.js --yes",
+    "update:test": "npm run update:check && npm test",
     "security:audit": "npm audit",
     "decision": "node .build/scripts/add-decision.sh",
     "setup:dev": "node .build/scripts/setup-best-practices.sh"

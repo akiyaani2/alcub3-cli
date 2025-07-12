@@ -15,14 +15,14 @@ import {
 } from 'vitest';
 import { act } from 'react';
 import { renderHook } from '@testing-library/react';
-import { useEditorSettings } from './useEditorSettings.js';
+import { useEditorSettings } from '@gemini-core/cli/src/useEditorSettings.js';
 import { LoadedSettings, SettingScope } from '../../config/settings.js';
 import { MessageType, type HistoryItem } from '../types.js';
 import {
   type EditorType,
   checkHasEditorType,
   allowEditorTypeInSandbox,
-} from '@alcub3/alcub3-cli-core';
+} from '@gemini-core/core/src/index.js';
 
 vi.mock('@alcub3/alcub3-cli-core', async () => {
   const actual = await vi.importActual('@alcub3/alcub3-cli-core');

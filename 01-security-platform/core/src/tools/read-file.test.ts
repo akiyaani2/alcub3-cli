@@ -5,7 +5,7 @@
  */
 
 import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
-import { ReadFileTool, ReadFileToolParams } from './read-file.js';
+import { ReadFileTool, ReadFileToolParams } from '@gemini-core/core/src/read-file.js';
 import * as fileUtils from '../utils/fileUtils.js';
 import path from 'path';
 import os from 'os';

@@ -6,7 +6,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 import { render } from 'ink-testing-library';
-import { AppWrapper as App } from './App.js';
+import { AppWrapper as App } from '@gemini-core/cli/src/App.js';
 import {
   Config as ServerConfig,
   MCPServerConfig,
@@ -14,10 +14,10 @@ import {
   ToolRegistry,
   AccessibilitySettings,
   SandboxConfig,
-} from '@alcub3/alcub3-cli-core';
+} from '@gemini-core/core/src/index.js';
 import { LoadedSettings, SettingsFile, Settings } from '../config/settings.js';
 import process from 'node:process';
-import { Tips } from './components/Tips.js';
+import { Tips } from '@gemini-core/cli/src/components/Tips.js';
 
 // Define a more complete mock server config based on actual Config
 interface MockServerConfig {

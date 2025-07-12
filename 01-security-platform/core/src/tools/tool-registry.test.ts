@@ -14,15 +14,15 @@ import {
   afterEach,
   Mocked,
 } from 'vitest';
-import { ToolRegistry, DiscoveredTool } from './tool-registry.js';
-import { DiscoveredMCPTool } from './mcp-tool.js';
+import { ToolRegistry, DiscoveredTool } from '@gemini-core/core/src/tool-registry.js';
+import { DiscoveredMCPTool } from '@gemini-core/core/src/mcp-tool.js';
 import {
   Config,
   ConfigParameters,
   MCPServerConfig,
   ApprovalMode,
 } from '../config/config.js';
-import { BaseTool, ToolResult } from './tools.js';
+import { BaseTool, ToolResult } from '@gemini-core/core/src/tools.js';
 import {
   FunctionDeclaration,
   CallableTool,

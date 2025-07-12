@@ -35,7 +35,7 @@ import {
   ensureCorrectFileContent,
   unescapeStringForGeminiBug,
   resetEditCorrectorCaches_TEST_ONLY,
-} from './editCorrector.js';
+} from '@gemini-core/core/src/editCorrector.js';
 import { GeminiClient } from '../core/client.js';
 import type { Config } from '../config/config.js';
 import { ToolRegistry } from '../tools/tool-registry.js';

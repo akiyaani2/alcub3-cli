@@ -6,7 +6,7 @@
 
 import { render } from 'ink-testing-library';
 import { OverflowProvider } from '../../contexts/OverflowContext.js';
-import { MaxSizedBox, setMaxSizedBoxDebugging } from './MaxSizedBox.js';
+import { MaxSizedBox, setMaxSizedBoxDebugging } from '@gemini-core/cli/src/MaxSizedBox.js';
 import { Box, Text } from 'ink';
 import { describe, it, expect } from 'vitest';
 

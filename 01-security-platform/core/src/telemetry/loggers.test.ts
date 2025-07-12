@@ -13,7 +13,7 @@ import {
   GeminiClient,
   ToolConfirmationOutcome,
   ToolRegistry,
-} from '../index.js';
+} from '@gemini-core/core/src/index.js';
 import { logs } from '@opentelemetry/api-logs';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 import { Config } from '../config/config.js';
@@ -23,14 +23,14 @@ import {
   EVENT_CLI_CONFIG,
   EVENT_TOOL_CALL,
   EVENT_USER_PROMPT,
-} from './constants.js';
+} from '@gemini-core/core/src/constants.js';
 import {
   logApiRequest,
   logApiResponse,
   logCliConfiguration,
   logUserPrompt,
   logToolCall,
-} from './loggers.js';
+} from '@gemini-core/core/src/loggers.js';
 import {
   ApiRequestEvent,
   ApiResponseEvent,
@@ -38,12 +38,12 @@ import {
   ToolCallDecision,
   ToolCallEvent,
   UserPromptEvent,
-} from './types.js';
-import * as metrics from './metrics.js';
-import * as sdk from './sdk.js';
+} from '@gemini-core/core/src/types.js';
+import * as metrics from '@gemini-core/core/src/metrics.js';
+import * as sdk from '@gemini-core/core/src/sdk.js';
 import { vi, describe, beforeEach, it, expect } from 'vitest';
 import { GenerateContentResponseUsageMetadata } from '@google/genai';
-import * as uiTelemetry from './uiTelemetry.js';
+import * as uiTelemetry from '@gemini-core/core/src/uiTelemetry.js';
 
 describe('loggers', () => {
   const mockLogger = {

@@ -5,7 +5,7 @@
  */
 
 import { expect, describe, it } from 'vitest';
-import { ShellTool } from './shell.js';
+import { ShellTool } from '@gemini-core/core/src/shell.js';
 import { Config } from '../config/config.js';
 
 describe('ShellTool', () => {

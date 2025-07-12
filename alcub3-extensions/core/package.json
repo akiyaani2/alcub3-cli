@@ -11,7 +11,6 @@
     "./utils": "./utils/index.ts"
   },
   "dependencies": {
-    "@gemini-core/core": "workspace:*"
   },
   "files": ["**/*.ts", "**/*.js"],
   "engines": {

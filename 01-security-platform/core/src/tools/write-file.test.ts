@@ -13,15 +13,15 @@ import {
   vi,
   type Mocked,
 } from 'vitest';
-import { WriteFileTool } from './write-file.js';
+import { WriteFileTool } from '@gemini-core/core/src/write-file.js';
 import {
   FileDiff,
   ToolConfirmationOutcome,
   ToolEditConfirmationDetails,
-} from './tools.js';
-import { type EditToolParams } from './edit.js';
+} from '@gemini-core/core/src/tools.js';
+import { type EditToolParams } from '@gemini-core/core/src/edit.js';
 import { ApprovalMode, Config } from '../config/config.js';
-import { ToolRegistry } from './tool-registry.js';
+import { ToolRegistry } from '@gemini-core/core/src/tool-registry.js';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';

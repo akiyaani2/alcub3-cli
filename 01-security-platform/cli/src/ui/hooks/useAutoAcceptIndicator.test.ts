@@ -14,13 +14,13 @@ import {
   type Mock,
 } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useAutoAcceptIndicator } from './useAutoAcceptIndicator.js';
+import { useAutoAcceptIndicator } from '@gemini-core/cli/src/useAutoAcceptIndicator.js';
 
 import {
   Config,
   Config as ActualConfigType,
   ApprovalMode,
-} from '@alcub3/alcub3-cli-core';
+} from '@gemini-core/core/src/index.js';
 import { useInput, type Key as InkKey } from 'ink';
 
 vi.mock('ink');

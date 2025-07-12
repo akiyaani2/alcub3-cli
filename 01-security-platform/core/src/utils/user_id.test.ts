@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { getInstallationId, getGoogleAccountId } from './user_id.js';
+import { getInstallationId, getGoogleAccountId } from '@gemini-core/core/src/user_id.js';
 
 describe('user_id', () => {
   describe('getInstallationId', () => {

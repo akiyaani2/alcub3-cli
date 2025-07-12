@@ -15,10 +15,10 @@ import {
   ApiResponseEvent,
   ApiErrorEvent,
 } from '../types.js';
-import { EventMetadataKey } from './event-metadata-key.js';
-import { Config } from '../../config/config.js';
-import { getInstallationId } from '../../utils/user_id.js';
-import { getGoogleAccountId } from '../../utils/user_id.js';
+import { EventMetadataKey } from '@gemini-core/core/src/event-metadata-key.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
+import { getInstallationId } from '@gemini-core/core/src/utils/user_id.js';
+import { getGoogleAccountId } from '@gemini-core/core/src/utils/user_id.js';
 
 const start_session_event_name = 'start_session';
 const new_prompt_event_name = 'new_prompt';

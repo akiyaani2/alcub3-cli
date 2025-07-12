@@ -10,10 +10,10 @@ import {
   GeminiEventType,
   ServerGeminiToolCallRequestEvent,
   ServerGeminiErrorEvent,
-} from './turn.js';
+} from '@gemini-core/core/src/turn.js';
 import { GenerateContentResponse, Part, Content } from '@google/genai';
 import { reportError } from '../utils/errorReporting.js';
-import { GeminiChat } from './geminiChat.js';
+import { GeminiChat } from '@gemini-core/core/src/geminiChat.js';
 
 const mockSendMessageStream = vi.fn();
 const mockGetHistory = vi.fn();

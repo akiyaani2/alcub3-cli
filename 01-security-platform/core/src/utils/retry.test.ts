@@ -6,8 +6,8 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { retryWithBackoff } from './retry.js';
-import { setSimulate429 } from './testUtils.js';
+import { retryWithBackoff } from '@gemini-core/core/src/retry.js';
+import { setSimulate429 } from '@gemini-core/core/src/testUtils.js';
 
 // Define an interface for the error with a status property
 interface HttpError extends Error {

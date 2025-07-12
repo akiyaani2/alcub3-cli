@@ -1,0 +1,1343 @@
+{
+  "summary": {
+    "total": 147,
+    "withAlcubCode": 1,
+    "importOnly": 43,
+    "testFiles": 54,
+    "noChanges": 49
+  },
+  "files": {
+    "withAlcubCode": [
+      {
+        "path": "01-security-platform/cli/src/gemini.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": true,
+        "isTest": false,
+        "fileType": "other",
+        "ext": ".tsx",
+        "lineCount": 308
+      }
+    ],
+    "importChangesOnly": [
+      {
+        "path": "01-security-platform/cli/src/config/auth.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "config",
+        "ext": ".ts",
+        "lineCount": 40
+      },
+      {
+        "path": "01-security-platform/cli/src/config/config.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "config",
+        "ext": ".ts",
+        "lineCount": 318
+      },
+      {
+        "path": "01-security-platform/cli/src/config/extension.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "config",
+        "ext": ".ts",
+        "lineCount": 117
+      },
+      {
+        "path": "01-security-platform/cli/src/config/sandboxConfig.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "config",
+        "ext": ".ts",
+        "lineCount": 108
+      },
+      {
+        "path": "01-security-platform/cli/src/config/settings.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "config",
+        "ext": ".ts",
+        "lineCount": 266
+      },
+      {
+        "path": "01-security-platform/cli/src/nonInteractiveCli.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "other",
+        "ext": ".ts",
+        "lineCount": 157
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/App.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 835
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/AutoAcceptIndicator.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 48
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/ContextSummaryDisplay.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 68
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/Footer.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 110
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/HistoryItemDisplay.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 93
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/InputPrompt.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 457
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/LoadingIndicator.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 61
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/Tips.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 46
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/ToolStatsDisplay.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 209
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/messages/CompressionMessage.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 50
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/messages/ToolConfirmationMessage.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 251
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/messages/ToolGroupMessage.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 124
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/shared/MaxSizedBox.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 548
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/shared/RadioButtonSelect.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 143
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/shared/text-buffer.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 1388
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/contexts/SessionContext.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 120
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/editors/editorSettingsManager.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 72
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/atCommandProcessor.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 426
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/shellCommandProcessor.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 349
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/slashCommandProcessor.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 1128
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useAuthCommand.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 77
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useAutoAcceptIndicator.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 50
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useCompletion.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 451
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useEditorSettings.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 76
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useGeminiStream.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 796
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useLogger.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 33
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/usePrivacySettings.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 136
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useReactToolScheduler.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 313
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useShellHistory.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 104
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useShowMemoryCommand.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 76
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/privacy/CloudFreePrivacyNotice.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 114
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/privacy/PrivacyNotice.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 43
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/types.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 219
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/utils/errorParsing.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 107
+      },
+      {
+        "path": "01-security-platform/cli/src/utils/cleanup.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "other",
+        "ext": ".ts",
+        "lineCount": 20
+      },
+      {
+        "path": "01-security-platform/cli/src/utils/sandbox.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "other",
+        "ext": ".ts",
+        "lineCount": 872
+      },
+      {
+        "path": "01-security-platform/cli/src/utils/startupWarnings.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "other",
+        "ext": ".ts",
+        "lineCount": 41
+      }
+    ],
+    "noChangesDetected": [
+      {
+        "path": "01-security-platform/core/src/code_assist/codeAssist.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 25
+      },
+      {
+        "path": "01-security-platform/core/src/code_assist/converter.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 239
+      },
+      {
+        "path": "01-security-platform/core/src/code_assist/oauth2.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 304
+      },
+      {
+        "path": "01-security-platform/core/src/code_assist/server.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 209
+      },
+      {
+        "path": "01-security-platform/core/src/code_assist/setup.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 86
+      },
+      {
+        "path": "01-security-platform/core/src/config/config.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 510
+      },
+      {
+        "path": "01-security-platform/core/src/core/client.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 534
+      },
+      {
+        "path": "01-security-platform/core/src/core/contentGenerator.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 137
+      },
+      {
+        "path": "01-security-platform/core/src/core/coreToolScheduler.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 660
+      },
+      {
+        "path": "01-security-platform/core/src/core/geminiChat.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 619
+      },
+      {
+        "path": "01-security-platform/core/src/core/modelCheck.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 69
+      },
+      {
+        "path": "01-security-platform/core/src/core/nonInteractiveToolExecutor.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 120
+      },
+      {
+        "path": "01-security-platform/core/src/core/prompts.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 339
+      },
+      {
+        "path": "01-security-platform/core/src/core/turn.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 267
+      },
+      {
+        "path": "01-security-platform/core/src/index.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 62
+      },
+      {
+        "path": "01-security-platform/core/src/services/fileDiscoveryService.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 94
+      },
+      {
+        "path": "01-security-platform/core/src/telemetry/constants.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 23
+      },
+      {
+        "path": "01-security-platform/core/src/telemetry/index.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 42
+      },
+      {
+        "path": "01-security-platform/core/src/telemetry/loggers.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 266
+      },
+      {
+        "path": "01-security-platform/core/src/telemetry/types.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 220
+      },
+      {
+        "path": "01-security-platform/core/src/tools/edit.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 499
+      },
+      {
+        "path": "01-security-platform/core/src/tools/glob.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 312
+      },
+      {
+        "path": "01-security-platform/core/src/tools/grep.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 548
+      },
+      {
+        "path": "01-security-platform/core/src/tools/ls.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 314
+      },
+      {
+        "path": "01-security-platform/core/src/tools/mcp-client.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 415
+      },
+      {
+        "path": "01-security-platform/core/src/tools/mcp-tool.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 149
+      },
+      {
+        "path": "01-security-platform/core/src/tools/memoryTool.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 223
+      },
+      {
+        "path": "01-security-platform/core/src/tools/read-file.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 175
+      },
+      {
+        "path": "01-security-platform/core/src/tools/read-many-files.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 495
+      },
+      {
+        "path": "01-security-platform/core/src/tools/shell.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 474
+      },
+      {
+        "path": "01-security-platform/core/src/tools/tool-registry.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 235
+      },
+      {
+        "path": "01-security-platform/core/src/tools/tools.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 247
+      },
+      {
+        "path": "01-security-platform/core/src/tools/web-fetch.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 358
+      },
+      {
+        "path": "01-security-platform/core/src/tools/web-search.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 201
+      },
+      {
+        "path": "01-security-platform/core/src/tools/write-file.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 424
+      },
+      {
+        "path": "01-security-platform/core/src/utils/editCorrector.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 628
+      },
+      {
+        "path": "01-security-platform/core/src/utils/editor.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 202
+      },
+      {
+        "path": "01-security-platform/core/src/utils/fileUtils.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 320
+      },
+      {
+        "path": "01-security-platform/core/src/utils/messageInspectors.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 16
+      },
+      {
+        "path": "01-security-platform/core/src/utils/nextSpeakerChecker.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 152
+      },
+      {
+        "path": "01-security-platform/core/src/utils/paths.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 160
+      },
+      {
+        "path": "01-security-platform/core/src/utils/retry.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 273
+      },
+      {
+        "path": "01-security-platform/core/src/utils/schemaValidator.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 59
+      },
+      {
+        "path": "01-security-platform/core/src/utils/user_id.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 83
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/Header.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 52
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/Help.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 138
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useKeypress.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 105
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/utils/MarkdownDisplay.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 541
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/utils/TableRenderer.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": false,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 115
+      }
+    ],
+    "testFiles": [
+      {
+        "path": "01-security-platform/core/src/code_assist/oauth2.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 173
+      },
+      {
+        "path": "01-security-platform/core/src/config/config.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 274
+      },
+      {
+        "path": "01-security-platform/core/src/core/client.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 801
+      },
+      {
+        "path": "01-security-platform/core/src/core/contentGenerator.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 51
+      },
+      {
+        "path": "01-security-platform/core/src/core/coreToolScheduler.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 291
+      },
+      {
+        "path": "01-security-platform/core/src/core/geminiChat.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 471
+      },
+      {
+        "path": "01-security-platform/core/src/core/nonInteractiveToolExecutor.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 251
+      },
+      {
+        "path": "01-security-platform/core/src/core/turn.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 305
+      },
+      {
+        "path": "01-security-platform/core/src/telemetry/loggers.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 697
+      },
+      {
+        "path": "01-security-platform/core/src/telemetry/uiTelemetry.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 511
+      },
+      {
+        "path": "01-security-platform/core/src/tools/edit.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 666
+      },
+      {
+        "path": "01-security-platform/core/src/tools/glob.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 376
+      },
+      {
+        "path": "01-security-platform/core/src/tools/grep.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 258
+      },
+      {
+        "path": "01-security-platform/core/src/tools/mcp-client.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 738
+      },
+      {
+        "path": "01-security-platform/core/src/tools/read-file.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 248
+      },
+      {
+        "path": "01-security-platform/core/src/tools/read-many-files.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 404
+      },
+      {
+        "path": "01-security-platform/core/src/tools/shell.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 339
+      },
+      {
+        "path": "01-security-platform/core/src/tools/tool-registry.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 338
+      },
+      {
+        "path": "01-security-platform/core/src/tools/write-file.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "tool",
+        "ext": ".ts",
+        "lineCount": 616
+      },
+      {
+        "path": "01-security-platform/core/src/utils/editCorrector.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 680
+      },
+      {
+        "path": "01-security-platform/core/src/utils/fileUtils.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 465
+      },
+      {
+        "path": "01-security-platform/core/src/utils/flashFallback.integration.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 144
+      },
+      {
+        "path": "01-security-platform/core/src/utils/retry.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 405
+      },
+      {
+        "path": "01-security-platform/core/src/utils/user_id.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "core",
+        "ext": ".ts",
+        "lineCount": 52
+      },
+      {
+        "path": "01-security-platform/cli/src/config/config.integration.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "config",
+        "ext": ".ts",
+        "lineCount": 244
+      },
+      {
+        "path": "01-security-platform/cli/src/config/config.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "config",
+        "ext": ".ts",
+        "lineCount": 481
+      },
+      {
+        "path": "01-security-platform/cli/src/config/extension.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "config",
+        "ext": ".ts",
+        "lineCount": 110
+      },
+      {
+        "path": "01-security-platform/cli/src/config/settings.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "config",
+        "ext": ".ts",
+        "lineCount": 635
+      },
+      {
+        "path": "01-security-platform/cli/src/gemini.test.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "other",
+        "ext": ".tsx",
+        "lineCount": 147
+      },
+      {
+        "path": "01-security-platform/cli/src/nonInteractiveCli.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "other",
+        "ext": ".ts",
+        "lineCount": 287
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/App.test.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 462
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/InputPrompt.test.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 188
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/LoadingIndicator.test.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 215
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/ModelStatsDisplay.test.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 236
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/SessionSummaryDisplay.test.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 68
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/StatsDisplay.test.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 304
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/ToolStatsDisplay.test.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 177
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/messages/ToolConfirmationMessage.test.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 59
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/messages/ToolMessage.test.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 182
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/shared/MaxSizedBox.test.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 343
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/shared/text-buffer.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 1274
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/contexts/SessionContext.test.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 133
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/atCommandProcessor.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 756
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/shellCommandProcessor.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 180
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/slashCommandProcessor.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 1309
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useAutoAcceptIndicator.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 277
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useCompletion.integration.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 332
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useEditorSettings.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 284
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useGeminiStream.test.tsx",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 1059
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useLoadingIndicator.test.ts",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 142
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useToolScheduler.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 1032
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/utils/MarkdownDisplay.test.tsx",
+        "hasModifiedImports": false,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".tsx",
+        "lineCount": 281
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/utils/errorParsing.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "ui",
+        "ext": ".ts",
+        "lineCount": 120
+      },
+      {
+        "path": "01-security-platform/cli/src/utils/startupWarnings.test.ts",
+        "hasModifiedImports": true,
+        "hasAlcubCode": false,
+        "isTest": true,
+        "fileType": "other",
+        "ext": ".ts",
+        "lineCount": 76
+      }
+    ],
+    "errors": []
+  }
+}

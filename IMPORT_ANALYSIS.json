@@ -1,0 +1,256 @@
+{
+  "summary": {
+    "total": 147,
+    "importOnly": 39,
+    "hasAlcubCode": 1,
+    "errors": 0
+  },
+  "files": {
+    "importOnly": [
+      {
+        "path": "01-security-platform/cli/src/config/auth.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 40
+      },
+      {
+        "path": "01-security-platform/cli/src/config/config.integration.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 244
+      },
+      {
+        "path": "01-security-platform/cli/src/config/config.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 481
+      },
+      {
+        "path": "01-security-platform/cli/src/config/config.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 318
+      },
+      {
+        "path": "01-security-platform/cli/src/config/extension.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 117
+      },
+      {
+        "path": "01-security-platform/cli/src/config/settings.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 266
+      },
+      {
+        "path": "01-security-platform/cli/src/nonInteractiveCli.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 287
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/App.test.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 462
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/App.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 835
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/ContextSummaryDisplay.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 68
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/HistoryItemDisplay.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 93
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/InputPrompt.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 457
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/LoadingIndicator.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 61
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/Tips.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 46
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/ToolStatsDisplay.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 209
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/messages/ToolConfirmationMessage.test.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 59
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/messages/ToolConfirmationMessage.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 251
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/components/shared/text-buffer.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 1388
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/contexts/SessionContext.test.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 133
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/editors/editorSettingsManager.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 72
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/atCommandProcessor.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 756
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/shellCommandProcessor.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 180
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/shellCommandProcessor.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 349
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/slashCommandProcessor.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 1309
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useAuthCommand.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 77
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useAutoAcceptIndicator.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 277
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useCompletion.integration.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 332
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useEditorSettings.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 284
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useGeminiStream.test.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 1059
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useLogger.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 33
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/usePrivacySettings.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 136
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useReactToolScheduler.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 313
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useShowMemoryCommand.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 76
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/hooks/useToolScheduler.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 1032
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/privacy/PrivacyNotice.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 43
+      },
+      {
+        "path": "01-security-platform/cli/src/ui/utils/errorParsing.test.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 120
+      },
+      {
+        "path": "01-security-platform/cli/src/utils/cleanup.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 20
+      },
+      {
+        "path": "01-security-platform/cli/src/utils/sandbox.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 872
+      },
+      {
+        "path": "01-security-platform/cli/src/utils/startupWarnings.ts",
+        "hasAlcubImports": true,
+        "hasAlcubCode": false,
+        "lineCount": 41
+      }
+    ],
+    "hasAlcubCode": [
+      {
+        "path": "01-security-platform/cli/src/gemini.tsx",
+        "hasAlcubImports": true,
+        "hasAlcubCode": true,
+        "lineCount": 308
+      }
+    ],
+    "errors": []
+  },
+  "recommendation": "Significant ALCUB3 modifications found. Use override pattern."
+}

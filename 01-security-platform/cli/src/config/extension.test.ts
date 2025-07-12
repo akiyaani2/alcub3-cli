@@ -12,7 +12,7 @@ import {
   EXTENSIONS_CONFIG_FILENAME,
   EXTENSIONS_DIRECTORY_NAME,
   loadExtensions,
-} from './extension.js';
+} from '@gemini-core/cli/src/extension.js';
 
 vi.mock('os', async (importOriginal) => {
   const os = await importOriginal<typeof import('os')>();

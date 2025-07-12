@@ -12,9 +12,9 @@ import {
   shouldSimulate429,
   createSimulated429Error,
   resetRequestCounter,
-} from './testUtils.js';
+} from '@gemini-core/core/src/testUtils.js';
 import { DEFAULT_GEMINI_FLASH_MODEL } from '../config/models.js';
-import { retryWithBackoff } from './retry.js';
+import { retryWithBackoff } from '@gemini-core/core/src/retry.js';
 import { AuthType } from '../core/contentGenerator.js';
 
 describe('Flash Fallback Integration', () => {

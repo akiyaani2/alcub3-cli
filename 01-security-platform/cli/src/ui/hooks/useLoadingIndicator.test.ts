@@ -6,12 +6,12 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useLoadingIndicator } from './useLoadingIndicator.js';
+import { useLoadingIndicator } from '@gemini-core/cli/src/useLoadingIndicator.js';
 import { StreamingState } from '../types.js';
 import {
   WITTY_LOADING_PHRASES,
   PHRASE_CHANGE_INTERVAL_MS,
-} from './usePhraseCycler.js';
+} from '@gemini-core/cli/src/usePhraseCycler.js';
 
 describe('useLoadingIndicator', () => {
   beforeEach(() => {

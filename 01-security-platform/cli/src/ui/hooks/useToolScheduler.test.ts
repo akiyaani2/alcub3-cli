@@ -10,7 +10,7 @@ import { renderHook, act } from '@testing-library/react';
 import {
   useReactToolScheduler,
   mapToDisplay,
-} from './useReactToolScheduler.js';
+} from '@gemini-core/cli/src/useReactToolScheduler.js';
 import { PartUnion, FunctionResponse } from '@google/genai';
 import {
   Config,
@@ -24,7 +24,7 @@ import {
   ToolCall, // Import from core
   Status as ToolCallStatusType,
   ApprovalMode, // Import from core
-} from '@alcub3/alcub3-cli-core';
+} from '@gemini-core/core/src/index.js';
 import {
   HistoryItemWithoutId,
   ToolCallStatus,

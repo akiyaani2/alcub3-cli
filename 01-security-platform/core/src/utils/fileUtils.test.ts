@@ -25,7 +25,7 @@ import {
   isBinaryFile,
   detectFileType,
   processSingleFileContent,
-} from './fileUtils.js';
+} from '@gemini-core/core/src/fileUtils.js';
 
 vi.mock('mime-types', () => ({
   default: { lookup: vi.fn() },

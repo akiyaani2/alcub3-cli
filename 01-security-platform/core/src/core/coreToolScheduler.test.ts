@@ -11,14 +11,14 @@ import {
   ToolCall,
   ValidatingToolCall,
   convertToFunctionResponse,
-} from './coreToolScheduler.js';
+} from '@gemini-core/core/src/coreToolScheduler.js';
 import {
   BaseTool,
   ToolCallConfirmationDetails,
   ToolConfirmationOutcome,
   ToolResult,
   Config,
-} from '../index.js';
+} from '@gemini-core/core/src/index.js';
 import { Part, PartListUnion } from '@google/genai';
 
 class MockTool extends BaseTool<Record<string, unknown>, ToolResult> {

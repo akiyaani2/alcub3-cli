@@ -6,9 +6,9 @@
 
 import { render } from 'ink-testing-library';
 import { describe, it, expect, vi } from 'vitest';
-import { AuthDialog } from './AuthDialog.js';
+import { AuthDialog } from '@gemini-core/cli/src/AuthDialog.js';
 import { LoadedSettings, SettingScope } from '../../config/settings.js';
-import { AuthType } from '@alcub3/alcub3-cli-core';
+import { AuthType } from '@gemini-core/core/src/index.js';
 
 describe('AuthDialog', () => {
   const wait = (ms = 50) => new Promise((resolve) => setTimeout(resolve, ms));

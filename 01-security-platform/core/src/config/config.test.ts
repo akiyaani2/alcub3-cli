@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Config, ConfigParameters, SandboxConfig } from './config.js';
+import { Config, ConfigParameters, SandboxConfig } from '@gemini-core/core/src/config.js';
 import * as path from 'path';
 import { setGeminiMdFilename as mockSetGeminiMdFilename } from '../tools/memoryTool.js';
 import {

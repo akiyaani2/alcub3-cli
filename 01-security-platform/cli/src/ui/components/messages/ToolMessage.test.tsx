@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { render } from 'ink-testing-library';
-import { ToolMessage, ToolMessageProps } from './ToolMessage.js';
+import { ToolMessage, ToolMessageProps } from '@gemini-core/cli/src/ToolMessage.js';
 import { StreamingState, ToolCallStatus } from '../../types.js';
 import { Text } from 'ink';
 import { StreamingContext } from '../../contexts/StreamingContext.js';

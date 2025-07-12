@@ -5,7 +5,7 @@
  */
 
 import { render } from 'ink-testing-library';
-import { MarkdownDisplay } from './MarkdownDisplay.js';
+import { MarkdownDisplay } from '@gemini-core/cli/src/MarkdownDisplay.js';
 
 describe('MarkdownDisplay', () => {
   describe('Table Rendering', () => {

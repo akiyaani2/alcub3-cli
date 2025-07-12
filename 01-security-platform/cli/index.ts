@@ -7,7 +7,7 @@
  */
 
 import './src/gemini.js';
-import { main } from './src/gemini.js';
+import { main } from '@gemini-core/cli/src/src/gemini.js';
 
 // --- Global Entry Point ---
 main().catch((error) => {

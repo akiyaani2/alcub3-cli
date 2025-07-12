@@ -24,8 +24,8 @@
       "@alcub3/*": ["./alcub3-extensions/*"],
       "@alcub3/core": ["./alcub3-extensions/core/index.ts"],
       "@alcub3/cli": ["./alcub3-extensions/cli/index.ts"],
-      "@gemini-core/core": ["./gemini-core/core/src/index.ts"],
-      "@gemini-core/cli": ["./gemini-core/cli/src/index.ts"]
+      "@gemini-core/core/*": ["./gemini-core/core/*"],
+      "@gemini-core/cli/*": ["./gemini-core/cli/*"]
     }
   },
   "include": [

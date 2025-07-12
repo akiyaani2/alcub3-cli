@@ -7,7 +7,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useGeminiStream, mergePartListUnions } from './useGeminiStream.js';
+import { useGeminiStream, mergePartListUnions } from '@gemini-core/cli/src/useGeminiStream.js';
 import { useInput } from 'ink';
 import {
   useReactToolScheduler,
@@ -15,10 +15,10 @@ import {
   TrackedCompletedToolCall,
   TrackedExecutingToolCall,
   TrackedCancelledToolCall,
-} from './useReactToolScheduler.js';
-import { Config, EditorType, AuthType } from '@alcub3/alcub3-cli-core';
+} from '@gemini-core/cli/src/useReactToolScheduler.js';
+import { Config, EditorType, AuthType } from '@gemini-core/core/src/index.js';
 import { Part, PartListUnion } from '@google/genai';
-import { UseHistoryManagerReturn } from './useHistoryManager.js';
+import { UseHistoryManagerReturn } from '@gemini-core/cli/src/useHistoryManager.js';
 import { HistoryItem, MessageType, StreamingState } from '../types.js';
 import { Dispatch, SetStateAction } from 'react';
 import { LoadedSettings } from '../../config/settings.js';

@@ -25,8 +25,8 @@ vi.mock('../utils/editor.js', () => ({
 }));
 
 import { describe, it, expect, beforeEach, afterEach, vi, Mock } from 'vitest';
-import { EditTool, EditToolParams } from './edit.js';
-import { FileDiff } from './tools.js';
+import { EditTool, EditToolParams } from '@gemini-core/core/src/edit.js';
+import { FileDiff } from '@gemini-core/core/src/tools.js';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';

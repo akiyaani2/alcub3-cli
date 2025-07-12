@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { executeToolCall } from './nonInteractiveToolExecutor.js';
+import { executeToolCall } from '@gemini-core/core/src/nonInteractiveToolExecutor.js';
 import {
   ToolRegistry,
   ToolCallRequestInfo,
@@ -13,7 +13,7 @@ import {
   Tool,
   ToolCallConfirmationDetails,
   Config,
-} from '../index.js';
+} from '@gemini-core/core/src/index.js';
 import { Part, Type } from '@google/genai';
 
 const mockConfig = {

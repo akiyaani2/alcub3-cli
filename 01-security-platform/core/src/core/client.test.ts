@@ -12,16 +12,16 @@ import {
   GenerateContentResponse,
   GoogleGenAI,
 } from '@google/genai';
-import { GeminiClient } from './client.js';
-import { AuthType, ContentGenerator } from './contentGenerator.js';
-import { GeminiChat } from './geminiChat.js';
+import { GeminiClient } from '@gemini-core/core/src/client.js';
+import { AuthType, ContentGenerator } from '@gemini-core/core/src/contentGenerator.js';
+import { GeminiChat } from '@gemini-core/core/src/geminiChat.js';
 import { Config } from '../config/config.js';
-import { Turn } from './turn.js';
-import { getCoreSystemPrompt } from './prompts.js';
+import { Turn } from '@gemini-core/core/src/turn.js';
+import { getCoreSystemPrompt } from '@gemini-core/core/src/prompts.js';
 import { DEFAULT_GEMINI_FLASH_MODEL } from '../config/models.js';
 import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 import { setSimulate429 } from '../utils/testUtils.js';
-import { tokenLimit } from './tokenLimits.js';
+import { tokenLimit } from '@gemini-core/core/src/tokenLimits.js';
 
 // --- Mocks ---
 const mockChatCreateFn = vi.fn();

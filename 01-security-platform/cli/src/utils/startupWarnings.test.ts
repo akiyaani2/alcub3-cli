@@ -5,9 +5,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getStartupWarnings } from './startupWarnings.js';
+import { getStartupWarnings } from '@gemini-core/cli/src/startupWarnings.js';
 import * as fs from 'fs/promises';
-import { getErrorMessage } from '@alcub3/alcub3-cli-core';
+import { getErrorMessage } from '@gemini-core/core/src/index.js';
 
 vi.mock('fs/promises');
 vi.mock('@alcub3/alcub3-cli-core', async (importOriginal) => {

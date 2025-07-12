@@ -10,8 +10,6 @@
     "./components": "./components/index.ts"
   },
   "dependencies": {
-    "@gemini-core/cli": "workspace:*",
-    "@alcub3/core": "workspace:*"
   },
   "files": ["**/*.ts", "**/*.tsx"],
   "engines": {

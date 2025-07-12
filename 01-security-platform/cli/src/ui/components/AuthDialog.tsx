@@ -7,9 +7,9 @@
 import React, { useState } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
-import { RadioButtonSelect } from './shared/RadioButtonSelect.js';
+import { RadioButtonSelect } from '@gemini-core/cli/src/shared/RadioButtonSelect.js';
 import { LoadedSettings, SettingScope } from '../../config/settings.js';
-import { AuthType } from '@alcub3/alcub3-cli-core';
+import { AuthType } from '@gemini-core/core/src/index.js';
 import { validateAuthMethod } from '../../config/auth.js';
 
 interface AuthDialogProps {

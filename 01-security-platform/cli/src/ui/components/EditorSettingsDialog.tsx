@@ -12,9 +12,9 @@ import {
   editorSettingsManager,
   type EditorDisplay,
 } from '../editors/editorSettingsManager.js';
-import { RadioButtonSelect } from './shared/RadioButtonSelect.js';
+import { RadioButtonSelect } from '@gemini-core/cli/src/shared/RadioButtonSelect.js';
 import { LoadedSettings, SettingScope } from '../../config/settings.js';
-import { EditorType, isEditorAvailable } from '@alcub3/alcub3-cli-core';
+import { EditorType, isEditorAvailable } from '@gemini-core/core/src/index.js';
 
 interface EditorDialogProps {
   onSelect: (editorType: EditorType | undefined, scope: SettingScope) => void;

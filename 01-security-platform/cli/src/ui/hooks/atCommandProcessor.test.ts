@@ -6,10 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 import type { Mocked } from 'vitest';
-import { handleAtCommand } from './atCommandProcessor.js';
-import { Config, FileDiscoveryService } from '@alcub3/alcub3-cli-core';
+import { handleAtCommand } from '@gemini-core/cli/src/atCommandProcessor.js';
+import { Config, FileDiscoveryService } from '@gemini-core/core/src/index.js';
 import { ToolCallStatus } from '../types.js';
-import { UseHistoryManagerReturn } from './useHistoryManager.js';
+import { UseHistoryManagerReturn } from '@gemini-core/cli/src/useHistoryManager.js';
 import * as fsPromises from 'fs/promises';
 import type { Stats } from 'fs';
 

@@ -12,9 +12,9 @@ import {
   SessionStatsProvider,
   useSessionStats,
   SessionMetrics,
-} from './SessionContext.js';
+} from '@gemini-core/cli/src/SessionContext.js';
 import { describe, it, expect, vi } from 'vitest';
-import { uiTelemetryService } from '@alcub3/alcub3-cli-core';
+import { uiTelemetryService } from '@gemini-core/core/src/index.js';
 
 /**
  * A test harness component that uses the hook and exposes the context value

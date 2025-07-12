@@ -5,18 +5,18 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UiTelemetryService } from './uiTelemetry.js';
+import { UiTelemetryService } from '@gemini-core/core/src/uiTelemetry.js';
 import {
   ApiErrorEvent,
   ApiResponseEvent,
   ToolCallEvent,
   ToolCallDecision,
-} from './types.js';
+} from '@gemini-core/core/src/types.js';
 import {
   EVENT_API_ERROR,
   EVENT_API_RESPONSE,
   EVENT_TOOL_CALL,
-} from './constants.js';
+} from '@gemini-core/core/src/constants.js';
 import {
   CompletedToolCall,
   ErroredToolCall,

@@ -6,8 +6,8 @@
 
 import { render } from 'ink-testing-library';
 import { describe, it, expect, vi } from 'vitest';
-import { ToolConfirmationMessage } from './ToolConfirmationMessage.js';
-import { ToolCallConfirmationDetails } from '@alcub3/alcub3-cli-core';
+import { ToolConfirmationMessage } from '@gemini-core/cli/src/ToolConfirmationMessage.js';
+import { ToolCallConfirmationDetails } from '@gemini-core/core/src/index.js';
 
 describe('ToolConfirmationMessage', () => {
   it('should not display urls if prompt and url are the same', () => {

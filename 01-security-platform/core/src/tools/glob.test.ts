@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GlobTool, GlobToolParams, GlobPath, sortFileEntries } from './glob.js';
+import { GlobTool, GlobToolParams, GlobPath, sortFileEntries } from '@gemini-core/core/src/glob.js';
 import { partListUnionToString } from '../core/geminiRequest.js';
 import path from 'path';
 import fs from 'fs/promises';

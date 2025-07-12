@@ -14,7 +14,7 @@ import {
   textBufferReducer,
   TextBufferState,
   TextBufferAction,
-} from './text-buffer.js';
+} from '@gemini-core/cli/src/text-buffer.js';
 
 const initialState: TextBufferState = {
   lines: [''],

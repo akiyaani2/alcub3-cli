@@ -6,10 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as os from 'os';
-import { loadCliConfig } from './config.js';
-import { Settings } from './settings.js';
-import { Extension } from './extension.js';
-import * as ServerConfig from '@alcub3/alcub3-cli-core';
+import { loadCliConfig } from '@gemini-core/cli/src/config.js';
+import { Settings } from '@gemini-core/cli/src/settings.js';
+import { Extension } from '@gemini-core/cli/src/extension.js';
+import * as ServerConfig from '@gemini-core/core/src/index.js';
 
 vi.mock('os', async (importOriginal) => {
   const actualOs = await importOriginal<typeof os>();

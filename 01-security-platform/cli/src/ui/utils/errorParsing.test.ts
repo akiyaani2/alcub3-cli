@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { parseAndFormatApiError } from './errorParsing.js';
-import { AuthType, StructuredError } from '@alcub3/alcub3-cli-core';
+import { parseAndFormatApiError } from '@gemini-core/cli/src/errorParsing.js';
+import { AuthType, StructuredError } from '@gemini-core/core/src/index.js';
 
 describe('parseAndFormatApiError', () => {
   const enterpriseMessage = 'upgrade to a plan with higher limits';

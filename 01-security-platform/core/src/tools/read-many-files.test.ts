@@ -7,7 +7,7 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import type { Mock } from 'vitest';
 import { mockControl } from '../__mocks__/fs/promises.js';
-import { ReadManyFilesTool } from './read-many-files.js';
+import { ReadManyFilesTool } from '@gemini-core/core/src/read-many-files.js';
 import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 import path from 'path';
 import fs from 'fs'; // Actual fs for setup

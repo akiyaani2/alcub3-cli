@@ -59,7 +59,7 @@ import open from 'open';
 import {
   useSlashCommandProcessor,
   type SlashCommandActionReturn,
-} from './slashCommandProcessor.js';
+} from '@gemini-core/cli/src/slashCommandProcessor.js';
 import { MessageType } from '../types.js';
 import {
   Config,
@@ -68,10 +68,10 @@ import {
   getMCPDiscoveryState,
   getMCPServerStatus,
   GeminiClient,
-} from '@alcub3/alcub3-cli-core';
+} from '@gemini-core/core/src/index.js';
 import { useSessionStats } from '../contexts/SessionContext.js';
 import { LoadedSettings } from '../../config/settings.js';
-import * as ShowMemoryCommandModule from './useShowMemoryCommand.js';
+import * as ShowMemoryCommandModule from '@gemini-core/cli/src/useShowMemoryCommand.js';
 import { GIT_COMMIT_INFO } from '../../generated/git-commit.js';
 
 vi.mock('../contexts/SessionContext.js', () => ({

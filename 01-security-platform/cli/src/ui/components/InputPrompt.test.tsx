@@ -5,9 +5,9 @@
  */
 
 import { render } from 'ink-testing-library';
-import { InputPrompt, InputPromptProps } from './InputPrompt.js';
-import type { TextBuffer } from './shared/text-buffer.js';
-import { Config } from '@alcub3/alcub3-cli-core';
+import { InputPrompt, InputPromptProps } from '@gemini-core/cli/src/InputPrompt.js';
+import type { TextBuffer } from '@gemini-core/cli/src/shared/text-buffer.js';
+import { Config } from '@gemini-core/core/src/index.js';
 import { vi } from 'vitest';
 import { useShellHistory } from '../hooks/useShellHistory.js';
 import { useCompletion } from '../hooks/useCompletion.js';

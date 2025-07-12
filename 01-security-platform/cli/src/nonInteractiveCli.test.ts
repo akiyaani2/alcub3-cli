@@ -6,8 +6,8 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { runNonInteractive } from './nonInteractiveCli.js';
-import { Config, GeminiClient, ToolRegistry } from '@alcub3/alcub3-cli-core';
+import { runNonInteractive } from '@gemini-core/cli/src/nonInteractiveCli.js';
+import { Config, GeminiClient, ToolRegistry } from '@gemini-core/core/src/index.js';
 import { GenerateContentResponse, Part, FunctionCall } from '@google/genai';
 
 // Mock dependencies
