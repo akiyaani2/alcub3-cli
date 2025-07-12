@@ -53,7 +53,8 @@
     "update:test": "npm run update:check && npm test",
     "security:audit": "npm audit",
     "decision": "node .build/scripts/add-decision.sh",
-    "setup:dev": "node .build/scripts/setup-best-practices.sh"
+    "setup:dev": "node .build/scripts/setup-best-practices.sh",
+    "setup:al3": "node scripts/setup-al3.js"
   },
   "repository": {
     "type": "git",
@@ -73,6 +74,9 @@
     "url": "https://github.com/alcub3/alcub3-cli/issues"
   },
   "homepage": "https://github.com/alcub3/alcub3-cli#readme",
+  "bin": {
+    "al3": "./bin/al3"
+  },
   "devDependencies": {
     "@types/mime-types": "^3.0.1",
     "eslint": "^8.57.0",

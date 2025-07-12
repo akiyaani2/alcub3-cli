@@ -1,0 +1,260 @@
+#!/usr/bin/env node
+
+/**
+ * AL3 Developer CLI
+ * 
+ * Internal development tool for ALCUB3 platform
+ * This is for developer use only during the build phase
+ */
+
+import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT_DIR = join(__dirname, '..');
+
+// ANSI color codes
+const colors = {
+  reset: '\x1b[0m',
+  bright: '\x1b[1m',
+  dim: '\x1b[2m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  magenta: '\x1b[35m',
+  cyan: '\x1b[36m',
+};
+
+function log(message, color = colors.reset) {
+  console.log(`${color}${message}${colors.reset}`);
+}
+
+function header(title) {
+  console.log();
+  log(`━━━ ${title} ━━━`, colors.bright + colors.blue);
+  console.log();
+}
+
+function exec(command, options = {}) {
+  try {
+    return execSync(command, {
+      stdio: 'inherit',
+      cwd: ROOT_DIR,
+      ...options
+    });
+  } catch (error) {
+    if (!options.ignoreError) {
+      process.exit(1);
+    }
+  }
+}
+
+const commands = {
+  // Quick start commands
+  start: {
+    description: 'Start ALCUB3 CLI',
+    action: () => exec('npm start')
+  },
+  
+  // Build commands
+  build: {
+    description: 'Build entire project',
+    action: () => exec('npm run build')
+  },
+  'build:dev': {
+    description: 'Fast dev build (no optimizations)',
+    action: () => exec('npm run build:dev')
+  },
+  'build:core': {
+    description: 'Build core only',
+    action: () => exec('npm run build:core')
+  },
+  'build:cli': {
+    description: 'Build CLI only',
+    action: () => exec('npm run build:cli')
+  },
+  
+  // Test commands
+  test: {
+    description: 'Run unit tests',
+    action: () => exec('npm test')
+  },
+  'test:integration': {
+    description: 'Test ALCUB3 integration with Gemini',
+    action: () => exec('node scripts/test-alcub3-integration.js')
+  },
+  'test:update': {
+    description: 'Simulate and test Gemini update',
+    action: () => {
+      header('Simulating Gemini Update');
+      exec('node scripts/simulate-gemini-update.js');
+      header('Testing Integration');
+      exec('node scripts/test-alcub3-integration.js');
+    }
+  },
+  
+  // Update commands
+  'update:check': {
+    description: 'Check for Gemini updates',
+    action: () => exec('npm run update:check')
+  },
+  'update:gemini': {
+    description: 'Update Gemini core (with backup)',
+    action: () => exec('npm run update:gemini')
+  },
+  
+  // Development workflow
+  preflight: {
+    description: 'Full validation (clean, install, format, lint, build, test)',
+    action: () => exec('npm run preflight')
+  },
+  clean: {
+    description: 'Clean all build artifacts',
+    action: () => exec('npm run clean')
+  },
+  lint: {
+    description: 'Run linter',
+    action: () => exec('npm run lint')
+  },
+  'lint:fix': {
+    description: 'Fix linting issues',
+    action: () => exec('npm run lint:fix')
+  },
+  format: {
+    description: 'Format code with Prettier',
+    action: () => exec('npm run format')
+  },
+  
+  // Security commands
+  'security:check': {
+    description: 'Run security regression tests',
+    action: () => exec('npm run security:check')
+  },
+  'security:audit': {
+    description: 'Audit dependencies for vulnerabilities',
+    action: () => exec('npm run security:audit')
+  },
+  
+  // Development setup
+  'setup:dev': {
+    description: 'Set up development best practices',
+    action: () => exec('npm run setup:dev')
+  },
+  
+  // Task management
+  task: {
+    description: 'Task management (add/list/show/next)',
+    action: (args) => {
+      const subcommand = args[0] || 'list';
+      const taskCommands = {
+        add: () => {
+          const prompt = args.slice(1).join(' ');
+          exec(`task-master add-task --prompt="${prompt}"`);
+        },
+        list: () => exec('task-master list'),
+        next: () => exec('task-master next'),
+        show: () => exec(`task-master show ${args[1] || '1'}`),
+        done: () => exec(`task-master set-status --id=${args[1]} --status=done`),
+        expand: () => exec(`task-master expand --id=${args[1]}`)
+      };
+      
+      if (taskCommands[subcommand]) {
+        taskCommands[subcommand]();
+      } else {
+        log('Usage: al3 task [add|list|next|show|done|expand] [args]', colors.yellow);
+      }
+    }
+  },
+  
+  // Quick utilities
+  watch: {
+    description: 'Watch for changes and rebuild',
+    action: () => {
+      log('Starting watch mode...', colors.cyan);
+      exec('npm run build:dev && npm run gemini -- --watch');
+    }
+  },
+  
+  status: {
+    description: 'Show project status',
+    action: () => {
+      header('ALCUB3 Project Status');
+      
+      // Git status
+      log('Git Status:', colors.bright);
+      exec('git status -sb', { stdio: 'pipe' });
+      
+      // Build status
+      console.log();
+      log('Build Status:', colors.bright);
+      exec('ls -la 01-security-platform/*/dist/.last_build 2>/dev/null || echo "Not built yet"', { 
+        shell: true,
+        stdio: 'pipe' 
+      });
+      
+      // Integration status
+      console.log();
+      exec('node scripts/test-alcub3-integration.js');
+    }
+  },
+  
+  help: {
+    description: 'Show this help message',
+    action: () => showHelp()
+  }
+};
+
+function showHelp() {
+  header('AL3 Developer CLI');
+  
+  log('Usage: al3 <command> [args]', colors.bright);
+  console.log();
+  
+  const categories = {
+    'Quick Start': ['start', 'watch', 'status'],
+    'Build': ['build', 'build:dev', 'build:core', 'build:cli'],
+    'Test': ['test', 'test:integration', 'test:update'],
+    'Update': ['update:check', 'update:gemini'],
+    'Development': ['preflight', 'clean', 'lint', 'lint:fix', 'format'],
+    'Security': ['security:check', 'security:audit'],
+    'Setup': ['setup:dev'],
+    'Tasks': ['task'],
+    'Help': ['help']
+  };
+  
+  Object.entries(categories).forEach(([category, cmds]) => {
+    log(`${category}:`, colors.bright + colors.cyan);
+    cmds.forEach(cmd => {
+      const desc = commands[cmd].description;
+      console.log(`  ${colors.green}${cmd.padEnd(20)}${colors.reset} ${desc}`);
+    });
+    console.log();
+  });
+  
+  log('Examples:', colors.bright);
+  console.log(`  ${colors.dim}# Start development${colors.reset}`);
+  console.log(`  al3 start`);
+  console.log();
+  console.log(`  ${colors.dim}# Add a new task${colors.reset}`);
+  console.log(`  al3 task add "Implement new security feature"`);
+  console.log();
+  console.log(`  ${colors.dim}# Check project status${colors.reset}`);
+  console.log(`  al3 status`);
+}
+
+// Main execution
+const args = process.argv.slice(2);
+const command = args[0];
+
+if (!command || command === 'help' || command === '--help' || command === '-h') {
+  showHelp();
+} else if (commands[command]) {
+  commands[command].action(args.slice(1));
+} else {
+  log(`Unknown command: ${command}`, colors.red);
+  log('Run "al3 help" for available commands', colors.yellow);
+  process.exit(1);
+}

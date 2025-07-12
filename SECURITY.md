@@ -25,7 +25,7 @@ ALCUB3 is a defense-grade AI security platform built with security as the founda
 
 **DO NOT** create public GitHub issues for security vulnerabilities.
 
-Contact: security@alcub3.ai (coming soon)
+Contact: security@alcub3.com (coming soon)
 
 For now, security issues should be reported directly to the development team through secure channels.
 

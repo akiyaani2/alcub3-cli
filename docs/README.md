@@ -92,9 +92,10 @@ Quick access to essential information.
 3. Check [FAQ](./05-reference/faq.md) for common questions
 
 ### For Developers
-1. Read [Architecture Overview](./00-overview/architecture.md)
-2. Explore [API Reference](./03-developer/api-reference/)
-3. Review [Testing Guidelines](./03-developer/testing/)
+1. Install the `al3` CLI: `npm run setup:al3` (see [DEVELOPER_COMMANDS.md](../DEVELOPER_COMMANDS.md))
+2. Read [Architecture Overview](./00-overview/architecture.md)
+3. Explore [API Reference](./03-developer/api-reference/)
+4. Review [Testing Guidelines](./03-developer/testing/)
 
 ### For Security Teams
 1. Review [Security Overview](./04-security/README.md)
