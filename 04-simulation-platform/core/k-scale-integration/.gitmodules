@@ -1,0 +1,14 @@
+[submodule "ksim"]
+	path = ksim
+	url = https://github.com/kscalelabs/ksim.git
+	branch = main
+
+[submodule "kos"]
+	path = kos
+	url = https://github.com/kscalelabs/kos.git
+	branch = main
+
+[submodule "kinfer"]
+	path = kinfer
+	url = https://github.com/kscalelabs/kinfer.git
+	branch = main

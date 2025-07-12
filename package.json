@@ -2,8 +2,13 @@
   "name": "alcub3-cli",
   "version": "1.0.0",
   "description": "ALCUB3 - Defense-Grade AI Security Platform",
+  "type": "module",
   "private": true,
   "workspaces": [
+    "gemini-core/core",
+    "gemini-core/cli",
+    "alcub3-extensions/core",
+    "alcub3-extensions/cli",
     "01-security-platform/cli",
     "01-security-platform/core"
   ],
@@ -30,6 +35,7 @@
     "update-package-version": "node .build/scripts/version.js && cd 01-security-platform/core && npm run update-package-version && cd ../cli && npm run update-package-version",
     "lint": "eslint -c .build/config/eslint.config.js --max-warnings=0 --cache --cache-location node_modules/.cache/eslint .",
     "lint:fix": "npm run lint -- --fix",
+    "lint:ci": "eslint -c .build/config/eslint.config.js --max-warnings=0 .",
     "prepublish": "node .build/scripts/prepublish.js && cd 01-security-platform/core && npm run prepublish && cd ../cli && npm run prepublish",
     "postpublish": "cd 01-security-platform/core && npm run postpublish && cd ../cli && npm run postpublish",
     "preflight": "npm run clean && npm install && npm run format && npm run lint && npm run build && npm run typecheck && npm test",
@@ -41,7 +47,7 @@
     "release:version": "node .build/scripts/version.js",
     "tag:release:nightly": "node .build/scripts/version.js nightly",
     "check:versions": "node .build/scripts/check-versions.js",
-    "security:check": "node .build/scripts/security-regression.sh",
+    "security:check": "bash .build/scripts/security-regression-script.sh",
     "security:audit": "npm audit",
     "decision": "node .build/scripts/add-decision.sh",
     "setup:dev": "node .build/scripts/setup-best-practices.sh"

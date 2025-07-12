@@ -1,0 +1,20 @@
+{
+  "name": "@alcub3/cli",
+  "version": "1.0.0",
+  "description": "ALCUB3 CLI Extensions",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./commands": "./commands/index.ts",
+    "./components": "./components/index.ts"
+  },
+  "dependencies": {
+    "@gemini-core/cli": "workspace:*",
+    "@alcub3/core": "workspace:*"
+  },
+  "files": ["**/*.ts", "**/*.tsx"],
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -17,17 +17,29 @@
     "jsx": "react-jsx",
     "types": ["node"],
     "typeRoots": ["./node_modules/@types", "./src/types"],
-    "rootDir": "."
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@gemini-core/*": ["./gemini-core/*"],
+      "@alcub3/*": ["./alcub3-extensions/*"],
+      "@alcub3/core": ["./alcub3-extensions/core/index.ts"],
+      "@alcub3/cli": ["./alcub3-extensions/cli/index.ts"],
+      "@gemini-core/core": ["./gemini-core/core/src/index.ts"],
+      "@gemini-core/cli": ["./gemini-core/cli/src/index.ts"]
+    }
   },
   "include": [
+    "gemini-core/**/*.ts",
+    "gemini-core/**/*.tsx",
+    "alcub3-extensions/**/*.ts",
+    "alcub3-extensions/**/*.tsx",
     "packages/**/*.ts",
     "packages/**/*.tsx",
     "01-security-platform/**/*.ts",
     "01-security-platform/**/*.tsx",
-    "universal-robotics/**/*.ts",
-    "universal-robotics/**/*.tsx",
-    "src/types/**/*.d.ts",
-    "src/types/declarations.d.ts"
+    "02-robotics-hal/**/*.ts",
+    "03-maestro-framework/**/*.ts",
+    "src/types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",

@@ -1,0 +1,124 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Post-checkout hook runs after git checkout
+# Arguments: $1 = previous HEAD, $2 = new HEAD, $3 = flag (1 if branch checkout, 0 if file checkout)
+
+PREV_HEAD=$1
+NEW_HEAD=$2
+IS_BRANCH_CHECKOUT=$3
+
+# Only run for branch checkouts, not file checkouts
+if [ "$IS_BRANCH_CHECKOUT" = "0" ]; then
+  exit 0
+fi
+
+echo "🔄 Running post-checkout tasks..."
+
+# Get branch names
+PREV_BRANCH=$(git name-rev --name-only "$PREV_HEAD" 2>/dev/null | sed 's/remotes\/origin\///')
+NEW_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+echo "   Switched from: $PREV_BRANCH → $NEW_BRANCH"
+
+# Check if package files changed between branches
+PACKAGE_CHANGED=0
+if git diff --name-only "$PREV_HEAD" "$NEW_HEAD" | grep -E "package(-lock)?\.json$" > /dev/null 2>&1; then
+  PACKAGE_CHANGED=1
+fi
+
+# Auto-install dependencies if package.json changed
+if [ $PACKAGE_CHANGED -eq 1 ]; then
+  echo "📦 Package files changed between branches"
+  echo "   Running npm install..."
+  npm install
+  echo "✅ Dependencies updated"
+else
+  # Still check if node_modules exists
+  if [ ! -d "node_modules" ]; then
+    echo "📦 Missing node_modules directory"
+    echo "   Running npm install..."
+    npm install
+    echo "✅ Dependencies installed"
+  fi
+fi
+
+# Check for environment-specific setup
+if [ -f ".env.$NEW_BRANCH" ]; then
+  echo "🔧 Found branch-specific environment: .env.$NEW_BRANCH"
+  if [ ! -f ".env" ] || ! diff -q ".env" ".env.$NEW_BRANCH" > /dev/null 2>&1; then
+    echo "   Updating .env file..."
+    cp ".env.$NEW_BRANCH" ".env"
+    echo "✅ Environment updated for $NEW_BRANCH"
+  fi
+fi
+
+# Task Master sync
+if command -v task-master >/dev/null 2>&1; then
+  echo "📋 Syncing Task Master..."
+  
+  # Check for branch-specific tasks
+  if [ -f ".taskmaster/branches/$NEW_BRANCH.json" ]; then
+    echo "   Found branch-specific tasks for $NEW_BRANCH"
+  fi
+  
+  # Show current tasks
+  IN_PROGRESS=$(task-master list --status=in-progress 2>/dev/null | grep -c "in-progress" || echo "0")
+  if [ "$IN_PROGRESS" -gt 0 ]; then
+    echo "   You have $IN_PROGRESS in-progress task(s)"
+    echo "   Run 'task-master list' to view them"
+  fi
+fi
+
+# Check for migration files
+if git diff --name-only "$PREV_HEAD" "$NEW_HEAD" | grep -E "migrations/.*\.(sql|js|ts)$" > /dev/null 2>&1; then
+  echo "🗄️  New migrations detected in this branch!"
+  echo "   Remember to run migrations if needed"
+fi
+
+# Security clearance check for classified branches
+if echo "$NEW_BRANCH" | grep -E "(secret|classified|ts-)" > /dev/null; then
+  echo "🔒 WARNING: This appears to be a classified branch!"
+  echo "   Ensure you have appropriate clearance level"
+  echo "   All commits will require classification markers"
+fi
+
+# Check for README or documentation updates
+if git diff --name-only "$PREV_HEAD" "$NEW_HEAD" | grep -E "README|CLAUDE\.md|\.md$" > /dev/null 2>&1; then
+  echo "📚 Documentation changes detected"
+  echo "   Review updated docs with 'git diff $PREV_HEAD $NEW_HEAD -- *.md'"
+fi
+
+# Build status check
+if [ -f "01-security-platform/core/dist/.last_build" ]; then
+  LAST_BUILD=$(cat "01-security-platform/core/dist/.last_build" 2>/dev/null || echo "0")
+  CURRENT_TIME=$(date +%s)
+  BUILD_AGE=$(( ($CURRENT_TIME - $LAST_BUILD) / 3600 ))
+  
+  if [ $BUILD_AGE -gt 24 ]; then
+    echo "⚠️  Build is more than 24 hours old"
+    echo "   Consider running 'npm run build'"
+  fi
+elif [ ! -d "01-security-platform/core/dist" ]; then
+  echo "⚠️  No build artifacts found"
+  echo "   Run 'npm run build' to build the project"
+fi
+
+# Performance reminder for feature branches
+if echo "$NEW_BRANCH" | grep -E "^(feat|feature)/" > /dev/null; then
+  echo "⚡ Feature branch detected"
+  echo "   Remember to monitor performance with PerformanceBudget"
+fi
+
+# Check for pillar-specific setup
+for PILLAR in 01-security-platform 02-robotics-hal 03-maestro-framework 04-simulation-platform 05-cisa-compliance 06-neural-compression 07-space-operations 08-world-foundation-models 09-agent-marketplace; do
+  if git diff --name-only "$PREV_HEAD" "$NEW_HEAD" | grep "^$PILLAR/" > /dev/null 2>&1; then
+    if [ -f "$PILLAR/setup.sh" ]; then
+      echo "🏗️  Changes detected in $PILLAR"
+      echo "   Run '$PILLAR/setup.sh' if needed"
+    fi
+  fi
+done
+
+echo "✅ Post-checkout tasks completed"
+echo ""

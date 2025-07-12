@@ -50,7 +50,7 @@ jobs:
         with:
           name: build-artifacts-${{ matrix.node-version }}
           path: |
-            packages/*/dist
+            01-security-platform/*/dist
             package-lock.json # Only upload dist and lockfile
   test:
     name: Test
@@ -95,7 +95,7 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Test Results (Node ${{ matrix.node-version }})
-          path: packages/*/junit.xml
+          path: 01-security-platform/*/junit.xml
           reporter: java-junit
           fail-on-error: 'false'
 
@@ -104,14 +104,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results-fork-${{ matrix.node-version }}
-          path: packages/*/junit.xml
+          path: 01-security-platform/*/junit.xml
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-reports-${{ matrix.node-version }}
-          path: packages/*/coverage
+          path: 01-security-platform/*/coverage
 
   post_coverage_comment:
     name: Post Coverage Comment

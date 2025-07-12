@@ -1,0 +1,51 @@
+# ALCUB3 Custom Security Profile Template
+# Use this template to create custom security profiles
+# Mix and match features from ENTERPRISE, FEDERAL, and CLASSIFIED profiles
+
+profile:
+  name: "CUSTOM_[YOUR_NAME]"
+  description: "Custom security profile for [YOUR USE CASE]"
+  version: "1.0.0"
+  base_profile: "FEDERAL"  # Start from: ENTERPRISE, FEDERAL, or CLASSIFIED
+  
+# Override any settings from base profile
+# Example: Space mission needing CLASSIFIED crypto but ENTERPRISE performance
+
+classification:
+  max_level: "SECRET"  # Override from base
+  
+encryption:
+  # Use CLASSIFIED-level quantum crypto
+  algorithm: "HYBRID"
+  quantum_resistant:
+    kem: "Kyber1024"
+    signatures: "Dilithium5"
+    
+performance:
+  # But keep ENTERPRISE-level performance targets
+  target_latency_ms: 20
+  
+# Add custom integrations
+integrations:
+  nasa_cfs:
+    enabled: true
+    mode: "space_operations"
+  custom_hardware:
+    enabled: true
+    driver: "proprietary_rad_hard"
+    
+# Custom validation rules
+validation:
+  custom_rules:
+    - name: "radiation_check"
+      enabled: true
+      threshold: 100  # rad
+    - name: "thermal_limits"
+      min_temp_c: -40
+      max_temp_c: 85
+      
+# Usage:
+# 1. Copy this template to a new file (e.g., custom_space_mission.yaml)
+# 2. Modify settings as needed
+# 3. Validate with: alcub3 security profile --validate custom_space_mission.yaml
+# 4. Apply with: alcub3 security profile --set custom_space_mission

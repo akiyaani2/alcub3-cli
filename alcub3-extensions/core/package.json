@@ -1,0 +1,20 @@
+{
+  "name": "@alcub3/core",
+  "version": "1.0.0",
+  "description": "ALCUB3 Core Extensions",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./api": "./api/index.ts",
+    "./security": "./security/index.ts",
+    "./utils": "./utils/index.ts"
+  },
+  "dependencies": {
+    "@gemini-core/core": "workspace:*"
+  },
+  "files": ["**/*.ts", "**/*.js"],
+  "engines": {
+    "node": ">=18"
+  }
+}

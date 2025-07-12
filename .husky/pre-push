@@ -1,5 +1,42 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "Running security regression tests..."
-npm run security:check
+echo "🏗️  Running build verification..."
+npm run build || {
+  echo "❌ Build failed! Fix build errors before pushing."
+  exit 1
+}
+
+echo "🧪 Running test coverage check..."
+npm run test:ci || {
+  echo "❌ Tests failed! Fix failing tests before pushing."
+  exit 1
+}
+
+# Check test coverage (requires coverage report from test:ci)
+if [ -f "01-security-platform/core/coverage/coverage-summary.json" ]; then
+  COVERAGE=$(node -e "const cov=require('./01-security-platform/core/coverage/coverage-summary.json'); console.log(cov.total.lines.pct)")
+  if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+    echo "❌ Test coverage is below 80% (current: ${COVERAGE}%)"
+    exit 1
+  fi
+  echo "✅ Test coverage: ${COVERAGE}%"
+fi
+
+echo "🔐 Running security checks..."
+# Run npm audit
+npm audit --audit-level=high || {
+  echo "⚠️  Security vulnerabilities found. Run 'npm audit fix' to resolve."
+}
+
+# Check for classification markers in commits
+echo "🏷️  Checking for classification markers..."
+git diff origin/main..HEAD --name-only | while read file; do
+  if [[ "$file" =~ \.(ts|js|py|md)$ ]]; then
+    if grep -l "CLASSIFIED\|SECRET\|TOP SECRET\|TS//SCI" "$file" 2>/dev/null; then
+      echo "⚠️  Classification marker found in $file - ensure proper handling!"
+    fi
+  fi
+done
+
+echo "✅ Pre-push checks completed"

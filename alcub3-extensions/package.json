@@ -1,0 +1,11 @@
+{
+  "name": "@alcub3/extensions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ALCUB3 Extensions and Modifications",
+  "type": "module",
+  "workspaces": [
+    "core",
+    "cli"
+  ]
+}

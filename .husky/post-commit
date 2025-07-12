@@ -1,0 +1,66 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Get the commit message
+COMMIT_MSG=$(git log -1 --pretty=%B)
+
+# Task completion check
+echo "📋 Checking for task completions..."
+if echo "$COMMIT_MSG" | grep -E "completes #[0-9]+|closes #[0-9]+|fixes #[0-9]+" > /dev/null; then
+  TASK_IDS=$(echo "$COMMIT_MSG" | grep -oE "#[0-9]+" | grep -oE "[0-9]+")
+  for TASK_ID in $TASK_IDS; do
+    echo "✅ Marking task #$TASK_ID as completed"
+    # If task-master is available, update the task
+    if command -v task-master >/dev/null 2>&1; then
+      task-master set-status --id=$TASK_ID --status=completed 2>/dev/null || true
+    fi
+  done
+fi
+
+# Documentation reminder
+echo "📚 Checking for significant changes..."
+CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD)
+SIGNIFICANT_CHANGES=0
+
+# Check for new features or major changes
+if echo "$CHANGED_FILES" | grep -E "^(01-security-platform|02-robotics-hal|03-maestro-framework|04-simulation-platform|05-cisa-compliance|06-neural-compression|07-space-operations|08-world-foundation-models|09-agent-marketplace)/.*\.(ts|js|py)$" > /dev/null; then
+  SIGNIFICANT_CHANGES=1
+fi
+
+# Check if new commands were added
+if echo "$CHANGED_FILES" | grep -E "commands/.*\.ts$" > /dev/null; then
+  echo "🔔 New command detected! Remember to:"
+  echo "   - Update CLAUDE.md with the new command"
+  echo "   - Add documentation to docs/"
+  echo "   - Update README.md if needed"
+  SIGNIFICANT_CHANGES=1
+fi
+
+# Check if APIs were modified
+if echo "$CHANGED_FILES" | grep -E "api/.*\.ts$" > /dev/null; then
+  echo "🔔 API changes detected! Remember to:"
+  echo "   - Update API documentation"
+  echo "   - Check for breaking changes"
+  echo "   - Update integration tests"
+  SIGNIFICANT_CHANGES=1
+fi
+
+# Patent opportunity logging
+if echo "$COMMIT_MSG" | grep -iE "patent|innovative|novel|breakthrough" > /dev/null; then
+  echo "💡 Patent opportunity mentioned in commit!"
+  echo "   Consider adding to 00-strategic/patents/PATENT_INNOVATIONS_COMPREHENSIVE.md"
+fi
+
+# Performance tracking
+if echo "$CHANGED_FILES" | grep -E "PerformanceBudget|performance.*test" > /dev/null; then
+  echo "⚡ Performance changes detected"
+  echo "   Remember to update performance benchmarks"
+fi
+
+if [ $SIGNIFICANT_CHANGES -eq 1 ]; then
+  echo ""
+  echo "📝 This commit includes significant changes."
+  echo "   Consider updating relevant documentation!"
+fi
+
+echo "✅ Post-commit tasks completed"

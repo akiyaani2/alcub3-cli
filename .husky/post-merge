@@ -1,0 +1,51 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔄 Running post-merge tasks..."
+
+# Check if package.json or package-lock.json changed
+if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep -E "package(-lock)?\.json$" > /dev/null; then
+  echo "📦 Package files changed, running npm install..."
+  npm install
+  echo "✅ Dependencies updated"
+fi
+
+# Check for migration files
+if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep -E "migrations/.*\.(sql|js|ts)$" > /dev/null; then
+  echo "🗄️  New migrations detected!"
+  echo "   Run migration command when ready"
+fi
+
+# Check for changes in strategic documents
+if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep -E "^00-strategic/.*\.md$" > /dev/null; then
+  echo "📋 Strategic documents updated!"
+  echo "   Review changes in 00-strategic/"
+fi
+
+# Check for CLAUDE.md updates
+if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "CLAUDE.md" > /dev/null; then
+  echo "🤖 CLAUDE.md updated!"
+  echo "   Review new instructions for AI assistance"
+fi
+
+# Check for new pillar additions
+if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep -E "^[0-9]{2}-.*/$" > /dev/null; then
+  echo "🏗️  New pillar directory detected!"
+  echo "   Review new architecture components"
+fi
+
+# Task sync reminder
+if command -v task-master >/dev/null 2>&1; then
+  echo "📋 Syncing tasks..."
+  task-master list --status=in-progress > /dev/null 2>&1 && {
+    echo "   You have in-progress tasks. Run 'task-master list' to view."
+  }
+fi
+
+# Build check after merge
+echo "🏗️  Running build check after merge..."
+npm run build || {
+  echo "⚠️  Build failed after merge! Review and fix errors."
+}
+
+echo "✅ Post-merge tasks completed"

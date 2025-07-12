@@ -1,0 +1,10 @@
+{
+  "name": "@gemini-core/root",
+  "version": "0.1.11",
+  "private": true,
+  "description": "Unmodified Google Gemini CLI code",
+  "workspaces": [
+    "core",
+    "cli"
+  ]
+}

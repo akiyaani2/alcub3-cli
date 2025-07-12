@@ -1,0 +1,118 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+# Only process if this is a normal commit (not a merge, squash, etc.)
+if [ -z "$COMMIT_SOURCE" ]; then
+  # Read current commit message
+  CURRENT_MSG=$(cat "$COMMIT_MSG_FILE")
+  
+  # Skip if already has a type prefix
+  if echo "$CURRENT_MSG" | grep -E "^(feat|fix|docs|style|refactor|test|chore|perf|build|ci)(\(.+\))?:" > /dev/null; then
+    exit 0
+  fi
+  
+  # Analyze staged files to determine commit type
+  STAGED_FILES=$(git diff --cached --name-only)
+  TYPE=""
+  EMOJI=""
+  
+  # Check for documentation changes
+  if echo "$STAGED_FILES" | grep -E "\.(md|txt)$|^docs/" > /dev/null; then
+    TYPE="docs"
+    EMOJI="📚"
+  fi
+  
+  # Check for test changes
+  if echo "$STAGED_FILES" | grep -E "\.(test|spec)\.(ts|js|tsx|jsx)$|^test/|^tests/" > /dev/null; then
+    TYPE="test"
+    EMOJI="🧪"
+  fi
+  
+  # Check for build/config changes
+  if echo "$STAGED_FILES" | grep -E "package\.json|tsconfig|webpack|rollup|vite|esbuild|\.github/|Dockerfile" > /dev/null; then
+    TYPE="build"
+    EMOJI="🏗️"
+  fi
+  
+  # Check for new features (new files in feature directories)
+  if echo "$STAGED_FILES" | grep -E "^(01-security-platform|02-robotics-hal|03-maestro-framework|04-simulation-platform|05-cisa-compliance|06-neural-compression|07-space-operations|08-world-foundation-models|09-agent-marketplace)/.*\.(ts|js|py)$" > /dev/null; then
+    # Check if files are new
+    NEW_FILES=$(git diff --cached --name-status | grep "^A" | wc -l)
+    if [ $NEW_FILES -gt 0 ]; then
+      TYPE="feat"
+      EMOJI="✨"
+    else
+      TYPE="fix"
+      EMOJI="🐛"
+    fi
+  fi
+  
+  # Check for style/formatting changes
+  if echo "$STAGED_FILES" | grep -E "\.(prettier|eslint|editorconfig)" > /dev/null; then
+    TYPE="style"
+    EMOJI="🎨"
+  fi
+  
+  # Check for performance improvements
+  if echo "$CURRENT_MSG" | grep -iE "optimi|performance|speed|fast" > /dev/null; then
+    TYPE="perf"
+    EMOJI="⚡"
+  fi
+  
+  # Check for security fixes
+  if echo "$CURRENT_MSG" | grep -iE "security|vulnerability|cve|fix.*auth|fix.*crypto" > /dev/null; then
+    TYPE="fix"
+    EMOJI="🔒"
+  fi
+  
+  # Add type prefix if determined
+  if [ ! -z "$TYPE" ]; then
+    # Check which pillar is affected
+    SCOPE=""
+    if echo "$STAGED_FILES" | grep "^01-security-platform/" > /dev/null; then
+      SCOPE="security"
+    elif echo "$STAGED_FILES" | grep "^02-robotics-hal/" > /dev/null; then
+      SCOPE="robotics"
+    elif echo "$STAGED_FILES" | grep "^03-maestro-framework/" > /dev/null; then
+      SCOPE="maestro"
+    elif echo "$STAGED_FILES" | grep "^04-simulation-platform/" > /dev/null; then
+      SCOPE="simulation"
+    elif echo "$STAGED_FILES" | grep "^05-cisa-compliance/" > /dev/null; then
+      SCOPE="cisa"
+    elif echo "$STAGED_FILES" | grep "^06-neural-compression/" > /dev/null; then
+      SCOPE="compression"
+    elif echo "$STAGED_FILES" | grep "^07-space-operations/" > /dev/null; then
+      SCOPE="space"
+    elif echo "$STAGED_FILES" | grep "^08-world-foundation-models/" > /dev/null; then
+      SCOPE="wfm"
+    elif echo "$STAGED_FILES" | grep "^09-agent-marketplace/" > /dev/null; then
+      SCOPE="marketplace"
+    fi
+    
+    # Build new message
+    if [ ! -z "$SCOPE" ]; then
+      NEW_MSG="$TYPE($SCOPE): $CURRENT_MSG"
+    else
+      NEW_MSG="$TYPE: $CURRENT_MSG"
+    fi
+    
+    # Add emoji at the end if not already present
+    if [ ! -z "$EMOJI" ] && ! echo "$NEW_MSG" | grep -E "[\U0001F300-\U0001F9FF]" > /dev/null; then
+      NEW_MSG="$NEW_MSG $EMOJI"
+    fi
+    
+    # Write back to commit message file
+    echo "$NEW_MSG" > "$COMMIT_MSG_FILE"
+  fi
+  
+  # Add task references if found in staged files
+  TASK_REFS=$(git diff --cached | grep -oE "task #[0-9]+|TODO.*#[0-9]+" | grep -oE "#[0-9]+" | sort -u)
+  if [ ! -z "$TASK_REFS" ]; then
+    echo "" >> "$COMMIT_MSG_FILE"
+    echo "Related tasks: $TASK_REFS" >> "$COMMIT_MSG_FILE"
+  fi
+fi

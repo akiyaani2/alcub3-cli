@@ -1,0 +1,369 @@
+# ALCUB3 Refactor Inventory
+Generated: 2025-07-12T13:06:03.799Z
+
+## Summary
+- **Original Gemini files**: 132
+- **Modified Gemini files**: 147
+- **New ALCUB3 files**: 31
+- **Gemini-only files**: 26
+
+## Original Gemini Files (Unmodified)
+These files can be moved directly to `gemini-core/`.
+
+- 01-security-platform/core/src/__mocks__/fs/promises.ts → gemini-core/__mocks__/fs/promises.ts
+- 01-security-platform/core/src/code_assist/converter.test.ts → gemini-core/code_assist/converter.test.ts
+- 01-security-platform/core/src/code_assist/server.test.ts → gemini-core/code_assist/server.test.ts
+- 01-security-platform/core/src/code_assist/types.ts → gemini-core/code_assist/types.ts
+- 01-security-platform/core/src/config/flashFallback.test.ts → gemini-core/config/flashFallback.test.ts
+- 01-security-platform/core/src/config/models.ts → gemini-core/config/models.ts
+- 01-security-platform/core/src/core/geminiRequest.test.ts → gemini-core/core/geminiRequest.test.ts
+- 01-security-platform/core/src/core/geminiRequest.ts → gemini-core/core/geminiRequest.ts
+- 01-security-platform/core/src/core/logger.test.ts → gemini-core/core/logger.test.ts
+- 01-security-platform/core/src/core/logger.ts → gemini-core/core/logger.ts
+- 01-security-platform/core/src/core/prompts.test.ts → gemini-core/core/prompts.test.ts
+- 01-security-platform/core/src/core/tokenLimits.ts → gemini-core/core/tokenLimits.ts
+- 01-security-platform/core/src/index.test.ts → gemini-core/index.test.ts
+- 01-security-platform/core/src/services/fileDiscoveryService.test.ts → gemini-core/services/fileDiscoveryService.test.ts
+- 01-security-platform/core/src/services/gitService.test.ts → gemini-core/services/gitService.test.ts
+- 01-security-platform/core/src/services/gitService.ts → gemini-core/services/gitService.ts
+- 01-security-platform/core/src/telemetry/metrics.test.ts → gemini-core/telemetry/metrics.test.ts
+- 01-security-platform/core/src/telemetry/metrics.ts → gemini-core/telemetry/metrics.ts
+- 01-security-platform/core/src/telemetry/sdk.ts → gemini-core/telemetry/sdk.ts
+- 01-security-platform/core/src/telemetry/telemetry.test.ts → gemini-core/telemetry/telemetry.test.ts
+- 01-security-platform/core/src/telemetry/uiTelemetry.ts → gemini-core/telemetry/uiTelemetry.ts
+- 01-security-platform/core/src/tools/diffOptions.ts → gemini-core/tools/diffOptions.ts
+- 01-security-platform/core/src/tools/mcp-tool.test.ts → gemini-core/tools/mcp-tool.test.ts
+- 01-security-platform/core/src/tools/memoryTool.test.ts → gemini-core/tools/memoryTool.test.ts
+- 01-security-platform/core/src/tools/modifiable-tool.test.ts → gemini-core/tools/modifiable-tool.test.ts
+- 01-security-platform/core/src/tools/modifiable-tool.ts → gemini-core/tools/modifiable-tool.ts
+- 01-security-platform/core/src/tools/web-fetch.test.ts → gemini-core/tools/web-fetch.test.ts
+- 01-security-platform/core/src/utils/LruCache.ts → gemini-core/utils/LruCache.ts
+- 01-security-platform/core/src/utils/bfsFileSearch.test.ts → gemini-core/utils/bfsFileSearch.test.ts
+- 01-security-platform/core/src/utils/bfsFileSearch.ts → gemini-core/utils/bfsFileSearch.ts
+- 01-security-platform/core/src/utils/editor.test.ts → gemini-core/utils/editor.test.ts
+- 01-security-platform/core/src/utils/errorReporting.test.ts → gemini-core/utils/errorReporting.test.ts
+- 01-security-platform/core/src/utils/errorReporting.ts → gemini-core/utils/errorReporting.ts
+- 01-security-platform/core/src/utils/errors.ts → gemini-core/utils/errors.ts
+- 01-security-platform/core/src/utils/fetch.ts → gemini-core/utils/fetch.ts
+- 01-security-platform/core/src/utils/generateContentResponseUtilities.test.ts → gemini-core/utils/generateContentResponseUtilities.test.ts
+- 01-security-platform/core/src/utils/generateContentResponseUtilities.ts → gemini-core/utils/generateContentResponseUtilities.ts
+- 01-security-platform/core/src/utils/getFolderStructure.test.ts → gemini-core/utils/getFolderStructure.test.ts
+- 01-security-platform/core/src/utils/getFolderStructure.ts → gemini-core/utils/getFolderStructure.ts
+- 01-security-platform/core/src/utils/gitIgnoreParser.test.ts → gemini-core/utils/gitIgnoreParser.test.ts
+- 01-security-platform/core/src/utils/gitIgnoreParser.ts → gemini-core/utils/gitIgnoreParser.ts
+- 01-security-platform/core/src/utils/gitUtils.ts → gemini-core/utils/gitUtils.ts
+- 01-security-platform/core/src/utils/memoryDiscovery.test.ts → gemini-core/utils/memoryDiscovery.test.ts
+- 01-security-platform/core/src/utils/memoryDiscovery.ts → gemini-core/utils/memoryDiscovery.ts
+- 01-security-platform/core/src/utils/memoryImportProcessor.test.ts → gemini-core/utils/memoryImportProcessor.test.ts
+- 01-security-platform/core/src/utils/memoryImportProcessor.ts → gemini-core/utils/memoryImportProcessor.ts
+- 01-security-platform/core/src/utils/nextSpeakerChecker.test.ts → gemini-core/utils/nextSpeakerChecker.test.ts
+- 01-security-platform/core/src/utils/session.ts → gemini-core/utils/session.ts
+- 01-security-platform/core/src/utils/testUtils.ts → gemini-core/utils/testUtils.ts
+- 01-security-platform/cli/src/ui/colors.ts → gemini-core/ui/colors.ts
+- 01-security-platform/cli/src/ui/components/AboutBox.tsx → gemini-core/ui/components/AboutBox.tsx
+- 01-security-platform/cli/src/ui/components/AsciiArt.ts → gemini-core/ui/components/AsciiArt.ts
+- 01-security-platform/cli/src/ui/components/AuthInProgress.tsx → gemini-core/ui/components/AuthInProgress.tsx
+- 01-security-platform/cli/src/ui/components/ConsolePatcher.tsx → gemini-core/ui/components/ConsolePatcher.tsx
+- 01-security-platform/cli/src/ui/components/ConsoleSummaryDisplay.tsx → gemini-core/ui/components/ConsoleSummaryDisplay.tsx
+- 01-security-platform/cli/src/ui/components/DetailedMessagesDisplay.tsx → gemini-core/ui/components/DetailedMessagesDisplay.tsx
+- 01-security-platform/cli/src/ui/components/GeminiRespondingSpinner.tsx → gemini-core/ui/components/GeminiRespondingSpinner.tsx
+- 01-security-platform/cli/src/ui/components/HistoryItemDisplay.test.tsx → gemini-core/ui/components/HistoryItemDisplay.test.tsx
+- 01-security-platform/cli/src/ui/components/MemoryUsageDisplay.tsx → gemini-core/ui/components/MemoryUsageDisplay.tsx
+- 01-security-platform/cli/src/ui/components/ModelStatsDisplay.tsx → gemini-core/ui/components/ModelStatsDisplay.tsx
+- 01-security-platform/cli/src/ui/components/SessionSummaryDisplay.tsx → gemini-core/ui/components/SessionSummaryDisplay.tsx
+- 01-security-platform/cli/src/ui/components/ShellModeIndicator.tsx → gemini-core/ui/components/ShellModeIndicator.tsx
+- 01-security-platform/cli/src/ui/components/ShowMoreLines.tsx → gemini-core/ui/components/ShowMoreLines.tsx
+- 01-security-platform/cli/src/ui/components/StatsDisplay.tsx → gemini-core/ui/components/StatsDisplay.tsx
+- 01-security-platform/cli/src/ui/components/SuggestionsDisplay.tsx → gemini-core/ui/components/SuggestionsDisplay.tsx
+- 01-security-platform/cli/src/ui/components/UpdateNotification.tsx → gemini-core/ui/components/UpdateNotification.tsx
+- 01-security-platform/cli/src/ui/components/messages/DiffRenderer.test.tsx → gemini-core/ui/components/messages/DiffRenderer.test.tsx
+- 01-security-platform/cli/src/ui/components/messages/DiffRenderer.tsx → gemini-core/ui/components/messages/DiffRenderer.tsx
+- 01-security-platform/cli/src/ui/components/messages/ErrorMessage.tsx → gemini-core/ui/components/messages/ErrorMessage.tsx
+- 01-security-platform/cli/src/ui/components/messages/GeminiMessage.tsx → gemini-core/ui/components/messages/GeminiMessage.tsx
+- 01-security-platform/cli/src/ui/components/messages/GeminiMessageContent.tsx → gemini-core/ui/components/messages/GeminiMessageContent.tsx
+- 01-security-platform/cli/src/ui/components/messages/InfoMessage.tsx → gemini-core/ui/components/messages/InfoMessage.tsx
+- 01-security-platform/cli/src/ui/components/messages/ToolMessage.tsx → gemini-core/ui/components/messages/ToolMessage.tsx
+- 01-security-platform/cli/src/ui/components/messages/UserMessage.tsx → gemini-core/ui/components/messages/UserMessage.tsx
+- 01-security-platform/cli/src/ui/components/messages/UserShellMessage.tsx → gemini-core/ui/components/messages/UserShellMessage.tsx
+- 01-security-platform/cli/src/ui/constants.ts → gemini-core/ui/constants.ts
+- 01-security-platform/cli/src/ui/contexts/OverflowContext.tsx → gemini-core/ui/contexts/OverflowContext.tsx
+- 01-security-platform/cli/src/ui/contexts/StreamingContext.tsx → gemini-core/ui/contexts/StreamingContext.tsx
+- 01-security-platform/cli/src/ui/hooks/useBracketedPaste.ts → gemini-core/ui/hooks/useBracketedPaste.ts
+- 01-security-platform/cli/src/ui/hooks/useConsoleMessages.test.ts → gemini-core/ui/hooks/useConsoleMessages.test.ts
+- 01-security-platform/cli/src/ui/hooks/useConsoleMessages.ts → gemini-core/ui/hooks/useConsoleMessages.ts
+- 01-security-platform/cli/src/ui/hooks/useGitBranchName.test.ts → gemini-core/ui/hooks/useGitBranchName.test.ts
+- 01-security-platform/cli/src/ui/hooks/useGitBranchName.ts → gemini-core/ui/hooks/useGitBranchName.ts
+- 01-security-platform/cli/src/ui/hooks/useHistoryManager.test.ts → gemini-core/ui/hooks/useHistoryManager.test.ts
+- 01-security-platform/cli/src/ui/hooks/useHistoryManager.ts → gemini-core/ui/hooks/useHistoryManager.ts
+- 01-security-platform/cli/src/ui/hooks/useInputHistory.test.ts → gemini-core/ui/hooks/useInputHistory.test.ts
+- 01-security-platform/cli/src/ui/hooks/useInputHistory.ts → gemini-core/ui/hooks/useInputHistory.ts
+- 01-security-platform/cli/src/ui/hooks/useLoadingIndicator.ts → gemini-core/ui/hooks/useLoadingIndicator.ts
+- 01-security-platform/cli/src/ui/hooks/usePhraseCycler.test.ts → gemini-core/ui/hooks/usePhraseCycler.test.ts
+- 01-security-platform/cli/src/ui/hooks/usePhraseCycler.ts → gemini-core/ui/hooks/usePhraseCycler.ts
+- 01-security-platform/cli/src/ui/hooks/useRefreshMemoryCommand.ts → gemini-core/ui/hooks/useRefreshMemoryCommand.ts
+- 01-security-platform/cli/src/ui/hooks/useShellHistory.test.ts → gemini-core/ui/hooks/useShellHistory.test.ts
+- 01-security-platform/cli/src/ui/hooks/useStateAndRef.ts → gemini-core/ui/hooks/useStateAndRef.ts
+- 01-security-platform/cli/src/ui/hooks/useTerminalSize.ts → gemini-core/ui/hooks/useTerminalSize.ts
+- 01-security-platform/cli/src/ui/hooks/useThemeCommand.ts → gemini-core/ui/hooks/useThemeCommand.ts
+- 01-security-platform/cli/src/ui/hooks/useTimer.test.ts → gemini-core/ui/hooks/useTimer.test.ts
+- 01-security-platform/cli/src/ui/hooks/useTimer.ts → gemini-core/ui/hooks/useTimer.ts
+- 01-security-platform/cli/src/ui/privacy/CloudPaidPrivacyNotice.tsx → gemini-core/ui/privacy/CloudPaidPrivacyNotice.tsx
+- 01-security-platform/cli/src/ui/privacy/GeminiPrivacyNotice.tsx → gemini-core/ui/privacy/GeminiPrivacyNotice.tsx
+- 01-security-platform/cli/src/ui/themes/ansi-light.ts → gemini-core/ui/themes/ansi-light.ts
+- 01-security-platform/cli/src/ui/themes/ansi.ts → gemini-core/ui/themes/ansi.ts
+- 01-security-platform/cli/src/ui/themes/atom-one-dark.ts → gemini-core/ui/themes/atom-one-dark.ts
+- 01-security-platform/cli/src/ui/themes/ayu-light.ts → gemini-core/ui/themes/ayu-light.ts
+- 01-security-platform/cli/src/ui/themes/ayu.ts → gemini-core/ui/themes/ayu.ts
+- 01-security-platform/cli/src/ui/themes/default-light.ts → gemini-core/ui/themes/default-light.ts
+- 01-security-platform/cli/src/ui/themes/default.ts → gemini-core/ui/themes/default.ts
+- 01-security-platform/cli/src/ui/themes/dracula.ts → gemini-core/ui/themes/dracula.ts
+- 01-security-platform/cli/src/ui/themes/github-dark.ts → gemini-core/ui/themes/github-dark.ts
+- 01-security-platform/cli/src/ui/themes/github-light.ts → gemini-core/ui/themes/github-light.ts
+- 01-security-platform/cli/src/ui/themes/googlecode.ts → gemini-core/ui/themes/googlecode.ts
+- 01-security-platform/cli/src/ui/themes/no-color.ts → gemini-core/ui/themes/no-color.ts
+- 01-security-platform/cli/src/ui/themes/shades-of-purple.ts → gemini-core/ui/themes/shades-of-purple.ts
+- 01-security-platform/cli/src/ui/themes/theme-manager.ts → gemini-core/ui/themes/theme-manager.ts
+- 01-security-platform/cli/src/ui/themes/theme.ts → gemini-core/ui/themes/theme.ts
+- 01-security-platform/cli/src/ui/themes/xcode.ts → gemini-core/ui/themes/xcode.ts
+- 01-security-platform/cli/src/ui/utils/CodeColorizer.tsx → gemini-core/ui/utils/CodeColorizer.tsx
+- 01-security-platform/cli/src/ui/utils/commandUtils.ts → gemini-core/ui/utils/commandUtils.ts
+- 01-security-platform/cli/src/ui/utils/computeStats.test.ts → gemini-core/ui/utils/computeStats.test.ts
+- 01-security-platform/cli/src/ui/utils/computeStats.ts → gemini-core/ui/utils/computeStats.ts
+- 01-security-platform/cli/src/ui/utils/displayUtils.test.ts → gemini-core/ui/utils/displayUtils.test.ts
+- 01-security-platform/cli/src/ui/utils/displayUtils.ts → gemini-core/ui/utils/displayUtils.ts
+- 01-security-platform/cli/src/ui/utils/formatters.test.ts → gemini-core/ui/utils/formatters.test.ts
+- 01-security-platform/cli/src/ui/utils/formatters.ts → gemini-core/ui/utils/formatters.ts
+- 01-security-platform/cli/src/ui/utils/markdownUtilities.test.ts → gemini-core/ui/utils/markdownUtilities.test.ts
+- 01-security-platform/cli/src/ui/utils/markdownUtilities.ts → gemini-core/ui/utils/markdownUtilities.ts
+- 01-security-platform/cli/src/ui/utils/textUtils.test.ts → gemini-core/ui/utils/textUtils.test.ts
+- 01-security-platform/cli/src/ui/utils/textUtils.ts → gemini-core/ui/utils/textUtils.ts
+- 01-security-platform/cli/src/ui/utils/updateCheck.test.ts → gemini-core/ui/utils/updateCheck.test.ts
+- 01-security-platform/cli/src/ui/utils/updateCheck.ts → gemini-core/ui/utils/updateCheck.ts
+- 01-security-platform/cli/src/utils/package.ts → gemini-core/utils/package.ts
+- 01-security-platform/cli/src/utils/readStdin.ts → gemini-core/utils/readStdin.ts
+- 01-security-platform/cli/src/utils/version.ts → gemini-core/utils/version.ts
+
+## Modified Gemini Files
+These files need to be analyzed for extraction to `alcub3-extensions/`.
+
+- 01-security-platform/core/src/code_assist/codeAssist.ts (modified from .gemini-original/packages/core/src/code_assist/codeAssist.ts)
+- 01-security-platform/core/src/code_assist/converter.ts (modified from .gemini-original/packages/core/src/code_assist/converter.ts)
+- 01-security-platform/core/src/code_assist/oauth2.test.ts (modified from .gemini-original/packages/core/src/code_assist/oauth2.test.ts)
+- 01-security-platform/core/src/code_assist/oauth2.ts (modified from .gemini-original/packages/core/src/code_assist/oauth2.ts)
+- 01-security-platform/core/src/code_assist/server.ts (modified from .gemini-original/packages/core/src/code_assist/server.ts)
+- 01-security-platform/core/src/code_assist/setup.ts (modified from .gemini-original/packages/core/src/code_assist/setup.ts)
+- 01-security-platform/core/src/config/config.test.ts (modified from .gemini-original/packages/core/src/config/config.test.ts)
+- 01-security-platform/core/src/config/config.ts (modified from .gemini-original/packages/core/src/config/config.ts)
+- 01-security-platform/core/src/core/client.test.ts (modified from .gemini-original/packages/core/src/core/client.test.ts)
+- 01-security-platform/core/src/core/client.ts (modified from .gemini-original/packages/core/src/core/client.ts)
+- 01-security-platform/core/src/core/contentGenerator.test.ts (modified from .gemini-original/packages/core/src/core/contentGenerator.test.ts)
+- 01-security-platform/core/src/core/contentGenerator.ts (modified from .gemini-original/packages/core/src/core/contentGenerator.ts)
+- 01-security-platform/core/src/core/coreToolScheduler.test.ts (modified from .gemini-original/packages/core/src/core/coreToolScheduler.test.ts)
+- 01-security-platform/core/src/core/coreToolScheduler.ts (modified from .gemini-original/packages/core/src/core/coreToolScheduler.ts)
+- 01-security-platform/core/src/core/geminiChat.test.ts (modified from .gemini-original/packages/core/src/core/geminiChat.test.ts)
+- 01-security-platform/core/src/core/geminiChat.ts (modified from .gemini-original/packages/core/src/core/geminiChat.ts)
+- 01-security-platform/core/src/core/modelCheck.ts (modified from .gemini-original/packages/core/src/core/modelCheck.ts)
+- 01-security-platform/core/src/core/nonInteractiveToolExecutor.test.ts (modified from .gemini-original/packages/core/src/core/nonInteractiveToolExecutor.test.ts)
+- 01-security-platform/core/src/core/nonInteractiveToolExecutor.ts (modified from .gemini-original/packages/core/src/core/nonInteractiveToolExecutor.ts)
+- 01-security-platform/core/src/core/prompts.ts (modified from .gemini-original/packages/core/src/core/prompts.ts)
+- 01-security-platform/core/src/core/turn.test.ts (modified from .gemini-original/packages/core/src/core/turn.test.ts)
+- 01-security-platform/core/src/core/turn.ts (modified from .gemini-original/packages/core/src/core/turn.ts)
+- 01-security-platform/core/src/index.ts (modified from .gemini-original/packages/core/src/index.ts)
+- 01-security-platform/core/src/services/fileDiscoveryService.ts (modified from .gemini-original/packages/core/src/services/fileDiscoveryService.ts)
+- 01-security-platform/core/src/telemetry/constants.ts (modified from .gemini-original/packages/core/src/telemetry/constants.ts)
+- 01-security-platform/core/src/telemetry/index.ts (modified from .gemini-original/packages/core/src/telemetry/index.ts)
+- 01-security-platform/core/src/telemetry/loggers.test.ts (modified from .gemini-original/packages/core/src/telemetry/loggers.test.ts)
+- 01-security-platform/core/src/telemetry/loggers.ts (modified from .gemini-original/packages/core/src/telemetry/loggers.ts)
+- 01-security-platform/core/src/telemetry/types.ts (modified from .gemini-original/packages/core/src/telemetry/types.ts)
+- 01-security-platform/core/src/telemetry/uiTelemetry.test.ts (modified from .gemini-original/packages/core/src/telemetry/uiTelemetry.test.ts)
+- 01-security-platform/core/src/tools/edit.test.ts (modified from .gemini-original/packages/core/src/tools/edit.test.ts)
+- 01-security-platform/core/src/tools/edit.ts (modified from .gemini-original/packages/core/src/tools/edit.ts)
+- 01-security-platform/core/src/tools/glob.test.ts (modified from .gemini-original/packages/core/src/tools/glob.test.ts)
+- 01-security-platform/core/src/tools/glob.ts (modified from .gemini-original/packages/core/src/tools/glob.ts)
+- 01-security-platform/core/src/tools/grep.test.ts (modified from .gemini-original/packages/core/src/tools/grep.test.ts)
+- 01-security-platform/core/src/tools/grep.ts (modified from .gemini-original/packages/core/src/tools/grep.ts)
+- 01-security-platform/core/src/tools/ls.ts (modified from .gemini-original/packages/core/src/tools/ls.ts)
+- 01-security-platform/core/src/tools/mcp-client.test.ts (modified from .gemini-original/packages/core/src/tools/mcp-client.test.ts)
+- 01-security-platform/core/src/tools/mcp-client.ts (modified from .gemini-original/packages/core/src/tools/mcp-client.ts)
+- 01-security-platform/core/src/tools/mcp-tool.ts (modified from .gemini-original/packages/core/src/tools/mcp-tool.ts)
+- 01-security-platform/core/src/tools/memoryTool.ts (modified from .gemini-original/packages/core/src/tools/memoryTool.ts)
+- 01-security-platform/core/src/tools/read-file.test.ts (modified from .gemini-original/packages/core/src/tools/read-file.test.ts)
+- 01-security-platform/core/src/tools/read-file.ts (modified from .gemini-original/packages/core/src/tools/read-file.ts)
+- 01-security-platform/core/src/tools/read-many-files.test.ts (modified from .gemini-original/packages/core/src/tools/read-many-files.test.ts)
+- 01-security-platform/core/src/tools/read-many-files.ts (modified from .gemini-original/packages/core/src/tools/read-many-files.ts)
+- 01-security-platform/core/src/tools/shell.test.ts (modified from .gemini-original/packages/core/src/tools/shell.test.ts)
+- 01-security-platform/core/src/tools/shell.ts (modified from .gemini-original/packages/core/src/tools/shell.ts)
+- 01-security-platform/core/src/tools/tool-registry.test.ts (modified from .gemini-original/packages/core/src/tools/tool-registry.test.ts)
+- 01-security-platform/core/src/tools/tool-registry.ts (modified from .gemini-original/packages/core/src/tools/tool-registry.ts)
+- 01-security-platform/core/src/tools/tools.ts (modified from .gemini-original/packages/core/src/tools/tools.ts)
+- 01-security-platform/core/src/tools/web-fetch.ts (modified from .gemini-original/packages/core/src/tools/web-fetch.ts)
+- 01-security-platform/core/src/tools/web-search.ts (modified from .gemini-original/packages/core/src/tools/web-search.ts)
+- 01-security-platform/core/src/tools/write-file.test.ts (modified from .gemini-original/packages/core/src/tools/write-file.test.ts)
+- 01-security-platform/core/src/tools/write-file.ts (modified from .gemini-original/packages/core/src/tools/write-file.ts)
+- 01-security-platform/core/src/utils/editCorrector.test.ts (modified from .gemini-original/packages/core/src/utils/editCorrector.test.ts)
+- 01-security-platform/core/src/utils/editCorrector.ts (modified from .gemini-original/packages/core/src/utils/editCorrector.ts)
+- 01-security-platform/core/src/utils/editor.ts (modified from .gemini-original/packages/core/src/utils/editor.ts)
+- 01-security-platform/core/src/utils/fileUtils.test.ts (modified from .gemini-original/packages/core/src/utils/fileUtils.test.ts)
+- 01-security-platform/core/src/utils/fileUtils.ts (modified from .gemini-original/packages/core/src/utils/fileUtils.ts)
+- 01-security-platform/core/src/utils/flashFallback.integration.test.ts (modified from .gemini-original/packages/core/src/utils/flashFallback.integration.test.ts)
+- 01-security-platform/core/src/utils/messageInspectors.ts (modified from .gemini-original/packages/core/src/utils/messageInspectors.ts)
+- 01-security-platform/core/src/utils/nextSpeakerChecker.ts (modified from .gemini-original/packages/core/src/utils/nextSpeakerChecker.ts)
+- 01-security-platform/core/src/utils/paths.ts (modified from .gemini-original/packages/core/src/utils/paths.ts)
+- 01-security-platform/core/src/utils/retry.test.ts (modified from .gemini-original/packages/core/src/utils/retry.test.ts)
+- 01-security-platform/core/src/utils/retry.ts (modified from .gemini-original/packages/core/src/utils/retry.ts)
+- 01-security-platform/core/src/utils/schemaValidator.ts (modified from .gemini-original/packages/core/src/utils/schemaValidator.ts)
+- 01-security-platform/core/src/utils/user_id.test.ts (modified from .gemini-original/packages/core/src/utils/user_id.test.ts)
+- 01-security-platform/core/src/utils/user_id.ts (modified from .gemini-original/packages/core/src/utils/user_id.ts)
+- 01-security-platform/cli/src/config/auth.ts (modified from .gemini-original/packages/cli/src/config/auth.ts)
+- 01-security-platform/cli/src/config/config.integration.test.ts (modified from .gemini-original/packages/cli/src/config/config.integration.test.ts)
+- 01-security-platform/cli/src/config/config.test.ts (modified from .gemini-original/packages/core/src/config/config.test.ts)
+- 01-security-platform/cli/src/config/config.ts (modified from .gemini-original/packages/core/src/config/config.ts)
+- 01-security-platform/cli/src/config/extension.test.ts (modified from .gemini-original/packages/cli/src/config/extension.test.ts)
+- 01-security-platform/cli/src/config/extension.ts (modified from .gemini-original/packages/cli/src/config/extension.ts)
+- 01-security-platform/cli/src/config/sandboxConfig.ts (modified from .gemini-original/packages/cli/src/config/sandboxConfig.ts)
+- 01-security-platform/cli/src/config/settings.test.ts (modified from .gemini-original/packages/cli/src/config/settings.test.ts)
+- 01-security-platform/cli/src/config/settings.ts (modified from .gemini-original/packages/cli/src/config/settings.ts)
+- 01-security-platform/cli/src/gemini.test.tsx (modified from .gemini-original/packages/cli/src/gemini.test.tsx)
+- 01-security-platform/cli/src/gemini.tsx (modified from .gemini-original/packages/cli/src/gemini.tsx)
+- 01-security-platform/cli/src/nonInteractiveCli.test.ts (modified from .gemini-original/packages/cli/src/nonInteractiveCli.test.ts)
+- 01-security-platform/cli/src/nonInteractiveCli.ts (modified from .gemini-original/packages/cli/src/nonInteractiveCli.ts)
+- 01-security-platform/cli/src/ui/App.test.tsx (modified from .gemini-original/packages/cli/src/ui/App.test.tsx)
+- 01-security-platform/cli/src/ui/App.tsx (modified from .gemini-original/packages/cli/src/ui/App.tsx)
+- 01-security-platform/cli/src/ui/components/AutoAcceptIndicator.tsx (modified from .gemini-original/packages/cli/src/ui/components/AutoAcceptIndicator.tsx)
+- 01-security-platform/cli/src/ui/components/ContextSummaryDisplay.tsx (modified from .gemini-original/packages/cli/src/ui/components/ContextSummaryDisplay.tsx)
+- 01-security-platform/cli/src/ui/components/Footer.tsx (modified from .gemini-original/packages/cli/src/ui/components/Footer.tsx)
+- 01-security-platform/cli/src/ui/components/Header.tsx (modified from .gemini-original/packages/cli/src/ui/components/Header.tsx)
+- 01-security-platform/cli/src/ui/components/Help.tsx (modified from .gemini-original/packages/cli/src/ui/components/Help.tsx)
+- 01-security-platform/cli/src/ui/components/HistoryItemDisplay.tsx (modified from .gemini-original/packages/cli/src/ui/components/HistoryItemDisplay.tsx)
+- 01-security-platform/cli/src/ui/components/InputPrompt.test.tsx (modified from .gemini-original/packages/cli/src/ui/components/InputPrompt.test.tsx)
+- 01-security-platform/cli/src/ui/components/InputPrompt.tsx (modified from .gemini-original/packages/cli/src/ui/components/InputPrompt.tsx)
+- 01-security-platform/cli/src/ui/components/LoadingIndicator.test.tsx (modified from .gemini-original/packages/cli/src/ui/components/LoadingIndicator.test.tsx)
+- 01-security-platform/cli/src/ui/components/LoadingIndicator.tsx (modified from .gemini-original/packages/cli/src/ui/components/LoadingIndicator.tsx)
+- 01-security-platform/cli/src/ui/components/ModelStatsDisplay.test.tsx (modified from .gemini-original/packages/cli/src/ui/components/ModelStatsDisplay.test.tsx)
+- 01-security-platform/cli/src/ui/components/SessionSummaryDisplay.test.tsx (modified from .gemini-original/packages/cli/src/ui/components/SessionSummaryDisplay.test.tsx)
+- 01-security-platform/cli/src/ui/components/StatsDisplay.test.tsx (modified from .gemini-original/packages/cli/src/ui/components/StatsDisplay.test.tsx)
+- 01-security-platform/cli/src/ui/components/Tips.tsx (modified from .gemini-original/packages/cli/src/ui/components/Tips.tsx)
+- 01-security-platform/cli/src/ui/components/ToolStatsDisplay.test.tsx (modified from .gemini-original/packages/cli/src/ui/components/ToolStatsDisplay.test.tsx)
+- 01-security-platform/cli/src/ui/components/ToolStatsDisplay.tsx (modified from .gemini-original/packages/cli/src/ui/components/ToolStatsDisplay.tsx)
+- 01-security-platform/cli/src/ui/components/messages/CompressionMessage.tsx (modified from .gemini-original/packages/cli/src/ui/components/messages/CompressionMessage.tsx)
+- 01-security-platform/cli/src/ui/components/messages/ToolConfirmationMessage.test.tsx (modified from .gemini-original/packages/cli/src/ui/components/messages/ToolConfirmationMessage.test.tsx)
+- 01-security-platform/cli/src/ui/components/messages/ToolConfirmationMessage.tsx (modified from .gemini-original/packages/cli/src/ui/components/messages/ToolConfirmationMessage.tsx)
+- 01-security-platform/cli/src/ui/components/messages/ToolGroupMessage.tsx (modified from .gemini-original/packages/cli/src/ui/components/messages/ToolGroupMessage.tsx)
+- 01-security-platform/cli/src/ui/components/messages/ToolMessage.test.tsx (modified from .gemini-original/packages/cli/src/ui/components/messages/ToolMessage.test.tsx)
+- 01-security-platform/cli/src/ui/components/shared/MaxSizedBox.test.tsx (modified from .gemini-original/packages/cli/src/ui/components/shared/MaxSizedBox.test.tsx)
+- 01-security-platform/cli/src/ui/components/shared/MaxSizedBox.tsx (modified from .gemini-original/packages/cli/src/ui/components/shared/MaxSizedBox.tsx)
+- 01-security-platform/cli/src/ui/components/shared/RadioButtonSelect.tsx (modified from .gemini-original/packages/cli/src/ui/components/shared/RadioButtonSelect.tsx)
+- 01-security-platform/cli/src/ui/components/shared/text-buffer.test.ts (modified from .gemini-original/packages/cli/src/ui/components/shared/text-buffer.test.ts)
+- 01-security-platform/cli/src/ui/components/shared/text-buffer.ts (modified from .gemini-original/packages/cli/src/ui/components/shared/text-buffer.ts)
+- 01-security-platform/cli/src/ui/contexts/SessionContext.test.tsx (modified from .gemini-original/packages/cli/src/ui/contexts/SessionContext.test.tsx)
+- 01-security-platform/cli/src/ui/contexts/SessionContext.tsx (modified from .gemini-original/packages/cli/src/ui/contexts/SessionContext.tsx)
+- 01-security-platform/cli/src/ui/editors/editorSettingsManager.ts (modified from .gemini-original/packages/cli/src/ui/editors/editorSettingsManager.ts)
+- 01-security-platform/cli/src/ui/hooks/atCommandProcessor.test.ts (modified from .gemini-original/packages/cli/src/ui/hooks/atCommandProcessor.test.ts)
+- 01-security-platform/cli/src/ui/hooks/atCommandProcessor.ts (modified from .gemini-original/packages/cli/src/ui/hooks/atCommandProcessor.ts)
+- 01-security-platform/cli/src/ui/hooks/shellCommandProcessor.test.ts (modified from .gemini-original/packages/cli/src/ui/hooks/shellCommandProcessor.test.ts)
+- 01-security-platform/cli/src/ui/hooks/shellCommandProcessor.ts (modified from .gemini-original/packages/cli/src/ui/hooks/shellCommandProcessor.ts)
+- 01-security-platform/cli/src/ui/hooks/slashCommandProcessor.test.ts (modified from .gemini-original/packages/cli/src/ui/hooks/slashCommandProcessor.test.ts)
+- 01-security-platform/cli/src/ui/hooks/slashCommandProcessor.ts (modified from .gemini-original/packages/cli/src/ui/hooks/slashCommandProcessor.ts)
+- 01-security-platform/cli/src/ui/hooks/useAuthCommand.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useAuthCommand.ts)
+- 01-security-platform/cli/src/ui/hooks/useAutoAcceptIndicator.test.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useAutoAcceptIndicator.test.ts)
+- 01-security-platform/cli/src/ui/hooks/useAutoAcceptIndicator.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useAutoAcceptIndicator.ts)
+- 01-security-platform/cli/src/ui/hooks/useCompletion.integration.test.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useCompletion.integration.test.ts)
+- 01-security-platform/cli/src/ui/hooks/useCompletion.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useCompletion.ts)
+- 01-security-platform/cli/src/ui/hooks/useEditorSettings.test.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useEditorSettings.test.ts)
+- 01-security-platform/cli/src/ui/hooks/useEditorSettings.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useEditorSettings.ts)
+- 01-security-platform/cli/src/ui/hooks/useGeminiStream.test.tsx (modified from .gemini-original/packages/cli/src/ui/hooks/useGeminiStream.test.tsx)
+- 01-security-platform/cli/src/ui/hooks/useGeminiStream.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useGeminiStream.ts)
+- 01-security-platform/cli/src/ui/hooks/useKeypress.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useKeypress.ts)
+- 01-security-platform/cli/src/ui/hooks/useLoadingIndicator.test.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useLoadingIndicator.test.ts)
+- 01-security-platform/cli/src/ui/hooks/useLogger.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useLogger.ts)
+- 01-security-platform/cli/src/ui/hooks/usePrivacySettings.ts (modified from .gemini-original/packages/cli/src/ui/hooks/usePrivacySettings.ts)
+- 01-security-platform/cli/src/ui/hooks/useReactToolScheduler.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useReactToolScheduler.ts)
+- 01-security-platform/cli/src/ui/hooks/useShellHistory.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useShellHistory.ts)
+- 01-security-platform/cli/src/ui/hooks/useShowMemoryCommand.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useShowMemoryCommand.ts)
+- 01-security-platform/cli/src/ui/hooks/useToolScheduler.test.ts (modified from .gemini-original/packages/cli/src/ui/hooks/useToolScheduler.test.ts)
+- 01-security-platform/cli/src/ui/privacy/CloudFreePrivacyNotice.tsx (modified from .gemini-original/packages/cli/src/ui/privacy/CloudFreePrivacyNotice.tsx)
+- 01-security-platform/cli/src/ui/privacy/PrivacyNotice.tsx (modified from .gemini-original/packages/cli/src/ui/privacy/PrivacyNotice.tsx)
+- 01-security-platform/cli/src/ui/types.ts (modified from .gemini-original/packages/cli/src/ui/types.ts)
+- 01-security-platform/cli/src/ui/utils/MarkdownDisplay.test.tsx (modified from .gemini-original/packages/cli/src/ui/utils/MarkdownDisplay.test.tsx)
+- 01-security-platform/cli/src/ui/utils/MarkdownDisplay.tsx (modified from .gemini-original/packages/cli/src/ui/utils/MarkdownDisplay.tsx)
+- 01-security-platform/cli/src/ui/utils/TableRenderer.tsx (modified from .gemini-original/packages/cli/src/ui/utils/TableRenderer.tsx)
+- 01-security-platform/cli/src/ui/utils/errorParsing.test.ts (modified from .gemini-original/packages/cli/src/ui/utils/errorParsing.test.ts)
+- 01-security-platform/cli/src/ui/utils/errorParsing.ts (modified from .gemini-original/packages/cli/src/ui/utils/errorParsing.ts)
+- 01-security-platform/cli/src/utils/cleanup.ts (modified from .gemini-original/packages/cli/src/utils/cleanup.ts)
+- 01-security-platform/cli/src/utils/sandbox.ts (modified from .gemini-original/packages/cli/src/utils/sandbox.ts)
+- 01-security-platform/cli/src/utils/startupWarnings.test.ts (modified from .gemini-original/packages/cli/src/utils/startupWarnings.test.ts)
+- 01-security-platform/cli/src/utils/startupWarnings.ts (modified from .gemini-original/packages/cli/src/utils/startupWarnings.ts)
+
+## New ALCUB3 Files
+These files are entirely new and belong in `alcub3-extensions/`.
+
+- 01-security-platform/core/src/api/api.integration.test.ts
+- 01-security-platform/core/src/api/auth.ts
+- 01-security-platform/core/src/api/cisa_api.test.ts
+- 01-security-platform/core/src/api/cisa_api.ts
+- 01-security-platform/core/src/api/classification.ts
+- 01-security-platform/core/src/api/configuration_drift_api.ts
+- 01-security-platform/core/src/api/drift_api.ts
+- 01-security-platform/core/src/api/enhanced_middleware.ts
+- 01-security-platform/core/src/api/jit_api.test.ts
+- 01-security-platform/core/src/api/jit_api.ts
+- 01-security-platform/core/src/api/metrics.ts
+- 01-security-platform/core/src/api/middleware.ts
+- 01-security-platform/core/src/api/routes.ts
+- 01-security-platform/core/src/api/server.ts
+- 01-security-platform/core/src/config/env.ts
+- 01-security-platform/core/src/crypto.js
+- 01-security-platform/core/src/mcp/atpkg.js
+- 01-security-platform/core/src/mcp-server/atpkg.test.js
+- 01-security-platform/core/src/types/express.d.ts
+- 01-security-platform/core/src/utils/performance-budget.test.ts
+- 01-security-platform/core/src/utils/performance-budget.ts
+- 01-security-platform/cli/src/commands/clearance.ts
+- 01-security-platform/cli/src/commands/configuration-drift.ts
+- 01-security-platform/cli/src/commands/jit.ts
+- 01-security-platform/cli/src/commands/maestro.ts
+- 01-security-platform/cli/src/commands/maestro_enhanced.ts
+- 01-security-platform/cli/src/generated/git-commit.ts
+- 01-security-platform/cli/src/test-setup.ts
+- 01-security-platform/cli/src/ui/components/DriftDashboard.tsx
+- packages/cli/src/commands/security-profile.ts
+- packages/core/src/security/profile-manager.ts
+
+## Gemini Files Not in Current Structure
+These files exist in Gemini but not in our current structure.
+
+- .gemini-original/packages/core/src/code_assist/setup.test.ts
+- .gemini-original/packages/core/src/utils/quotaErrorDetection.ts
+- .gemini-original/packages/core/src/utils/summarizer.test.ts
+- .gemini-original/packages/core/src/utils/summarizer.ts
+- .gemini-original/packages/core/src/utils/user_account.test.ts
+- .gemini-original/packages/core/src/utils/user_account.ts
+- .gemini-original/packages/cli/src/config/auth.test.ts
+- .gemini-original/packages/cli/src/services/CommandService.test.ts
+- .gemini-original/packages/cli/src/services/CommandService.ts
+- .gemini-original/packages/cli/src/test-utils/mockCommandContext.test.ts
+- .gemini-original/packages/cli/src/test-utils/mockCommandContext.ts
+- .gemini-original/packages/cli/src/ui/commands/clearCommand.test.ts
+- .gemini-original/packages/cli/src/ui/commands/clearCommand.ts
+- .gemini-original/packages/cli/src/ui/commands/helpCommand.test.ts
+- .gemini-original/packages/cli/src/ui/commands/helpCommand.ts
+- .gemini-original/packages/cli/src/ui/commands/memoryCommand.test.ts
+- .gemini-original/packages/cli/src/ui/commands/memoryCommand.ts
+- .gemini-original/packages/cli/src/ui/commands/themeCommand.test.ts
+- .gemini-original/packages/cli/src/ui/commands/themeCommand.ts
+- .gemini-original/packages/cli/src/ui/commands/types.ts
+- .gemini-original/packages/cli/src/ui/hooks/useKeypress.test.ts
+- .gemini-original/packages/cli/src/ui/utils/InlineMarkdownRenderer.tsx
+- .gemini-original/packages/cli/src/ui/utils/clipboardUtils.test.ts
+- .gemini-original/packages/cli/src/ui/utils/clipboardUtils.ts
+- .gemini-original/packages/cli/src/utils/userStartupWarnings.test.ts
+- .gemini-original/packages/cli/src/utils/userStartupWarnings.ts
+
+## Next Steps
+1. Create `gemini-core/` directory structure
+2. Move original files to `gemini-core/`
+3. Create `alcub3-extensions/` directory structure
+4. Extract modifications from modified files
+5. Move new ALCUB3 files to appropriate locations
+6. Update all import paths
+7. Reconfigure build system

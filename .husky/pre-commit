@@ -1,19 +1,104 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Run lint-staged
-npx lint-staged
+# Auto-format files if needed
+echo "🎨 Checking code formatting..."
+
+# Get list of staged files that can be formatted
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E "\.(ts|tsx|js|jsx|json|md)$" || true)
+
+if [ ! -z "$STAGED_FILES" ]; then
+  # Check if any files need formatting
+  NEEDS_FORMAT=$(npm run format -- --check $STAGED_FILES 2>&1 | grep -E "would be formatted|Code style issues" || true)
+  
+  if [ ! -z "$NEEDS_FORMAT" ]; then
+    echo "📝 Auto-formatting files..."
+    
+    # Format the staged files
+    npm run format -- --write $STAGED_FILES
+    
+    # Re-stage the formatted files
+    echo "$STAGED_FILES" | xargs git add
+    
+    echo "✅ Files auto-formatted and re-staged"
+  else
+    echo "✅ All files properly formatted"
+  fi
+fi
+
+# Run lint-staged with correct config path
+echo "🎨 Running lint-staged..."
+npx lint-staged -c .build/config/.lintstagedrc.json
+
+# Auto-fix common linting issues
+echo "🔧 Auto-fixing linting issues..."
+LINT_FIXABLE=$(npm run lint -- --fix-dry-run $STAGED_FILES 2>&1 | grep -E "fixable" || true)
+if [ ! -z "$LINT_FIXABLE" ]; then
+  echo "   Applying automatic lint fixes..."
+  npm run lint:fix -- $STAGED_FILES
+  echo "$STAGED_FILES" | xargs git add
+  echo "✅ Lint issues auto-fixed"
+fi
 
 # Run quick tests (unit tests only, not integration)
 echo "🧪 Running unit tests..."
-npm run test -- --run || exit 1
+npm run test:unit || exit 1
 
 # Check for secrets
 echo "🔍 Scanning for hardcoded secrets..."
-if grep -r "password=\|api_key=\|secret=\|private_key=" --include="*.ts" --include="*.js" --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=coverage --exclude="*test*" --exclude="*spec*" src/ packages/ 2>/dev/null | grep -v "// SAFE:" > /dev/null; then
+if grep -r "password=\|api_key=\|secret=\|private_key=" --include="*.ts" --include="*.js" --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=coverage --exclude="*test*" --exclude="*spec*" 01-security-platform/ 02-robotics-hal/ 03-maestro-framework/ 04-simulation-platform/ 05-cisa-compliance/ 06-neural-compression/ 07-space-operations/ 08-world-foundation-models/ 09-agent-marketplace/ 0X-developer-experience/ 2>/dev/null | grep -v "// SAFE:" > /dev/null; then
   echo "❌ Potential secret found! Remove it before committing."
   echo "   Add '// SAFE: <reason>' comment if this is intentional"
   exit 1
+fi
+
+# Check for patent opportunities
+echo "💡 Scanning for patent opportunities..."
+if grep -r "TODO.*patent\|PATENT\|innovative\|novel\|breakthrough" --include="*.ts" --include="*.js" --include="*.py" 01-security-platform/ 02-robotics-hal/ 03-maestro-framework/ 04-simulation-platform/ 05-cisa-compliance/ 06-neural-compression/ 07-space-operations/ 08-world-foundation-models/ 09-agent-marketplace/ 2>/dev/null; then
+  echo "📋 Patent opportunity detected! Consider documenting in 00-strategic/patents/"
+fi
+
+# Performance budget check
+echo "⚡ Checking performance annotations..."
+if grep -r "@PerformanceBudget\|PerformanceBudget.measure" --include="*.ts" --include="*.js" 01-security-platform/ 02-robotics-hal/ 03-maestro-framework/ 2>/dev/null | grep -v "max_time_ms=[0-9]" > /dev/null; then
+  echo "⚠️  Performance budget annotations found without time limits. Add max_time_ms parameter."
+fi
+
+# Task Master integration check
+echo "📋 Checking for task references..."
+COMMIT_MSG=$(git diff --cached --name-only | xargs git diff --cached | grep -E "task #[0-9]+|completes #[0-9]+|fixes #[0-9]+" || true)
+if [ ! -z "$COMMIT_MSG" ]; then
+  echo "✅ Task references found in changes"
+fi
+
+# Auto-add missing file headers if needed
+echo "📄 Checking file headers..."
+for file in $STAGED_FILES; do
+  if [[ "$file" =~ \.(ts|js)$ ]] && [ -f "$file" ]; then
+    # Check if file has Apache license header
+    if ! head -5 "$file" | grep -q "Apache License"; then
+      # Check if this is a test file (they often don't need headers)
+      if [[ ! "$file" =~ \.(test|spec)\.(ts|js)$ ]]; then
+        echo "⚠️  Missing license header in $file (skipping auto-add for safety)"
+      fi
+    fi
+  fi
+done
+
+# Check for console.log statements (except in tests)
+echo "🚫 Checking for console.log statements..."
+DEBUG_LOGS=$(git diff --cached | grep "^+" | grep "console\.log" | grep -v "// DEBUG:" | grep -v "test\|spec" || true)
+if [ ! -z "$DEBUG_LOGS" ]; then
+  echo "⚠️  Found console.log statements (add '// DEBUG:' comment if intentional)"
+fi
+
+# Remind about documentation for new files
+NEW_FILES=$(git diff --cached --name-only --diff-filter=A | grep -E "\.(ts|js)$" | grep -v "test\|spec" || true)
+if [ ! -z "$NEW_FILES" ]; then
+  echo "📚 New files added. Remember to:"
+  echo "   - Update relevant documentation"
+  echo "   - Add tests for new functionality"
+  echo "   - Update CLAUDE.md if adding new commands"
 fi
 
 echo "✅ Pre-commit checks passed"
