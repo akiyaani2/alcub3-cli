@@ -15,7 +15,7 @@ import {
   AccessibilitySettings,
   SandboxConfig,
 } from '@gemini-core/core/src/index.js';
-import { LoadedSettings, SettingsFile, Settings } from '../config/settings.js';
+import { LoadedSettings, SettingsFile, Settings } from '@gemini-core/core/src/config/settings.js';
 import process from 'node:process';
 import { Tips } from '@gemini-core/cli/src/components/Tips.js';
 

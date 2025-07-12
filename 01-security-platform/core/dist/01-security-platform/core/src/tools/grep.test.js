@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { GrepTool } from './grep.js';
+import { GrepTool } from '@gemini-core/core/src/grep.js';
 import path from 'path';
 import fs from 'fs/promises';
 import os from 'os';

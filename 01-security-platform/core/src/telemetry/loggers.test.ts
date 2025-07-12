@@ -16,7 +16,7 @@ import {
 } from '@gemini-core/core/src/index.js';
 import { logs } from '@opentelemetry/api-logs';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
-import { Config } from '../config/config.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
 import {
   EVENT_API_REQUEST,
   EVENT_API_RESPONSE,

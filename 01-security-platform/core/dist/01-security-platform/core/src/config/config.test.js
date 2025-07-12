@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Config } from './config.js';
+import { Config } from '@gemini-core/core/src/config.js';
 import * as path from 'path';
-import { setGeminiMdFilename as mockSetGeminiMdFilename } from '../tools/memoryTool.js';
-import { DEFAULT_TELEMETRY_TARGET, DEFAULT_OTLP_ENDPOINT, } from '../telemetry/index.js';
+import { setGeminiMdFilename as mockSetGeminiMdFilename } from '@gemini-core/core/src/tools/memoryTool.js';
+import { DEFAULT_TELEMETRY_TARGET, DEFAULT_OTLP_ENDPOINT, } from '@gemini-core/core/src/telemetry/index.js';
 // Mock dependencies that might be called during Config construction or createServerConfig
 vi.mock('../tools/tool-registry', () => {
     const ToolRegistryMock = vi.fn();

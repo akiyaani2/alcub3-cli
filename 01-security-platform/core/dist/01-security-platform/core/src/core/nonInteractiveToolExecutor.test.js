@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { executeToolCall } from './nonInteractiveToolExecutor.js';
+import { executeToolCall } from '@gemini-core/core/src/nonInteractiveToolExecutor.js';
 import { Type } from '@google/genai';
 const mockConfig = {
     getSessionId: () => 'test-session-id',

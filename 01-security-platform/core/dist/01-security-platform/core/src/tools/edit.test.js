@@ -19,11 +19,11 @@ vi.mock('../utils/editor.js', () => ({
     openDiff: mockOpenDiff,
 }));
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { EditTool } from './edit.js';
+import { EditTool } from '@gemini-core/core/src/edit.js';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
-import { ApprovalMode } from '../config/config.js';
+import { ApprovalMode } from '@gemini-core/core/src/config/config.js';
 describe('EditTool', () => {
     let tool;
     let tempDir;

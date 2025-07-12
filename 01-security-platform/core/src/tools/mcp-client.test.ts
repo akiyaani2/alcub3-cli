@@ -16,7 +16,7 @@ import {
 } from 'vitest';
 import { discoverMcpTools, sanitizeParameters } from '@gemini-core/core/src/mcp-client.js';
 import { Schema, Type } from '@google/genai';
-import { Config, MCPServerConfig } from '../config/config.js';
+import { Config, MCPServerConfig } from '@gemini-core/core/src/config/config.js';
 import { DiscoveredMCPTool } from '@gemini-core/core/src/mcp-tool.js';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';

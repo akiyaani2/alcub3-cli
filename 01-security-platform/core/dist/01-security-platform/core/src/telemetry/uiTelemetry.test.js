@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UiTelemetryService } from './uiTelemetry.js';
-import { ToolCallEvent, ToolCallDecision, } from './types.js';
-import { EVENT_API_ERROR, EVENT_API_RESPONSE, EVENT_TOOL_CALL, } from './constants.js';
-import { ToolConfirmationOutcome } from '../tools/tools.js';
+import { UiTelemetryService } from '@gemini-core/core/src/uiTelemetry.js';
+import { ToolCallEvent, ToolCallDecision, } from '@gemini-core/core/src/types.js';
+import { EVENT_API_ERROR, EVENT_API_RESPONSE, EVENT_TOOL_CALL, } from '@gemini-core/core/src/constants.js';
+import { ToolConfirmationOutcome } from '@gemini-core/core/src/tools/tools.js';
 const createFakeCompletedToolCall = (name, success, duration = 100, outcome, error) => {
     const request = {
         callId: `call_${name}_${Date.now()}`,

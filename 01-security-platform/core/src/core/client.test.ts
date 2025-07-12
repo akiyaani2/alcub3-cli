@@ -15,12 +15,12 @@ import {
 import { GeminiClient } from '@gemini-core/core/src/client.js';
 import { AuthType, ContentGenerator } from '@gemini-core/core/src/contentGenerator.js';
 import { GeminiChat } from '@gemini-core/core/src/geminiChat.js';
-import { Config } from '../config/config.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
 import { Turn } from '@gemini-core/core/src/turn.js';
 import { getCoreSystemPrompt } from '@gemini-core/core/src/prompts.js';
-import { DEFAULT_GEMINI_FLASH_MODEL } from '../config/models.js';
-import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
-import { setSimulate429 } from '../utils/testUtils.js';
+import { DEFAULT_GEMINI_FLASH_MODEL } from '@gemini-core/core/src/config/models.js';
+import { FileDiscoveryService } from '@gemini-core/core/src/services/fileDiscoveryService.js';
+import { setSimulate429 } from '@gemini-core/core/src/utils/testUtils.js';
 import { tokenLimit } from '@gemini-core/core/src/tokenLimits.js';
 
 // --- Mocks ---

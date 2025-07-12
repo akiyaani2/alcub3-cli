@@ -12,7 +12,7 @@ import {
   ServerGeminiErrorEvent,
 } from '@gemini-core/core/src/turn.js';
 import { GenerateContentResponse, Part, Content } from '@google/genai';
-import { reportError } from '../utils/errorReporting.js';
+import { reportError } from '@gemini-core/core/src/utils/errorReporting.js';
 import { GeminiChat } from '@gemini-core/core/src/geminiChat.js';
 
 const mockSendMessageStream = vi.fn();

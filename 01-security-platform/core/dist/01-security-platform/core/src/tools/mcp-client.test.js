@@ -5,9 +5,9 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach, } from 'vitest';
-import { discoverMcpTools, sanitizeParameters } from './mcp-client.js';
+import { discoverMcpTools, sanitizeParameters } from '@gemini-core/core/src/mcp-client.js';
 import { Type } from '@google/genai';
-import { DiscoveredMCPTool } from './mcp-tool.js';
+import { DiscoveredMCPTool } from '@gemini-core/core/src/mcp-tool.js';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';

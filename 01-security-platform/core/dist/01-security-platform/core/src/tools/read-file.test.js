@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { ReadFileTool } from './read-file.js';
-import * as fileUtils from '../utils/fileUtils.js';
+import { ReadFileTool } from '@gemini-core/core/src/read-file.js';
+import * as fileUtils from '@gemini-core/core/src/utils/fileUtils.js';
 import path from 'path';
 import os from 'os';
 import fs from 'fs'; // For actual fs operations in setup
-import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
+import { FileDiscoveryService } from '@gemini-core/core/src/services/fileDiscoveryService.js';
 // Mock fileUtils.processSingleFileContent
 vi.mock('../utils/fileUtils', async () => {
     const actualFileUtils = await vi.importActual('../utils/fileUtils');

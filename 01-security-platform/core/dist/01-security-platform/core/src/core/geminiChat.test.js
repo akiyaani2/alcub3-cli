@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { GeminiChat } from './geminiChat.js';
-import { setSimulate429 } from '../utils/testUtils.js';
+import { GeminiChat } from '@gemini-core/core/src/geminiChat.js';
+import { setSimulate429 } from '@gemini-core/core/src/utils/testUtils.js';
 // Mocks
 const mockModelsModule = {
     generateContent: vi.fn(),

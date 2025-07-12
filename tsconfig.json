@@ -29,16 +29,8 @@
     }
   },
   "include": [
-    "gemini-core/**/*.ts",
-    "gemini-core/**/*.tsx",
     "alcub3-extensions/**/*.ts",
     "alcub3-extensions/**/*.tsx",
-    "packages/**/*.ts",
-    "packages/**/*.tsx",
-    "01-security-platform/**/*.ts",
-    "01-security-platform/**/*.tsx",
-    "02-robotics-hal/**/*.ts",
-    "03-maestro-framework/**/*.ts",
     "src/types/**/*.d.ts"
   ],
   "exclude": [
@@ -47,5 +39,11 @@
     "**/*.test.tsx",
     "**/*.spec.ts",
     "**/*.spec.tsx"
+  ],
+  "references": [
+    { "path": "./gemini-core/core" },
+    { "path": "./gemini-core/cli" },
+    { "path": "./01-security-platform/core" },
+    { "path": "./01-security-platform/cli" }
   ]
 }

@@ -6,12 +6,12 @@
 
 import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
 import { ReadFileTool, ReadFileToolParams } from '@gemini-core/core/src/read-file.js';
-import * as fileUtils from '../utils/fileUtils.js';
+import * as fileUtils from '@gemini-core/core/src/utils/fileUtils.js';
 import path from 'path';
 import os from 'os';
 import fs from 'fs'; // For actual fs operations in setup
-import { Config } from '../config/config.js';
-import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
+import { FileDiscoveryService } from '@gemini-core/core/src/services/fileDiscoveryService.js';
 
 // Mock fileUtils.processSingleFileContent
 vi.mock('../utils/fileUtils', async () => {

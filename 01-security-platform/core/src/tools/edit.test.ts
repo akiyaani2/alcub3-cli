@@ -30,7 +30,7 @@ import { FileDiff } from '@gemini-core/core/src/tools.js';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
-import { ApprovalMode, Config } from '../config/config.js';
+import { ApprovalMode, Config } from '@gemini-core/core/src/config/config.js';
 import { Content, Part, SchemaUnion } from '@google/genai';
 
 describe('EditTool', () => {

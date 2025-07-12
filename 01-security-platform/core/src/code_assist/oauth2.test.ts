@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getOauthClient, getCachedGoogleAccountId } from '@gemini-core/core/src/oauth2.js';
+import { getOauthClient, getCachedGoogleAccountId } from '@gemini-core/core/src/code_assist/oauth2.js';
 import { OAuth2Client } from 'google-auth-library';
 import * as fs from 'fs';
 import * as path from 'path';

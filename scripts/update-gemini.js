@@ -14,7 +14,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.join(__dirname, '..');
 
-const GEMINI_REPO = 'https://github.com/google/gemini-cli.git';
+const GEMINI_REPO = 'https://github.com/google-gemini/gemini-cli.git';
 const TEMP_DIR = path.join(ROOT_DIR, '.gemini-update-temp');
 const GEMINI_CORE_DIR = path.join(ROOT_DIR, 'gemini-core');
 

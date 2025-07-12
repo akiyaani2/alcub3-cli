@@ -13,8 +13,8 @@ import {
   GenerateContentResponse,
 } from '@google/genai';
 import { GeminiChat } from '@gemini-core/core/src/geminiChat.js';
-import { Config } from '../config/config.js';
-import { setSimulate429 } from '../utils/testUtils.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
+import { setSimulate429 } from '@gemini-core/core/src/utils/testUtils.js';
 
 // Mocks
 const mockModelsModule = {

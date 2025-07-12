@@ -20,9 +20,9 @@ vi.mock('../core/client.js', () => ({
     }),
 }));
 // END MOCKS
-import { countOccurrences, ensureCorrectEdit, ensureCorrectFileContent, unescapeStringForGeminiBug, resetEditCorrectorCaches_TEST_ONLY, } from './editCorrector.js';
-import { GeminiClient } from '../core/client.js';
-import { ToolRegistry } from '../tools/tool-registry.js';
+import { countOccurrences, ensureCorrectEdit, ensureCorrectFileContent, unescapeStringForGeminiBug, resetEditCorrectorCaches_TEST_ONLY, } from '@gemini-core/core/src/editCorrector.js';
+import { GeminiClient } from '@gemini-core/core/src/core/client.js';
+import { ToolRegistry } from '@gemini-core/core/src/tools/tool-registry.js';
 vi.mock('../tools/tool-registry.js');
 describe('editCorrector', () => {
     describe('countOccurrences', () => {

@@ -9,7 +9,7 @@ import fsPromises from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import mime from 'mime-types';
-import { isWithinRoot, isBinaryFile, detectFileType, processSingleFileContent, } from './fileUtils.js';
+import { isWithinRoot, isBinaryFile, detectFileType, processSingleFileContent, } from '@gemini-core/core/src/fileUtils.js';
 vi.mock('mime-types', () => ({
     default: { lookup: vi.fn() },
     lookup: vi.fn(),

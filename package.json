@@ -74,6 +74,7 @@
   },
   "homepage": "https://github.com/alcub3/alcub3-cli#readme",
   "devDependencies": {
+    "@types/mime-types": "^3.0.1",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"

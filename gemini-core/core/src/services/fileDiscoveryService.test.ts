@@ -7,8 +7,8 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import type { Mocked } from 'vitest';
 import { FileDiscoveryService } from './fileDiscoveryService.js';
-import { GitIgnoreParser } from '../utils/gitIgnoreParser.js';
-import * as gitUtils from '../utils/gitUtils.js';
+import { GitIgnoreParser } from '@gemini-core/core/src/utils/gitIgnoreParser.js';
+import * as gitUtils from '@gemini-core/core/src/utils/gitUtils.js';
 
 // Mock the GitIgnoreParser
 vi.mock('../utils/gitIgnoreParser.js');

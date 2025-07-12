@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { Turn, GeminiEventType, } from './turn.js';
-import { reportError } from '../utils/errorReporting.js';
+import { Turn, GeminiEventType, } from '@gemini-core/core/src/turn.js';
+import { reportError } from '@gemini-core/core/src/utils/errorReporting.js';
 const mockSendMessageStream = vi.fn();
 const mockGetHistory = vi.fn();
 vi.mock('@google/genai', async (importOriginal) => {

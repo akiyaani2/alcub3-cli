@@ -5,8 +5,8 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { retryWithBackoff } from './retry.js';
-import { setSimulate429 } from './testUtils.js';
+import { retryWithBackoff } from '@gemini-core/core/src/retry.js';
+import { setSimulate429 } from '@gemini-core/core/src/testUtils.js';
 // Helper to create a mock function that fails a certain number of times
 const createFailingFunction = (failures, successValue = 'success') => {
     let attempts = 0;

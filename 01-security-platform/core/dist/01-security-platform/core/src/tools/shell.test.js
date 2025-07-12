@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { expect, describe, it } from 'vitest';
-import { ShellTool } from './shell.js';
+import { ShellTool } from '@gemini-core/core/src/shell.js';
 describe('ShellTool', () => {
     it('should allow a command if no restrictions are provided', async () => {
         const config = {

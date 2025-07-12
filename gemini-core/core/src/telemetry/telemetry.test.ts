@@ -10,7 +10,7 @@ import {
   shutdownTelemetry,
   isTelemetrySdkInitialized,
 } from './sdk.js';
-import { Config } from '../config/config.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 
 vi.mock('@opentelemetry/sdk-node');

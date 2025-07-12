@@ -6,7 +6,7 @@
 
 import { expect, describe, it } from 'vitest';
 import { ShellTool } from '@gemini-core/core/src/shell.js';
-import { Config } from '../config/config.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
 
 describe('ShellTool', () => {
   it('should allow a command if no restrictions are provided', async () => {

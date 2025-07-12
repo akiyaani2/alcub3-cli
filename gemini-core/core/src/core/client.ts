@@ -45,6 +45,7 @@ function isThinkingSupported(model: string) {
   return false;
 }
 
+// Updated in simulated Gemini v2
 export class GeminiClient {
   private chat?: GeminiChat;
   private contentGenerator?: ContentGenerator;

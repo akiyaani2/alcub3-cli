@@ -7,11 +7,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Config, ConfigParameters, SandboxConfig } from '@gemini-core/core/src/config.js';
 import * as path from 'path';
-import { setGeminiMdFilename as mockSetGeminiMdFilename } from '../tools/memoryTool.js';
+import { setGeminiMdFilename as mockSetGeminiMdFilename } from '@gemini-core/core/src/tools/memoryTool.js';
 import {
   DEFAULT_TELEMETRY_TARGET,
   DEFAULT_OTLP_ENDPOINT,
-} from '../telemetry/index.js';
+} from '@gemini-core/core/src/telemetry/index.js';
 
 // Mock dependencies that might be called during Config construction or createServerConfig
 vi.mock('../tools/tool-registry', () => {

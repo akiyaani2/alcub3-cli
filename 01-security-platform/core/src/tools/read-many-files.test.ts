@@ -8,11 +8,11 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import type { Mock } from 'vitest';
 import { mockControl } from '../__mocks__/fs/promises.js';
 import { ReadManyFilesTool } from '@gemini-core/core/src/read-many-files.js';
-import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
+import { FileDiscoveryService } from '@gemini-core/core/src/services/fileDiscoveryService.js';
 import path from 'path';
 import fs from 'fs'; // Actual fs for setup
 import os from 'os';
-import { Config } from '../config/config.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
 
 vi.mock('mime-types', () => {
   const lookup = (filename: string) => {

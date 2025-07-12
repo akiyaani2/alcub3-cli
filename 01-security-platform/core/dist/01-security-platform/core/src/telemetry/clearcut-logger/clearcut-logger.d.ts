@@ -5,7 +5,7 @@
  */
 import { Buffer } from 'buffer';
 import { StartSessionEvent, EndSessionEvent, UserPromptEvent, ToolCallEvent, ApiRequestEvent, ApiResponseEvent, ApiErrorEvent } from '../types.js';
-import { Config } from '../../config/config.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
 export interface LogResponse {
     nextRequestWaitMs?: number;
 }

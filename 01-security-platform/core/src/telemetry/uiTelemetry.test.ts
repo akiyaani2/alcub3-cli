@@ -21,8 +21,8 @@ import {
   CompletedToolCall,
   ErroredToolCall,
   SuccessfulToolCall,
-} from '../core/coreToolScheduler.js';
-import { Tool, ToolConfirmationOutcome } from '../tools/tools.js';
+} from '@gemini-core/core/src/core/coreToolScheduler.js';
+import { Tool, ToolConfirmationOutcome } from '@gemini-core/core/src/tools/tools.js';
 
 const createFakeCompletedToolCall = (
   name: string,

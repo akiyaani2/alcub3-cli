@@ -20,17 +20,17 @@ import {
   ToolEditConfirmationDetails,
 } from '@gemini-core/core/src/tools.js';
 import { type EditToolParams } from '@gemini-core/core/src/edit.js';
-import { ApprovalMode, Config } from '../config/config.js';
+import { ApprovalMode, Config } from '@gemini-core/core/src/config/config.js';
 import { ToolRegistry } from '@gemini-core/core/src/tool-registry.js';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
-import { GeminiClient } from '../core/client.js';
+import { GeminiClient } from '@gemini-core/core/src/core/client.js';
 import {
   ensureCorrectEdit,
   ensureCorrectFileContent,
   CorrectedEditResult,
-} from '../utils/editCorrector.js';
+} from '@gemini-core/core/src/utils/editCorrector.js';
 
 const rootDir = path.resolve(os.tmpdir(), 'gemini-cli-test-root');
 

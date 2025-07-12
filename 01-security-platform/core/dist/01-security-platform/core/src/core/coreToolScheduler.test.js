@@ -5,8 +5,8 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi } from 'vitest';
-import { CoreToolScheduler, convertToFunctionResponse, } from './coreToolScheduler.js';
-import { BaseTool, ToolConfirmationOutcome, } from '../index.js';
+import { CoreToolScheduler, convertToFunctionResponse, } from '@gemini-core/core/src/coreToolScheduler.js';
+import { BaseTool, ToolConfirmationOutcome, } from '@gemini-core/core/src/index.js';
 class MockTool extends BaseTool {
     shouldConfirm = false;
     executeFn = vi.fn();

@@ -5,10 +5,10 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach, } from 'vitest';
-import { ToolRegistry, DiscoveredTool } from './tool-registry.js';
-import { DiscoveredMCPTool } from './mcp-tool.js';
-import { Config, ApprovalMode, } from '../config/config.js';
-import { BaseTool } from './tools.js';
+import { ToolRegistry, DiscoveredTool } from '@gemini-core/core/src/tool-registry.js';
+import { DiscoveredMCPTool } from '@gemini-core/core/src/mcp-tool.js';
+import { Config, ApprovalMode, } from '@gemini-core/core/src/config/config.js';
+import { BaseTool } from '@gemini-core/core/src/tools.js';
 import { mcpToTool, Type, } from '@google/genai';
 import { execSync } from 'node:child_process';
 // Use vi.hoisted to define the mock function so it can be used in the vi.mock factory

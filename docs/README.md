@@ -2,6 +2,16 @@
 
 Welcome to ALCUB3's comprehensive documentation. ALCUB3 is a defense-grade AI security platform that enables secure air-gapped AI operations with universal system interoperability for defense contractors and critical infrastructure.
 
+## 🆕 Major Architecture Update
+
+We've refactored ALCUB3 to cleanly separate Gemini core from ALCUB3 extensions:
+
+- **gemini-core/**: Unmodified Gemini CLI code (easily updatable)
+- **alcub3-extensions/**: All ALCUB3-specific functionality  
+- **Easy Updates**: Run `npm run update:gemini` to get latest Gemini
+
+See [UPDATE_GUIDE.md](../UPDATE_GUIDE.md) for details on the new architecture.
+
 ## Documentation Structure
 
 ### 📚 [00 - Overview](./00-overview/)

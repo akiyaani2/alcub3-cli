@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { describe, it, expect } from 'vitest';
-import { getInstallationId, getGoogleAccountId } from './user_id.js';
+import { getInstallationId, getGoogleAccountId } from '@gemini-core/core/src/user_id.js';
 describe('user_id', () => {
     describe('getInstallationId', () => {
         it('should return a valid UUID format string', () => {

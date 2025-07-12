@@ -5,13 +5,13 @@
  */
 
 import { GlobTool, GlobToolParams, GlobPath, sortFileEntries } from '@gemini-core/core/src/glob.js';
-import { partListUnionToString } from '../core/geminiRequest.js';
+import { partListUnionToString } from '@gemini-core/core/src/core/geminiRequest.js';
 import path from 'path';
 import fs from 'fs/promises';
 import os from 'os';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'; // Removed vi
-import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
-import { Config } from '../config/config.js';
+import { FileDiscoveryService } from '@gemini-core/core/src/services/fileDiscoveryService.js';
+import { Config } from '@gemini-core/core/src/config/config.js';
 
 describe('GlobTool', () => {
   let tempRootDir: string; // This will be the rootDirectory for the GlobTool instance

@@ -36,9 +36,9 @@ import {
   unescapeStringForGeminiBug,
   resetEditCorrectorCaches_TEST_ONLY,
 } from '@gemini-core/core/src/editCorrector.js';
-import { GeminiClient } from '../core/client.js';
-import type { Config } from '../config/config.js';
-import { ToolRegistry } from '../tools/tool-registry.js';
+import { GeminiClient } from '@gemini-core/core/src/core/client.js';
+import type { Config } from '@gemini-core/core/src/config/config.js';
+import { ToolRegistry } from '@gemini-core/core/src/tools/tool-registry.js';
 
 vi.mock('../tools/tool-registry.js');
 

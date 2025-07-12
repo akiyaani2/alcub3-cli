@@ -21,7 +21,7 @@ import {
   ConfigParameters,
   MCPServerConfig,
   ApprovalMode,
-} from '../config/config.js';
+} from '@gemini-core/core/src/config/config.js';
 import { BaseTool, ToolResult } from '@gemini-core/core/src/tools.js';
 import {
   FunctionDeclaration,

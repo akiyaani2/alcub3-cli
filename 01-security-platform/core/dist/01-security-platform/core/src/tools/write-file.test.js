@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { describe, it, expect, beforeEach, afterEach, vi, } from 'vitest';
-import { WriteFileTool } from './write-file.js';
-import { ToolConfirmationOutcome, } from './tools.js';
-import { ApprovalMode } from '../config/config.js';
+import { WriteFileTool } from '@gemini-core/core/src/write-file.js';
+import { ToolConfirmationOutcome, } from '@gemini-core/core/src/tools.js';
+import { ApprovalMode } from '@gemini-core/core/src/config/config.js';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
-import { GeminiClient } from '../core/client.js';
-import { ensureCorrectEdit, ensureCorrectFileContent, } from '../utils/editCorrector.js';
+import { GeminiClient } from '@gemini-core/core/src/core/client.js';
+import { ensureCorrectEdit, ensureCorrectFileContent, } from '@gemini-core/core/src/utils/editCorrector.js';
 const rootDir = path.resolve(os.tmpdir(), 'gemini-cli-test-root');
 // --- MOCKS ---
 vi.mock('../core/client.js');

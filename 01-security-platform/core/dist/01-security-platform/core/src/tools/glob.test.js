@@ -3,13 +3,13 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-import { GlobTool, sortFileEntries } from './glob.js';
-import { partListUnionToString } from '../core/geminiRequest.js';
+import { GlobTool, sortFileEntries } from '@gemini-core/core/src/glob.js';
+import { partListUnionToString } from '@gemini-core/core/src/core/geminiRequest.js';
 import path from 'path';
 import fs from 'fs/promises';
 import os from 'os';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'; // Removed vi
-import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
+import { FileDiscoveryService } from '@gemini-core/core/src/services/fileDiscoveryService.js';
 describe('GlobTool', () => {
     let tempRootDir; // This will be the rootDirectory for the GlobTool instance
     let globTool;
