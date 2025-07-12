@@ -1,108 +1,75 @@
 {
-  "name": "@alcub3/alcub3-cli",
-  "version": "0.1.9",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "type": "module",
+  "name": "alcub3-cli",
+  "version": "1.0.0",
+  "description": "ALCUB3 - Defense-Grade AI Security Platform",
+  "private": true,
   "workspaces": [
-    "packages/*"
+    "01-security-platform/cli",
+    "01-security-platform/core"
   ],
-  "private": "true",
+  "scripts": {
+    "clean": "node .build/scripts/clean.js",
+    "gemini": "cd 01-security-platform/cli && tsx .",
+    "alcub3": "cd 01-security-platform/cli && tsx .",
+    "start": "npm run alcub3",
+    "build:gemini": "cd 01-security-platform/core && npm run build:dev && cd ../cli && npm run build:dev && cd ../.. && node .build/scripts/build.js",
+    "build": "cd 01-security-platform/core && npm run build && cd ../cli && npm run build && cd ../.. && node .build/scripts/build.js",
+    "build:no-patch-esbuild": "cd 01-security-platform/core && npm run build && cd ../cli && npm run build",
+    "build:cli": "cd 01-security-platform/cli && npm run build",
+    "build:core": "cd 01-security-platform/core && npm run build",
+    "build:scripts": "cd 01-security-platform/cli && npm run build:scripts",
+    "build:dev": "cd 01-security-platform/core && npm run build:dev && cd ../cli && npm run build:dev",
+    "test": "npm run test:unit",
+    "test:unit": "cd 01-security-platform/core && npm test && cd ../cli && npm test",
+    "test:ci": "npm run build:dev && cd 01-security-platform/core && npm run test:ci && cd ../cli && npm run test:ci",
+    "test:core": "cd 01-security-platform/core && npm test",
+    "test:cli": "cd 01-security-platform/cli && npm test",
+    "test:perf": "cd 01-security-platform/core && npm run test:perf",
+    "test:e2e": "npm run build:dev && npm run preflight:unit && npm run test:e2e:only",
+    "test:e2e:only": "cd .build/integration-tests && npm test",
+    "update-package-version": "node .build/scripts/version.js && cd 01-security-platform/core && npm run update-package-version && cd ../cli && npm run update-package-version",
+    "lint": "eslint -c .build/config/eslint.config.js --max-warnings=0 --cache --cache-location node_modules/.cache/eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "prepublish": "node .build/scripts/prepublish.js && cd 01-security-platform/core && npm run prepublish && cd ../cli && npm run prepublish",
+    "postpublish": "cd 01-security-platform/core && npm run postpublish && cd ../cli && npm run postpublish",
+    "preflight": "npm run clean && npm install && npm run format && npm run lint && npm run build && npm run typecheck && npm test",
+    "preflight:unit": "npm run clean && npm install && npm run format && npm run lint && npm run build && npm run typecheck && npm run test:unit",
+    "prepare": "node .build/scripts/check-build-status.js",
+    "typecheck": "cd 01-security-platform/core && npm run typecheck && cd ../cli && npm run typecheck",
+    "format": "prettier --config .build/config/.prettierrc.json --write .",
+    "generate": "node .build/scripts/generate-git-commit-info.js",
+    "release:version": "node .build/scripts/version.js",
+    "tag:release:nightly": "node .build/scripts/version.js nightly",
+    "check:versions": "node .build/scripts/check-versions.js",
+    "security:check": "node .build/scripts/security-regression.sh",
+    "security:audit": "npm audit",
+    "decision": "node .build/scripts/add-decision.sh",
+    "setup:dev": "node .build/scripts/setup-best-practices.sh"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aaronkiyaani-mcclary/alcub3-cli.git"
+    "url": "git+https://github.com/alcub3/alcub3-cli.git"
   },
-  "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/alcub3-dev/alcub3-cli/sandbox:0.1.9"
-  },
-  "scripts": {
-    "generate": "node scripts/generate-git-commit-info.js",
-    "build": "node scripts/build.js",
-    "build:sandbox": "node scripts/build_sandbox.js",
-    "build:all": "npm run build && npm run build:sandbox",
-    "clean": "node scripts/clean.js",
-    "prepare": "npm run bundle",
-    "test": "npm run test --workspaces",
-    "test:ci": "npm run test:ci --workspaces --if-present",
-    "test:e2e": "npm run test:integration:sandbox:none -- --verbose --keep-output",
-    "test:integration:all": "npm run test:integration:sandbox:none && npm run test:integration:sandbox:docker && npm run test:integration:sandbox:podman",
-    "test:integration:sandbox:none": "ALCUB3_SANDBOX=false node integration-tests/run-tests.js",
-    "test:integration:sandbox:docker": "ALCUB3_SANDBOX=docker node integration-tests/run-tests.js",
-    "test:integration:sandbox:podman": "ALCUB3_SANDBOX=podman node integration-tests/run-tests.js",
-    "start": "node scripts/start.js",
-    "debug": "cross-env DEBUG=1 node --inspect-brk scripts/start.js",
-    "lint:fix": "eslint . --fix && eslint integration-tests --fix",
-    "lint": "eslint . --ext .ts,.tsx && eslint integration-tests",
-    "lint:ci": "eslint . --ext .ts,.tsx --max-warnings 0 && eslint integration-tests --max-warnings 0",
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "format": "prettier --write .",
-    "preflight": "npm run clean && npm ci && npm run format && npm run lint:ci && npm run build && npm run typecheck && npm run test:ci",
-    "auth:npm": "npx google-artifactregistry-auth",
-    "auth:docker": "gcloud auth configure-docker us-west1-docker.pkg.dev",
-    "auth": "npm run auth:npm && npm run auth:docker",
-    "prerelease:dev": "npm run prerelease:version --workspaces && npm run prerelease:deps --workspaces",
-    "bundle": "npm run generate && node esbuild.config.js && node scripts/copy_bundle_assets.js",
-    "build:packages": "npm run build --workspaces",
-    "build:sandbox:fast": "node scripts/build_sandbox.js --skip-npm-install-build",
-    "prepare:package": "node scripts/prepare-package.js",
-    "publish:sandbox": "node scripts/publish-sandbox.js",
-    "publish:npm": "npm publish --workspaces ${NPM_PUBLISH_TAG:+--tag=$NPM_PUBLISH_TAG} ${NPM_DRY_RUN:+--dry-run}",
-    "publish:release": "npm run prepare:package && npm run build:packages && npm run build:sandbox:fast && npm run publish:sandbox && npm run publish:npm",
-    "prepublishOnly": "node scripts/check-versions.js && node scripts/prepublish.js",
-    "release:version": "node scripts/version.js",
-    "tag:release:nightly": "TAG_NAME=\"v$(node -p \"require('./package.json').version\")+nightly.$(date -u +%d%m%y).$(git rev-parse --short HEAD)\"; git tag -a $TAG_NAME -m '' && git push origin $TAG_NAME",
-    "check:versions": "node scripts/check-versions.js",
-    "publish:actions-release": "npm run prepare:package && npm run build:packages && npm run publish:npm",
-    "docs:api": "typedoc --options typedoc.json"
-  },
-  "bin": {
-    "alcub3": "bundle/alcub3.js"
-  },
-  "files": [
-    "bundle/",
-    "README.md",
-    "LICENSE"
+  "keywords": [
+    "ai",
+    "security",
+    "defense",
+    "robotics",
+    "mcp",
+    "air-gap"
   ],
-  "devDependencies": {
-    "@types/date-fns": "^2.5.3",
-    "@types/express": "^5.0.3",
-    "@types/express-validator": "^2.20.33",
-    "@types/micromatch": "^4.0.9",
-    "@types/mime-types": "^2.1.4",
-    "@types/minimatch": "^5.1.2",
-    "@types/supertest": "^6.0.3",
-    "@vitest/coverage-v8": "^3.1.1",
-    "concurrently": "^9.2.0",
-    "cross-env": "^7.0.3",
-    "esbuild": "^0.25.0",
-    "eslint": "^9.24.0",
-    "eslint-config-prettier": "^10.1.2",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-license-header": "^0.8.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "glob": "^10.4.5",
-    "globals": "^16.0.0",
-    "json": "^11.0.0",
-    "lodash": "^4.17.21",
-    "memfs": "^4.17.2",
-    "prettier": "^3.5.3",
-    "react-devtools-core": "^4.28.5",
-    "supertest": "^7.1.1",
-    "typedoc": "^0.26.0",
-    "typescript-eslint": "^8.30.1",
-    "yargs": "^17.7.2"
+  "author": "Aaron Stark",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/alcub3/alcub3-cli/issues"
   },
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.56.0",
-    "axios": "^1.10.0",
-    "cli-table3": "^0.6.5",
-    "console-table-printer": "^2.14.6",
-    "crypto-js": "^4.2.0",
-    "date-fns": "^4.1.0",
-    "express-async-handler": "^1.2.0",
-    "express-rate-limit": "^7.5.1",
-    "express-validator": "^7.2.1"
+  "homepage": "https://github.com/alcub3/alcub3-cli#readme",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

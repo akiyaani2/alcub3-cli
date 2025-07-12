@@ -139,6 +139,12 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-asyncio pytest-cov
           
+          # Developer automation dependencies
+          cd ../developer-automation
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          
           # Node dependencies
           cd ..
           npm ci
@@ -203,7 +209,7 @@ jobs:
       - name: Run task completion handler
         id: handler
         run: |
-          cd security-framework/src
+          cd developer-automation/src/task-completion
           
           # Run the handler
           python task_completion_handler.py \
@@ -234,7 +240,7 @@ jobs:
       - name: Generate markdown report
         id: report
         run: |
-          cd security-framework/src
+          cd developer-automation/src/task-completion
           
           python -c "
           import json
@@ -344,9 +350,9 @@ jobs:
         with:
           name: task-completion-artifacts
           path: |
-            security-framework/src/task_completion_report.json
-            security-framework/src/task_completion_report.md
-            security-framework/handler_config.yml
+            developer-automation/src/task-completion/task_completion_report.json
+            developer-automation/src/task-completion/task_completion_report.md
+            handler_config.yml
       
       - name: Comment on PR
         if: github.event_name == 'pull_request'

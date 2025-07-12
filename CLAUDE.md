@@ -18,13 +18,16 @@ This is ALCUB3, a defense-grade AI integration platform built on a fork of Googl
 - Universal robotics interface (Boston Dynamics, ROS2, DJI)
 - Defense-grade data classification and handling
 
-**Architecture:** TypeScript/Python/Rust polyglot system
+**Architecture:** TypeScript/Python/Rust polyglot system organized by pillars
 
-- `/packages/cli`: Enhanced CLI with defense-specific commands
-- `/packages/core`: Core backend with security enhancements
-- `/security-framework`: MAESTRO implementation (NEW)
-- `/air-gap-mcp-server`: Patent-pending MCP server (NEW)
-- `/universal-robotics`: Hardware abstraction layer (NEW)
+- `/01-security-platform`: Air-gapped MCP, agent sandboxing, HSM integration
+- `/02-robotics-hal`: Universal robotics security with behavioral AI
+- `/03-maestro-framework`: MAESTRO L1-L7 security implementation
+- `/04-simulation-training`: K-Scale integration for defense simulation
+- `/05-cisa-compliance`: CISA cybersecurity posture management
+- `/06-neural-compression`: "Pied Piper" neural compression engine
+- `/07-space-operations`: Space deployment adaptations (NEW)
+- `/0X-developer-experience`: Cross-cutting developer tools and automation
 
 For complete technical details, see `alcub3_PRD.md`.
 
@@ -60,6 +63,8 @@ npm run debug        # Start with Node.js inspector for debugging
 
 ```bash
 npm test             # Run unit tests (Vitest)
+npm run test:unit    # Run unit tests only (faster)
+npm run test:perf    # Run performance tests
 npm run test:e2e     # Run integration tests
 npm run test:ci      # Run tests with coverage for CI
 ```
@@ -70,6 +75,19 @@ npm run test:ci      # Run tests with coverage for CI
 npm run lint         # Run ESLint
 npm run lint:fix     # Auto-fix linting issues
 npm run format       # Format with Prettier
+```
+
+### Security & Best Practices
+
+```bash
+npm run security:check  # Run comprehensive security regression tests
+npm run security:audit  # Check dependencies for vulnerabilities
+npm run decision "Title"  # Add a technical decision to DECISIONS.md
+npm run setup:dev      # Set up all development best practices
+
+# Git hooks (automatic via Husky)
+# pre-commit: Lint, format, test, secret scan
+# pre-push: Full security regression
 ```
 
 ### Single Test Execution
@@ -173,6 +191,29 @@ alcub3 robotics emergency-stop all       # Safety command
 - Use Task Master's AI (powered by code claude) to break down large features
 - Update task status in real-time to track progress and add a review section to each task with a summary of the changes you made and any other relevant information.
 - No need for manual TODO.md files - Task Master handles all task tracking
+
+### Performance Budget Monitoring
+
+Use the performance budget utility to ensure operations meet contractual requirements:
+
+```typescript
+import { PerformanceBudget } from '@alcub3/core/utils/performance-budget.js';
+
+// Measure synchronous operations
+const result = PerformanceBudget.measure('file-operation', () => {
+  return processFile(data);
+});
+
+// Measure async operations
+const data = await PerformanceBudget.measureAsync('api-response', async () => {
+  return await fetchData();
+});
+
+// Generate performance report
+PerformanceBudget.report();
+```
+
+Budgets are enforced in tests and warnings are logged in production.
 
 ## Architecture Overview
 

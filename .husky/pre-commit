@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run lint-staged
+npx lint-staged
+
+# Run quick tests (unit tests only, not integration)
+echo "🧪 Running unit tests..."
+npm run test -- --run || exit 1
+
+# Check for secrets
+echo "🔍 Scanning for hardcoded secrets..."
+if grep -r "password=\|api_key=\|secret=\|private_key=" --include="*.ts" --include="*.js" --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=coverage --exclude="*test*" --exclude="*spec*" src/ packages/ 2>/dev/null | grep -v "// SAFE:" > /dev/null; then
+  echo "❌ Potential secret found! Remove it before committing."
+  echo "   Add '// SAFE: <reason>' comment if this is intentional"
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed"

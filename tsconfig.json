@@ -22,6 +22,8 @@
   "include": [
     "packages/**/*.ts",
     "packages/**/*.tsx",
+    "01-security-platform/**/*.ts",
+    "01-security-platform/**/*.tsx",
     "universal-robotics/**/*.ts",
     "universal-robotics/**/*.tsx",
     "src/types/**/*.d.ts",

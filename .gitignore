@@ -19,6 +19,9 @@ env/
 /build
 /dist
 
+# Artifacts directory - all generated files
+.artifacts/
+
 # misc
 .DS_Store
 .env.local
@@ -66,7 +69,23 @@ bundle
 # Test report files
 junit.xml
 packages/*/coverage/
+01-core-platform/*/coverage/
 
 # Generated files
 packages/cli/src/generated/
+01-core-platform/cli/src/generated/
 .integration-tests/
+.secret-patterns
+
+# Temporary directories to be cleaned
+coverage/
+reports/
+bundle/
+temp/
+validation_report_*.json
+
+# Centralized logs - ignore log files but keep structure
+.logs/**/*.log
+.logs/**/*.txt
+!.logs/.gitkeep
+!.logs/**/.gitkeep
